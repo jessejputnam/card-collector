@@ -1,6 +1,7 @@
 "use strict";
 
 const passport = require("passport");
+const { body, validationResult } = require("express-validator");
 
 const User = require("../models/user");
 
@@ -84,7 +85,7 @@ exports.login_get = (req, res, next) => {
 
 // Handle login on POST
 exports.login_post = passport.authenticate("local", {
-  successRedirect: "/home",
+  successRedirect: "/collection/home",
   failureRedirect: "/login",
   failureFlash: true
 });

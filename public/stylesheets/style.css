@@ -1,8 +1,85 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+/* TABLE OF CONTENTS */
+/* 
+  # Formatting
+    ## Forms
+  # No Auth Header
+  # Landing Page
+  # Sidebar
+  # Main
+*/
+
+/* ##################### # FORMATTING ################## */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 a {
-  color: #00B7FF;
+  color: #00b7ff;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ########### ## FORMS ############ */
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  width: 600px;
+  margin: 0 auto;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  row-gap: 7px;
+}
+
+.form-control > input,
+select,
+textarea {
+  padding: 5px;
+}
+/* #################### # NO AUTH HEADER ##################### */
+
+.no-auth-header {
+  display: flex;
+  align-items: center;
+  column-gap: 15px;
+  height: 50px;
+  box-shadow: -3px 0px 3px 0 rgba(0, 0, 0, 0.455);
+}
+
+/* #################### # LANDING PAGE ################ */
+.landing-page {
+  padding: 20px;
+}
+
+/* #################### # SIDEBAR ##################### */
+.sidebar {
+  padding: 20px;
+  width: 15%;
+  box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.543);
+  height: 100vh;
+}
+
+.nav-bar > ul {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+}
+
+/* ##################### # MAIN ####################### */
+.app-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.main-wrapper {
+  width: 85%;
+  overflow-y: auto;
+  height: 100vh;
 }

@@ -25,6 +25,9 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 const indexRouter = require("./routes/index");
+const cardRouter = require("./routes/card");
+
+const User = require("./models/user");
 
 const app = express();
 
@@ -87,7 +90,16 @@ app.use(function (req, res, next) {
 
 app.use(express.urlencoded({ extended: false }));
 
+const authCheckFalse = (req, res, next) => {
+  if (!req.user) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+};
+
 app.use("/", indexRouter);
+app.use("/collection", authCheckFalse, cardRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

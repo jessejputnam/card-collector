@@ -1,0 +1,25 @@
+extends layout  
+
+block noUser 
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg
+
+  if error 
+    li= error 
+
+  form.form-wrapper(method='POST' action='') 
+    h2(style="text-align:center")= title
+    div.form-control 
+      label(for="username" style="margin-left:15px") Email
+      input#username(type="email" name="username" required='true' placeholder='person@email.com')
+    div.form-control 
+      label(for="password" style="margin-left:15px") Password 
+      input#password(type="password" name="password"  required='true' placeholder='********' min-length="8" title="Must be at least 8 characters")
+    div.form-control 
+      label(for="passConfirm" style="margin-left:15px") Confirm Password
+      input#passConfirm(type="password" name="passConfirm"  required='true' placeholder='********')
+    div.form-control-btns 
+      a(href="/") Cancel
+      button.btn(type="submit") Submit
