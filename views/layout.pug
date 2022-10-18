@@ -1,0 +1,38 @@
+doctype html
+html(lang='en')
+  head
+    title= title
+    met(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(type="module" src="/javascripts/script.js" defer)
+  
+  body 
+    if !currentUser
+      header.no-auth-header
+        p 
+          a(href="/") Home
+        p 
+          a(href="/register") Register
+        p 
+          a(href="/login") Login
+      div
+        block noUser
+        block content
+
+    else  
+      div.app-wrapper 
+        div.sidebar 
+          nav.nav-bar 
+            ul 
+              li 
+                a(href="/home") Collection 
+              li 
+                a(href="/search") Search 
+              li 
+                a(href="/settings") Settings 
+              li 
+                a(href="/logout") Logout
+
+        main.main-wrapper
+          block content
