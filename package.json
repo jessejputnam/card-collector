@@ -21,6 +21,7 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "pokemontcgsdk": "^2.0.0",
     "pug": "^3.0.2"
   },
   "devDependencies": {

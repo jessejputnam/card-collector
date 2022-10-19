@@ -1,6 +1,14 @@
 extends layout 
 
 block content 
-  h1= title 
+  header 
+    h1= title 
+    div.sort-container 
+      form.form-wrapper(method="GET" action="/sort-collection") 
+        
+    div.filter-container.hidden 
+      form.form-wrapper(method="GET" action="/filter-collection") 
 
-  p(style="margin-bottom:20px")= currentUser.username
+    div.collection-container 
+      ul 
+        each card in card_list

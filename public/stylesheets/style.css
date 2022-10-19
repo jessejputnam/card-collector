@@ -6,6 +6,7 @@
   # Landing Page
   # Sidebar
   # Main
+    ## Home
 */
 
 /* ##################### # FORMATTING ################## */
@@ -43,6 +44,7 @@ select,
 textarea {
   padding: 5px;
 }
+
 /* #################### # NO AUTH HEADER ##################### */
 
 .no-auth-header {
@@ -83,3 +85,5 @@ textarea {
   overflow-y: auto;
   height: 100vh;
 }
+
+/* ########### ## HOME ############ */
