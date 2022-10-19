@@ -1,0 +1,16 @@
+extends layout 
+
+block content 
+  h1= title 
+
+  form.form-wrapper(method="GET" action="/search/results") 
+    div.form-control 
+      label(for="pokeName") Name:
+      input#pokeName(type="text" name="pokeName" required)
+    div.form-control 
+      label(for="pokeSet") Set: 
+      select#pokeSet(name="pokeSet") 
+        option(value="" default) 
+        each set in sets 
+          option(value=set.id)= set.name
+    button.btn.btn-primary(type="submit") Search

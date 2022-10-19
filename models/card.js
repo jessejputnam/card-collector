@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 const CardSchema = new Schema(
   {
     id: { type: String, required: true },
+    prizeBinder: { type: Boolean, required: true },
 
     meta: {
       images: {
@@ -23,7 +24,7 @@ const CardSchema = new Schema(
       set: {
         symbol: String,
         name: { type: String, required: true },
-        subset: { type: String, default: null },
+        setId: { type: String, default: null },
         series: { type: String },
         number: { type: Number, required: true },
         totalPrint: { type: Number, required: true },
@@ -45,8 +46,7 @@ const CardSchema = new Schema(
       marketValue: { type: Number, required: true },
       // Price History: Date, Amt -- i.e. 08/22, 6.39
       priceHistory: [[String, Number]],
-      count: Number,
-      prizeBinder: { type: Boolean, required: true }
+      count: Number
     }
   },
   { timestamps: true }

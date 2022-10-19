@@ -2,6 +2,8 @@
 
 const { body, validationResult } = require("express-validator");
 
+const Card = require("../models/card");
+
 // Handle display all cards on GET
 exports.display_collection_get = (req, res, next) => {
   Card.find()
@@ -19,7 +21,6 @@ exports.display_collection_get = (req, res, next) => {
 
 // ################## Add Cards ###################
 //! Check rarity == i.e. Classic Collection rarity === rare holo
-//! Check Subset === Classic Collection / Shiny Vault / Trainer Gallery ------- if set.name includes Classic Collection / Trainer Gallery / Shiny Vault
 
 // ################# Sort Cards ###################
 

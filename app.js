@@ -26,6 +26,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 const indexRouter = require("./routes/index");
 const cardRouter = require("./routes/card");
+const searchRouter = require("./routes/search");
 
 const User = require("./models/user");
 
@@ -100,6 +101,7 @@ const authCheckFalse = (req, res, next) => {
 
 app.use("/", indexRouter);
 app.use("/collection", authCheckFalse, cardRouter);
+app.use("/search", authCheckFalse, searchRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
