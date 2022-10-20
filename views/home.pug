@@ -24,11 +24,11 @@ block content
           div.collection-item-details
             div
               p.collection-card-name= card.pokemon.name 
+                if card.meta.rarity.reverseHolo 
+                  span(style="font-size:.7rem;color:gray")  Reverse Holo
               p.collection-card-rarity= card.meta.rarity.type
-              if card.meta.rarity.reverseHolo 
-                span Reverse Holo
           div
             p.collection-card-set= card.meta.set.name
             p.collection-card-set-no=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
           div(style="width:10%").collection-item-value 
-            p= `$${card.value.market}`
+            p= `$${card.value.market.toFixed(2)}`

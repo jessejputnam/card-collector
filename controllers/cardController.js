@@ -175,7 +175,9 @@ exports.add_card_post = (req, res, next) => {
 
       value: {
         market: marketValue,
-        priceHistory: [[new Date().toLocaleDateString("en-US"), marketValue]],
+        priceHistory: [
+          [new Date().toLocaleDateString("en-US"), marketValue.toFixed(2)]
+        ],
         count: 1
       }
     });
