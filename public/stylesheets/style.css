@@ -115,10 +115,21 @@ textarea {
 .result-img-container > img {
   height: 200px;
   box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);
+  transition: transform 0.3s;
+}
+
+@media (hover: hover) {
+  .result-img-container > img:hover {
+    transform: scale(1.5);
+  }
 }
 
 .result-info-container {
   display: flex;
   flex-direction: column;
   row-gap: 5px;
+}
+
+.result-title {
+  font-size: 1.1rem;
 }

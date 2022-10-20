@@ -14,6 +14,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
+const authCheckFalse = require("./helpers/authCheckFalse");
+
 // Database Connection
 const mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, {
@@ -90,14 +92,6 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.urlencoded({ extended: false }));
-
-const authCheckFalse = (req, res, next) => {
-  if (!req.user) {
-    res.redirect("/");
-  } else {
-    next();
-  }
-};
 
 app.use("/", indexRouter);
 app.use("/collection", authCheckFalse, cardRouter);
