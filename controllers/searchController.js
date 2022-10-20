@@ -1,10 +1,9 @@
 "use strict";
 
 const pokemon = require("pokemontcgsdk");
+pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
 const Card = require("../models/card");
-
-pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
 // Display search form on GET
 exports.search_get = (req, res, next) => {

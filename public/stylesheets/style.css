@@ -7,6 +7,7 @@
   # Sidebar
   # Main
     ## Home
+    ## Search
 */
 
 /* ##################### # FORMATTING ################## */
@@ -91,4 +92,33 @@ textarea {
   display: flex;
   flex-direction: column;
   row-gap: 10px;
+}
+
+/* ########### ## SEARCH ############ */
+.results-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px;
+  gap: 15px;
+}
+
+.result-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  column-gap: 10px;
+  width: 275px;
+}
+
+.result-img-container > img {
+  height: 200px;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);
+}
+
+.result-info-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
 }

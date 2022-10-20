@@ -59,8 +59,6 @@ exports.sign_up_post = [
         password: req.body.password
       });
 
-      console.log(user._id);
-
       user.save((err) => {
         if (err) {
           return next(err);

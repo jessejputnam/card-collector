@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 const CardSchema = new Schema(
   {
     id: { type: String, required: true },
-    prizeBinder: { type: Boolean, required: true },
+    prizeBinder: { type: Boolean, default: false, required: true },
 
     meta: {
       images: {
@@ -16,34 +16,34 @@ const CardSchema = new Schema(
       },
       rarity: {
         type: { type: String, required: true },
-        reverseHolo: { type: Boolean, required: true },
+        reverseHolo: { type: Boolean, default: false, required: true },
         grade: { type: Number, required: true }
       },
       supertype: { type: String, required: true },
       subtypes: [{ type: String }],
       set: {
         symbol: String,
+        logo: String,
         name: { type: String, required: true },
-        setId: { type: String, default: null },
+        id: { type: String, default: null },
         series: { type: String },
-        number: { type: Number, required: true },
+        number: { type: String, required: true },
         totalPrint: { type: Number, required: true },
-        releaseDate: { type: Number, required: true }
+        releaseDate: { type: String, required: true }
       }
     },
 
     pokemon: {
       name: { type: String, required: true },
-      level: { type: String, default: null },
       natDex: Number,
       region: {
-        name: { type: String, required: true },
-        generation: { type: Number, required: true }
+        name: { type: String, default: null },
+        order: { type: Number, default: null }
       }
     },
 
     value: {
-      marketValue: { type: Number, required: true },
+      prices: { type: Map },
       // Price History: Date, Amt -- i.e. 08/22, 6.39
       priceHistory: [[String, Number]],
       count: Number
