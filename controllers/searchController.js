@@ -35,8 +35,6 @@ exports.search_results_get = (req, res, next) => {
   pokemon.card
     .where({ q: searchQuery, orderBy: "-set.releaseDate" })
     .then((result) => {
-      req.user.cards.forEach((card) => console.log(card.pokemon));
-
       User.findById(req.user._id)
         .populate("cards")
         .exec((err, user) => {

@@ -1,17 +1,31 @@
 extends layout 
 
 block content 
-  header 
+  header.home-header 
     h1= title 
     div.sort-container 
       form.form-wrapper(method="GET" action="/sort-collection") 
 
 
-    div.collection-container 
-      if !card_list.length
-        p No cards in collection yet
+  div.collection-container 
+    if !card_list.length
+      p No cards in collection yet
 
-      else 
-        ul 
-          each card in card_list
-            li= card.pokemon.name
+    else 
+      each card in card_list
+        div.collection-item 
+          div.collection-item-img
+            img(src=card.meta.images.small, alt=`${card.name} card`)
+          div.collection-item-details
+            div
+              p= card.name 
+              p= card.meta.rarity.type
+              if card.meta.rarity.reverseHolo 
+                span Reverse Holo
+            div
+            p= card.meta.set.name
+              span=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
+          div.collection-item-value 
+            p= `$${card.value.market}`
+            each pricePoint in card.value.priceHistory
+              //- li= 

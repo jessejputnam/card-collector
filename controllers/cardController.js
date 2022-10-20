@@ -14,7 +14,7 @@ exports.display_collection_get = (req, res, next) => {
     .exec(function (err, user) {
       res.render("home", {
         title: "My Collection",
-        card_list: user.cards
+        card_list: user.cards.sort((a, b) => b.value.market - a.value.market)
       });
     });
 };
@@ -24,6 +24,10 @@ exports.add_card_post = (req, res, next) => {
   const cardId = req.body.cardId;
 
   pokemon.card.find(cardId).then((card) => {
+    const marketValue = card.tcgplayer.prices.holofoil
+      ? card.tcgplayer.prices.holofoil.market
+      : card.tcgplayer.prices.normal.market;
+
     const newCard = new Card({
       id: card.id,
 
@@ -56,7 +60,8 @@ exports.add_card_post = (req, res, next) => {
       },
 
       value: {
-        prices: card.tcgplayer.prices,
+        market: marketValue,
+        priceHistory: [[new Date().toLocaleDateString("en-US"), marketValue]],
         count: 1
       }
     });
