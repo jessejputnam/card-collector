@@ -1,5 +1,8 @@
 extends layout 
 
+block scripts 
+  script(type="module" src="/javascripts/scriptHome.js" defer)
+
 block content 
   header.home-header 
     h1= title 
@@ -15,7 +18,7 @@ block content
 
     else 
       each card in card_list
-        div.collection-item 
+        div.collection-item(id=card._id) 
           div(style="width:10%").collection-item-img
             img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
           div.collection-item-details

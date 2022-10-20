@@ -43,7 +43,6 @@ const CardSchema = new Schema(
     },
 
     value: {
-      // prices: { type: Map },
       market: { type: Number, required: true },
       // Price History: Date, Amt -- i.e. 08/22, 6.39
       priceHistory: [[String, Number]],

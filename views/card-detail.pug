@@ -1,0 +1,48 @@
+extends layout 
+
+block content 
+  div.detail-wrapper
+    h1= title 
+
+    div.card-detail-container 
+      div.detail-img-container 
+        img(src=card.meta.images.large, alt=card.pokemon.name)
+      div.detail-info-container
+        div.info-card-container
+          h2 #{card.pokemon.name}
+            if card.meta.rarity.reverseHolo 
+              em(style="font-size:.7rem;color:silver")  Reverse Holo
+          em= card.meta.rarity.type
+        div.info-set-container 
+          div 
+            img(src=card.meta.set.symbol, alt=card.meta.set.name)
+            div
+              p= card.meta.set.name 
+              p.small-text= card.meta.set.series
+              p.small-text= `${card.meta.set.number}/${card.meta.set.totalPrint}`
+        div.info-market-container
+          div.current-price-container
+            p Current Market Value: 
+            h2 $#{card.value.market}
+          h3 Price over time 
+          div.price-history-container
+            ul 
+              each pricePoint in card.value.priceHistory 
+                li.small-text= `${pricePoint[0]}: ` 
+                  span(style="font-size:1rem")= ` $${pricePoint[1]}`
+
+    div.card-edits-container
+      form.card-edit-form(method="POST" action=`/collection/${card._id}/edit`)
+        if !card.meta.rarity.reverseHolo
+          div 
+            label(for="reverseHolo") Reverse Holo:
+            select#reverseHolo(name="reverseHolo") 
+              option(value="false" default) No 
+              option(value="true") Yes 
+        div 
+          label(for="count") Owned:
+          input#count(type="number" value=(card.value.count) name="count")
+          input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+        button.btn.secondary-btn(type="submit") Edit Card 
+      
+      form.card-update-price()

@@ -7,6 +7,7 @@
   # Sidebar
   # Main
     ## Home
+    ## Card Detail
     ## Search
 */
 
@@ -106,19 +107,28 @@ textarea {
   width: 95%;
   max-width: 800px;
   padding: 25px;
-}
-
-.collection-container > ul {
   display: flex;
   flex-direction: column;
-  row-gap: 10px;
+  row-gap: 5px;
 }
 
 .collection-item {
   display: flex;
+  padding: 5px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
+  border-radius: 10px;
+
+  transition: box-shadow 0.3s, transform 0.1s;
+}
+
+@media (hover: hover) {
+  .collection-item:hover {
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.52);
+    transform: scale(1.03);
+  }
 }
 
 .collection-item > div {
@@ -127,6 +137,13 @@ textarea {
 
 .collection-item-img > img {
   height: 50px;
+  transition: transform 0.3s;
+}
+
+@media (hover: hover) {
+  .collection-item-img > img:hover {
+    transform: scale(2);
+  }
 }
 
 .collection-card-rarity,
@@ -136,7 +153,86 @@ textarea {
 
 .collection-card-set-no {
   font-size: 0.6rem;
-  color: gray;
+}
+
+.collection-item-value {
+  font-size: 1.1rem;
+}
+
+/* ########### ## CARD DETAIL ############ */
+.detail-wrapper {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.detail-wrapper > h1 {
+  margin-bottom: 50px;
+}
+
+.card-detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 50px;
+  row-gap: 25px;
+}
+
+.detail-img-container > img {
+  height: 600px;
+}
+
+.detail-info-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+}
+
+.info-set-container > div {
+  display: flex;
+  column-gap: 15px;
+  align-items: flex-end;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.info-set-container > div > div {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
+}
+
+.small-text {
+  font-size: 0.8rem;
+  color: rgb(62, 62, 62);
+}
+
+.current-price-container {
+  display: flex;
+  align-items: flex-end;
+  column-gap: 15px;
+  margin-bottom: 50px;
+}
+
+.price-history-container {
+  height: 300px;
+  width: 400px;
+  box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.527);
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  padding: 15px;
+  overflow-y: scroll;
+}
+
+.price-history-container > ul > li {
+  letter-spacing: 0.1ch;
+}
+
+.card-edit-form {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }
 
 /* ########### ## SEARCH ############ */
@@ -144,10 +240,13 @@ textarea {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: between;
-  padding: 20px;
-  gap: 15px;
-  max-width: 1200px;
+  align-items: center;
+  /* justify-content: space-evenly; */
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 10px;
+  /* gap: 15px; */
+  max-width: 900px;
   margin: 0 auto;
 }
 

@@ -19,6 +19,120 @@ exports.display_collection_get = (req, res, next) => {
     });
 };
 
+// Handle display card detail on GET
+exports.display_card_get = (req, res, next) => {
+  const cardId = req.params.id;
+
+  Card.findById(cardId).exec((err, result) => {
+    if (err) return next(err);
+
+    if (result === null) {
+      const err = new Error("Collection card not found");
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render("card-detail", {
+      title: `Collection: ${result.pokemon.name}`,
+      card: result
+    });
+  });
+};
+
+// Handle edit card detail on POST
+exports.edit_card_post = (req, res, next) => {
+  const cardId = req.params.id;
+  const pokemonId = req.body.cardId;
+
+  Card.findById(cardId).exec((err, result) => {
+    if (err) return next(err);
+    const card = result;
+
+    if (!card) {
+      const err = new Error("Card not found");
+      err.status = 404;
+      return next(err);
+    }
+
+    if (req.body.reverseHolo) {
+      pokemon.card.find(pokemonId).then((tcgCard) => {
+        const marketValue = tcgCard.tcgplayer.prices.reverseHolofoil.market;
+
+        card.meta.rarity.reverseHolo = true;
+        card.value.market = marketValue;
+        card.value.priceHistory = [
+          [new Date().toLocaleDateString("en-US"), marketValue]
+        ];
+        card.value.count = req.body.count;
+
+        card.save((err) => {
+          if (err) return next(err);
+
+          res.redirect(`/collection/${card._id}`);
+        });
+      });
+    } else {
+      card.value.count = req.body.count;
+
+      card.save((err) => {
+        if (err) return next(err);
+
+        res.redirect(`/collection/${card._id}`);
+      });
+    }
+  });
+};
+
+exports.update_price_history_post = (req, res, next) => {
+  exports.edit_card_post = (req, res, next) => {
+    const cardId = req.params.id;
+    const pokemonId = req.body.cardId;
+
+    Card.findById(cardId).exec((err, result) => {
+      if (err) return next(err);
+      const card = result;
+
+      if (!card) {
+        const err = new Error("Card not found");
+        err.status = 404;
+        return next(err);
+      }
+
+      pokemon.card.find(pokemonId).then((tcgCard) => {
+        const newDate = new Date().toLocaleDateString("en-US");
+        const lastIdx = card.value.priceHistory.length - 1;
+
+        let marketValue;
+
+        if (card.meta.rarity.reverseHolo) {
+          marketValue = tcgCard.tcgplayer.prices.reverseHolofoil.market;
+        } else {
+          marketValue = tcgCard.tcgplayer.prices.holofoil
+            ? tcgCard.tcgplayer.prices.holofoil.market
+            : tcgCard.tcgplayer.prices.normal.market;
+        }
+
+        card.value.market = marketValue;
+
+        if (card.value.priceHistory[lastIdx] === newDate) {
+          card.value.priceHistory[lastIdx][1] === marketValue;
+        } else {
+          card.value.priceHistory.push([
+            new Date().toLocaleDateString("en-US"),
+            marketValue
+          ]);
+        }
+
+        card.save((err) => {
+          if (err) return next(err);
+
+          res.redirect(`/collection/${card._id}`);
+        });
+      });
+    });
+  };
+};
+
 // ################## Add Cards ###################
 exports.add_card_post = (req, res, next) => {
   const cardId = req.body.cardId;
