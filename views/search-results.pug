@@ -7,7 +7,17 @@ block content
   else
     div.results-wrapper
       each card in card_list 
-        if currentUser.cards.
+        if user_cards.has(card.id)
+          div.result-container-owned
+            div.result-img-container 
+              img(src=card.images.small, alt=card.name)
+            div.result-info-container 
+              p.result-title= card.name 
+              p.result-set= card.set.name 
+              p.result-number= card.number + "/" + card.set.printedTotal
+              em.result-in-collection(style='') In collection
+
+        else 
           div.result-container 
             div.result-img-container 
               img(src=card.images.small, alt=card.name)

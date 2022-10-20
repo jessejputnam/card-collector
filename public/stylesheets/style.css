@@ -107,9 +107,18 @@ textarea {
 .result-container {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-start;
   column-gap: 10px;
   width: 275px;
+}
+
+.result-container-owned {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: 10px;
+  width: 275px;
+  filter: brightness(0.6) grayscale(100%);
 }
 
 .result-img-container > img {
@@ -132,4 +141,10 @@ textarea {
 
 .result-title {
   font-size: 1.1rem;
+}
+
+.result-set,
+.result-number {
+  font-size: 0.8rem;
+  color: gray;
 }

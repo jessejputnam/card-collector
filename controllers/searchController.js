@@ -4,6 +4,7 @@ const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
 const Card = require("../models/card");
+const User = require("../models/user");
 
 // Display search form on GET
 exports.search_get = (req, res, next) => {
@@ -34,9 +35,21 @@ exports.search_results_get = (req, res, next) => {
   pokemon.card
     .where({ q: searchQuery, orderBy: "-set.releaseDate" })
     .then((result) => {
-      res.render("search-results", {
-        title: "Results",
-        card_list: result.data
-      });
+      req.user.cards.forEach((card) => console.log(card.pokemon));
+
+      User.findById(req.user._id)
+        .populate("cards")
+        .exec((err, user) => {
+          if (err) return next(err);
+
+          const cardSet = new Set();
+          user.cards.forEach((card) => cardSet.add(card.id));
+
+          res.render("search-results", {
+            title: "Results",
+            card_list: result.data,
+            user_cards: cardSet
+          });
+        });
     });
 };
