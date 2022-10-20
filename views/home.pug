@@ -5,6 +5,8 @@ block content
     h1= title 
     div.sort-container 
       form.form-wrapper(method="GET" action="/sort-collection") 
+        fieldset
+          legend Sort Options
 
 
   div.collection-container 
@@ -14,18 +16,16 @@ block content
     else 
       each card in card_list
         div.collection-item 
-          div.collection-item-img
-            img(src=card.meta.images.small, alt=`${card.name} card`)
+          div(style="width:10%").collection-item-img
+            img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
           div.collection-item-details
             div
-              p= card.name 
-              p= card.meta.rarity.type
+              p.collection-card-name= card.pokemon.name 
+              p.collection-card-rarity= card.meta.rarity.type
               if card.meta.rarity.reverseHolo 
                 span Reverse Holo
-            div
-            p= card.meta.set.name
-              span=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
-          div.collection-item-value 
+          div
+            p.collection-card-set= card.meta.set.name
+            p.collection-card-set-no=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
+          div(style="width:10%").collection-item-value 
             p= `$${card.value.market}`
-            each pricePoint in card.value.priceHistory
-              //- li= 

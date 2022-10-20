@@ -85,13 +85,58 @@ textarea {
   width: 85%;
   overflow-y: auto;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ########### ## HOME ############ */
+.home-header {
+  padding: 25px;
+  display: flex;
+  flex-direction: row;
+  column-gap: 50px;
+  box-shadow: 0 1px 2px 0 rgba(94, 0, 0, 0.676);
+}
+
+.sort-container > form > fieldset {
+  height: 100px;
+}
+
+.collection-container {
+  width: 95%;
+  max-width: 800px;
+  padding: 25px;
+}
+
 .collection-container > ul {
   display: flex;
   flex-direction: column;
   row-gap: 10px;
+}
+
+.collection-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collection-item > div {
+  width: 20%;
+}
+
+.collection-item-img > img {
+  height: 50px;
+}
+
+.collection-card-rarity,
+.collection-card-set {
+  font-size: 0.8rem;
+}
+
+.collection-card-set-no {
+  font-size: 0.6rem;
+  color: gray;
 }
 
 /* ########### ## SEARCH ############ */
@@ -99,9 +144,11 @@ textarea {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: between;
   padding: 20px;
   gap: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .result-container {
