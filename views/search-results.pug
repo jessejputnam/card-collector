@@ -15,6 +15,7 @@ block content
               p.result-title= card.name 
               p.result-set= card.set.name 
               p.result-number= card.number + "/" + card.set.printedTotal
+              p $#{!card.tcgplayer ? "No price available" : card.tcgplayer.prices.holofoil ? card.tcgplayer.prices.holofoil.market.toFixed(2) : card.tcgplayer.prices.normal ? card.tcgplayer.prices.normal.market.toFixed(2) : card.tcgplayer.prices.unlimited ? card.tcgplayer.prices.unlimited.market : card.tcgplayer.prices.unlimitedHolofoil ? card.tcgplayer.prices.unlimitedHolofoil.market.toFixed(2) : card.tcgplayer.prices["1stEditionHolofoil"] ? card.tcgplayer.prices["1stEditionHolofoil"].market.toFixed(2) : card.tcgplayer.prices["1stEdition"] ? card.tcgplayer.prices["1stEdition"].market : card.tcgplayer.prices.reverseHolofoil ?  card.tcgplayer.prices.reverseHolofoil.market.toFixed(2) : "No price available"}
               em.result-in-collection(style='') In collection
 
         else 
@@ -25,6 +26,7 @@ block content
               p.result-title= card.name 
               p.result-set= card.set.name 
               p.result-number= card.number + "/" + card.set.printedTotal
+              p $#{!card.tcgplayer ? " not available" : card.tcgplayer.prices.holofoil ? card.tcgplayer.prices.holofoil.market.toFixed(2) : card.tcgplayer.prices.normal ? card.tcgplayer.prices.normal.market.toFixed(2) : card.tcgplayer.prices.unlimitedHolofoil ? card.tcgplayer.prices.unlimitedHolofoil.market.toFixed(2) : card.tcgplayer.prices.unlimited ? card.tcgplayer.prices.unlimited.market.toFixed(2) : card.tcgplayer.prices["1stEdition"] ? card.tcgplayer.prices["1stEdition"].market : card.tcgplayer.prices["1stEditionHolofoil"] ? card.tcgplayer.prices["1stEditionHolofoil"].market.toFixed(2) : card.tcgplayer.prices.reverseHolofoil ?  card.tcgplayer.prices.reverseHolofoil.market.toFixed(2) : "No price available"}
               form.add-card-form(method="POST" action="/collection/add-card") 
                 input#cardId(type="hidden" name="cardId" required="true" value=card.id)
                 button.btn.btn-secondary(type="submit") Add Card

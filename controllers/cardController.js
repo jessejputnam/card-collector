@@ -117,7 +117,7 @@ exports.update_price_history_post = (req, res, next) => {
         if (card.value.priceHistory[lastIdx] === newDate) {
           card.value.priceHistory[lastIdx][1] === marketValue;
         } else {
-          card.value.priceHistory.push([
+          card.value.priceHistory.unshift([
             new Date().toLocaleDateString("en-US"),
             marketValue
           ]);
@@ -138,9 +138,37 @@ exports.add_card_post = (req, res, next) => {
   const cardId = req.body.cardId;
 
   pokemon.card.find(cardId).then((card) => {
-    const marketValue = card.tcgplayer.prices.holofoil
-      ? card.tcgplayer.prices.holofoil.market
-      : card.tcgplayer.prices.normal.market;
+    let marketValue;
+    let priceType;
+
+    if (!card.tcgplayer) {
+      marketValue = 0;
+      priceType = null;
+    } else if (card.tcgplayer.prices.holofoil) {
+      marketValue = card.tcgplayer.prices.holofoil.market;
+      priceType = "holofoil";
+    } else if (card.tcgplayer.prices.normal) {
+      marketValue = card.tcgplayer.prices.normal.market;
+      priceType = "normal";
+    } else if (card.tcgplayer.prices.unlimited) {
+      marketValue = card.tcgplayer.prices.unlimited.market;
+      priceType = "unlimited";
+    } else if (card.tcgplayer.prices.unlimitedHolofoil) {
+      marketValue = card.tcgplayer.prices.unlimitedHolofoil.market;
+      priceType = "unlimitedHolofoil";
+    } else if (card.tcgplayer.prices["1stEditionHolofoil"]) {
+      marketValue = card.tcgplayer.prices["1stEditionHolofoil"].market;
+      priceType = "1stEditionHolofoil";
+    } else if (card.tcgplayer.prices["1stEdition"]) {
+      marketValue = card.tcgplayer.prices["1stEdition"].market;
+      priceType = "1stEdition";
+    } else if (card.tcgplayer.prices.reverseHolofoil) {
+      marketValue = card.tcgplayer.prices.reverseHolofoil.market;
+      priceType = "reverseHolofoil";
+    } else {
+      marketValue = 0;
+      priceType = null;
+    }
 
     const newCard = new Card({
       id: card.id,
@@ -178,6 +206,7 @@ exports.add_card_post = (req, res, next) => {
         priceHistory: [
           [new Date().toLocaleDateString("en-US"), marketValue.toFixed(2)]
         ],
+        priceType: priceType,
         count: 1
       }
     });
