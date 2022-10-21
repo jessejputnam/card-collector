@@ -13,7 +13,8 @@ const UserSchema = new Schema(
       match: [/\S+@\S+\.\S+/, "Must be valid email"]
     },
     password: { type: String, required: true },
-    cards: [{ type: Schema.Types.ObjectId, ref: "Card" }]
+    cards: [{ type: Schema.Types.ObjectId, ref: "Card" }],
+    bulk: [{ type: Schema.Types.ObjectId, ref: "Card" }]
   },
   { timestamps: true }
 );
