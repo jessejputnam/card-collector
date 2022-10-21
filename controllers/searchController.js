@@ -7,12 +7,17 @@ const User = require("../models/user");
 
 // Display search form on GET
 exports.search_get = (req, res, next) => {
-  pokemon.set.all().then((sets) => {
-    res.render("search-form", {
-      title: "Search for a Card",
-      sets: sets
+  pokemon.set
+    .all()
+    .then((sets) => {
+      res.render("search-form", {
+        title: "Search for a Card",
+        sets: sets
+      });
+    })
+    .catch((err) => {
+      return next(err);
     });
-  });
 };
 
 // Display results on GET
@@ -52,5 +57,8 @@ exports.search_results_get = (req, res, next) => {
             bulk_cards: bulkSet
           });
         });
+    })
+    .catch((err) => {
+      return next(err);
     });
 };

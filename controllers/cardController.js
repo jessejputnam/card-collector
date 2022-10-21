@@ -189,7 +189,9 @@ exports.add_card_post = (req, res, next) => {
       marketValue = 0;
       priceType = null;
     } else if (card.tcgplayer.prices.holofoil) {
-      marketValue = card.tcgplayer.prices.holofoil.market;
+      marketValue =
+        card.tcgplayer.prices.holofoil.market ||
+        card.tcgplayer.prices.holofoil.mid;
       priceType = "holofoil";
     } else if (card.tcgplayer.prices.normal) {
       marketValue = card.tcgplayer.prices.normal.market;
@@ -309,3 +311,67 @@ exports.add_bulk_post = (req, res, next) => {
 // ################# Sort Cards ###################
 
 // ################ Filter Cards ##################
+// Handle display cards by set on GET
+exports.display_filter_by_set_get = (req, res, next) => {
+  // Finf User
+  User.findById(req.user._id)
+    .populate("cards")
+    .exec((err, result) => {
+      if (err) return next(err);
+      const user = result;
+
+      if (!user) {
+        const err = new Error("User not found");
+        err.status = 404;
+        return next(err);
+      }
+
+      // Find which sets exist in collection
+      let setOrderLength = 0;
+      const setOrder = {};
+      user.cards.forEach((card) => {
+        const setName = card.meta.set.name;
+
+        if (!(setName in setOrder)) {
+          setOrder[setName] = true;
+          setOrderLength++;
+        }
+      });
+
+      pokemon.set
+        .all()
+        .then((sets) => {
+          let n = -1;
+
+          // Search through all sets and get the order of collection sets
+          sets.forEach((set) => {
+            if (set.name in setOrder) {
+              setOrder[set.name] = n;
+              n++;
+            }
+          });
+
+          console.log("SET ORDER:", setOrder);
+
+          // Organize the cards into the sets by date
+          const orderedSets = new Array(setOrderLength);
+          user.cards.forEach((card) => {
+            const setName = card.meta.set.name;
+            if (!orderedSets[setOrder[setName]]) {
+              orderedSets[setOrder[setName]] = [];
+            }
+            orderedSets[setOrder[setName]].push(card);
+          });
+
+          // console.log(orderedSets);
+
+          res.render("sets-collection", {
+            title: "Set Collection",
+            list_sets: orderedSets
+          });
+        })
+        .catch((err) => {
+          return next(err);
+        });
+    });
+};

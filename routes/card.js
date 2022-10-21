@@ -8,6 +8,9 @@ const card_controller = require("../controllers/cardController");
 // GET request for home
 router.get("/home", card_controller.display_collection_get);
 
+// GET request for collection by set
+router.get("/sets", card_controller.display_filter_by_set_get);
+
 // POST request for add card
 router.post("/add-card", card_controller.add_card_post);
 
