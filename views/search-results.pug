@@ -21,8 +21,8 @@ block content
                 input#cardId(type="hidden" name="cardId" required="true" value=card.id)
                 button.btn.btn-secondary(type="submit") Add Card
             else 
-              em.result-in-collection(style='') In collection
-            if !bulk_cards.has(card.id)
-              form.add-card-form(method="POST" action="/collection/add-bulk") 
-                input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-                button.btn.btn-secondary(type="submit") Add Bulk
+              em.result-in-collection In collection
+              if !bulk_cards.has(card.id)
+                form.add-card-form(method="POST" action="/collection/add-bulk") 
+                  input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+                  button.btn.btn-secondary(type="submit") Add Bulk

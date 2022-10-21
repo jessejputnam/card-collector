@@ -45,4 +45,9 @@ block content
           input#cardId(type="hidden" name="cardId" required="true" value=card.id)
         button.btn.secondary-btn(type="submit") Edit Card 
       
-      form.card-update-price()
+      form.card-update-value-form(method="POST" action=`/collection/${card._id}/update-value`)
+        input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+        input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
+        button.btn.secondary-btn(type="submit") Update Value
+
+      a(href=`/collection/${card._id}/delete`) Delete Card

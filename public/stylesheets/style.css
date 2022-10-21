@@ -192,6 +192,7 @@ textarea {
   flex-wrap: wrap;
   column-gap: 50px;
   row-gap: 25px;
+  max-width: 900px;
 }
 
 .detail-img-container > img {
@@ -242,6 +243,13 @@ textarea {
 
 .price-history-container > ul > li {
   letter-spacing: 0.1ch;
+}
+
+.card-edits-container {
+  width: clamp(400px, 80%, 850px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .card-edit-form {

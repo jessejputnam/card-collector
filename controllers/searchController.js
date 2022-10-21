@@ -3,7 +3,6 @@
 const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
-const Card = require("../models/card");
 const User = require("../models/user");
 
 // Display search form on GET
@@ -44,7 +43,7 @@ exports.search_results_get = (req, res, next) => {
           const cardSet = new Set();
           const bulkSet = new Set();
           user.cards.forEach((card) => cardSet.add(card.id));
-          user.bulk.forEach((card) => cardSet.add(card.id));
+          user.bulk.forEach((card) => bulkSet.add(card.id));
 
           res.render("search-results", {
             title: "Results",

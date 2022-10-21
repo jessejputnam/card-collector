@@ -7,7 +7,6 @@ const Schema = mongoose.Schema;
 const CardSchema = new Schema(
   {
     id: { type: String, required: true },
-    prizeBinder: { type: Boolean, default: false, required: true },
 
     meta: {
       images: {

@@ -1,0 +1,10 @@
+extends layout 
+
+block content 
+  h1= title 
+
+  p Delete #{cardName}?
+
+  form(method="POST" action=``)
+    input#cardId(type="hidden" name="cardId" required="true" value=cardId)
+    button.btn.secondary-btn(type="submit") Remove #{cardName}
