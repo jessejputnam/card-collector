@@ -363,7 +363,7 @@ exports.display_filter_by_set_get = (req, res, next) => {
             orderedSets[setOrder[setName]].push(card);
           });
 
-          // console.log(orderedSets);
+          orderedSets.reverse();
 
           res.render("sets-collection", {
             title: "Set Collection",

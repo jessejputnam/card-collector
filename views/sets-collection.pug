@@ -3,10 +3,10 @@ extends layout
 block content 
   h1 Set Completion 
 
-  div.sets-container
+  div(style="width:800px;margin:50px 25px").sets-container
     each set in list_sets 
       hr(style="margin-top:15px")
       h4= set[0].meta.set.name 
       each card in set 
-        p(style="margin-top:5px")= card.pokemon.name
-        p= card.meta.set.number + "/" + card.meta.set.totalPrint
+        p(style="margin-top:5px;margin-left:25px")= card.pokemon.name + " "
+          span(style="font-size:.7rem")=  card.meta.set.number + "/" + card.meta.set.totalPrint
