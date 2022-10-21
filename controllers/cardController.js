@@ -60,6 +60,7 @@ exports.edit_card_post = (req, res, next) => {
 
         card.meta.rarity.reverseHolo = true;
         card.value.market = marketValue;
+        card.value.priceType = "reverseHolofoil";
         card.value.priceHistory = [
           [new Date().toLocaleDateString("en-US"), marketValue]
         ];
@@ -100,22 +101,14 @@ exports.update_price_history_post = (req, res, next) => {
 
       pokemon.card.find(pokemonId).then((tcgCard) => {
         const newDate = new Date().toLocaleDateString("en-US");
-        const lastIdx = card.value.priceHistory.length - 1;
 
-        let marketValue;
-
-        if (card.meta.rarity.reverseHolo) {
-          marketValue = tcgCard.tcgplayer.prices.reverseHolofoil.market;
-        } else {
-          marketValue = tcgCard.tcgplayer.prices.holofoil
-            ? tcgCard.tcgplayer.prices.holofoil.market
-            : tcgCard.tcgplayer.prices.normal.market;
-        }
+        const marketValue =
+          tcgCard.tcgplayer.prices[card.value.priceType].market;
 
         card.value.market = marketValue;
 
-        if (card.value.priceHistory[lastIdx] === newDate) {
-          card.value.priceHistory[lastIdx][1] === marketValue;
+        if (card.value.priceHistory[0][0] === newDate) {
+          card.value.priceHistory[0][1] === marketValue;
         } else {
           card.value.priceHistory.unshift([
             new Date().toLocaleDateString("en-US"),
