@@ -37,16 +37,20 @@ exports.search_results_get = (req, res, next) => {
     .then((result) => {
       User.findById(req.user._id)
         .populate("cards")
+        .populate("bulk")
         .exec((err, user) => {
           if (err) return next(err);
 
           const cardSet = new Set();
+          const bulkSet = new Set();
           user.cards.forEach((card) => cardSet.add(card.id));
+          user.bulk.forEach((card) => cardSet.add(card.id));
 
           res.render("search-results", {
             title: "Results",
             card_list: result.data,
-            user_cards: cardSet
+            user_cards: cardSet,
+            bulk_cards: bulkSet
           });
         });
     });

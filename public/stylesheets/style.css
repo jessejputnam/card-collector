@@ -76,6 +76,15 @@ textarea {
   row-gap: 15px;
 }
 
+.nav-bar > ul > li > ul {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  margin-top: 15px;
+  margin-left: 15px;
+  font-size: 0.8rem;
+}
+
 /* ##################### # MAIN ####################### */
 .app-wrapper {
   display: flex;
@@ -261,6 +270,10 @@ textarea {
   justify-content: flex-start;
   column-gap: 10px;
   width: 275px;
+}
+
+.owned {
+  filter: brightness(0.6) grayscale(100%);
 }
 
 .result-container-owned {

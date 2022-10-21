@@ -4,29 +4,25 @@ block content
   h1= title 
   if !card_list.length 
     p Sorry, no results found 
+
   else
     div.results-wrapper
       each card in card_list 
-        if user_cards.has(card.id)
-          div.result-container-owned
-            div.result-img-container 
-              img(src=card.images.small, alt=card.name)
-            div.result-info-container 
-              p.result-title= card.name 
-              p.result-set= card.set.name 
-              p.result-number= card.number + "/" + card.set.printedTotal
-              p $#{!card.tcgplayer ? "No price available" : card.tcgplayer.prices.holofoil ? card.tcgplayer.prices.holofoil.market.toFixed(2) : card.tcgplayer.prices.normal ? card.tcgplayer.prices.normal.market.toFixed(2) : card.tcgplayer.prices.unlimited ? card.tcgplayer.prices.unlimited.market : card.tcgplayer.prices.unlimitedHolofoil ? card.tcgplayer.prices.unlimitedHolofoil.market.toFixed(2) : card.tcgplayer.prices["1stEditionHolofoil"] ? card.tcgplayer.prices["1stEditionHolofoil"].market.toFixed(2) : card.tcgplayer.prices["1stEdition"] ? card.tcgplayer.prices["1stEdition"].market : card.tcgplayer.prices.reverseHolofoil ?  card.tcgplayer.prices.reverseHolofoil.market.toFixed(2) : "No price available"}
-              em.result-in-collection(style='') In collection
-
-        else 
-          div.result-container 
-            div.result-img-container 
-              img(src=card.images.small, alt=card.name)
-            div.result-info-container 
-              p.result-title= card.name 
-              p.result-set= card.set.name 
-              p.result-number= card.number + "/" + card.set.printedTotal
-              p $#{!card.tcgplayer ? " not available" : card.tcgplayer.prices.holofoil ? card.tcgplayer.prices.holofoil.market.toFixed(2) : card.tcgplayer.prices.normal ? card.tcgplayer.prices.normal.market.toFixed(2) : card.tcgplayer.prices.unlimitedHolofoil ? card.tcgplayer.prices.unlimitedHolofoil.market.toFixed(2) : card.tcgplayer.prices.unlimited ? card.tcgplayer.prices.unlimited.market.toFixed(2) : card.tcgplayer.prices["1stEdition"] ? card.tcgplayer.prices["1stEdition"].market : card.tcgplayer.prices["1stEditionHolofoil"] ? card.tcgplayer.prices["1stEditionHolofoil"].market.toFixed(2) : card.tcgplayer.prices.reverseHolofoil ?  card.tcgplayer.prices.reverseHolofoil.market.toFixed(2) : "No price available"}
+        div.result-container
+          div(class=`result-img-container${user_cards.has(card.id) ? " owned" : ""}`) 
+            img(src=card.images.small, alt=card.name)
+          div.result-info-container 
+            p.result-title= card.name 
+            p.result-set= card.set.name 
+            p.result-number= card.number + "/" + card.set.printedTotal
+            p $#{!card.tcgplayer ? " not available" : card.tcgplayer.prices.holofoil ? card.tcgplayer.prices.holofoil.market.toFixed(2) : card.tcgplayer.prices.normal ? card.tcgplayer.prices.normal.market.toFixed(2) : card.tcgplayer.prices.unlimitedHolofoil ? card.tcgplayer.prices.unlimitedHolofoil.market.toFixed(2) : card.tcgplayer.prices.unlimited ? card.tcgplayer.prices.unlimited.market.toFixed(2) : card.tcgplayer.prices["1stEdition"] ? card.tcgplayer.prices["1stEdition"].market : card.tcgplayer.prices["1stEditionHolofoil"] ? card.tcgplayer.prices["1stEditionHolofoil"].market.toFixed(2) : card.tcgplayer.prices.reverseHolofoil ?  card.tcgplayer.prices.reverseHolofoil.market.toFixed(2) : "No price available"}
+            if !user_cards.has(card.id)
               form.add-card-form(method="POST" action="/collection/add-card") 
                 input#cardId(type="hidden" name="cardId" required="true" value=card.id)
                 button.btn.btn-secondary(type="submit") Add Card
+            else 
+              em.result-in-collection(style='') In collection
+            if !bulk_cards.has(card.id)
+              form.add-card-form(method="POST" action="/collection/add-bulk") 
+                input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+                button.btn.btn-secondary(type="submit") Add Bulk

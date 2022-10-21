@@ -219,6 +219,98 @@ exports.add_card_post = (req, res, next) => {
     });
   });
 };
+exports.add_bulk_post = (req, res, next) => {
+  const cardId = req.body.cardId;
+
+  pokemon.card.find(cardId).then((card) => {
+    let marketValue;
+    let priceType;
+
+    if (!card.tcgplayer) {
+      marketValue = 0;
+      priceType = null;
+    } else if (card.tcgplayer.prices.holofoil) {
+      marketValue = card.tcgplayer.prices.holofoil.market;
+      priceType = "holofoil";
+    } else if (card.tcgplayer.prices.normal) {
+      marketValue = card.tcgplayer.prices.normal.market;
+      priceType = "normal";
+    } else if (card.tcgplayer.prices.unlimited) {
+      marketValue = card.tcgplayer.prices.unlimited.market;
+      priceType = "unlimited";
+    } else if (card.tcgplayer.prices.unlimitedHolofoil) {
+      marketValue = card.tcgplayer.prices.unlimitedHolofoil.market;
+      priceType = "unlimitedHolofoil";
+    } else if (card.tcgplayer.prices["1stEditionHolofoil"]) {
+      marketValue = card.tcgplayer.prices["1stEditionHolofoil"].market;
+      priceType = "1stEditionHolofoil";
+    } else if (card.tcgplayer.prices["1stEdition"]) {
+      marketValue = card.tcgplayer.prices["1stEdition"].market;
+      priceType = "1stEdition";
+    } else if (card.tcgplayer.prices.reverseHolofoil) {
+      marketValue = card.tcgplayer.prices.reverseHolofoil.market;
+      priceType = "reverseHolofoil";
+    } else {
+      marketValue = 0;
+      priceType = null;
+    }
+
+    const newCard = new Card({
+      id: card.id,
+
+      meta: {
+        images: {
+          small: card.images.small,
+          large: card.images.large
+        },
+        rarity: {
+          type: card.rarity,
+          grade: getRarityRating[card.rarity]
+        },
+        supertype: card.supertype,
+        subtypes: card.subtypes,
+        set: {
+          symbol: card.set.images.symbol,
+          logo: card.set.images.logo,
+          name: card.set.name,
+          id: card.set.id,
+          series: card.set.series,
+          number: card.number,
+          totalPrint: card.set.printedTotal,
+          releaseDate: card.set.releaseDate
+        }
+      },
+
+      pokemon: {
+        name: card.name,
+        natDex: card.nationalPokedexNumbers[0]
+      },
+
+      value: {
+        market: marketValue,
+        priceHistory: [
+          [new Date().toLocaleDateString("en-US"), marketValue.toFixed(2)]
+        ],
+        priceType: priceType,
+        count: 1
+      }
+    });
+
+    newCard.save((err) => {
+      if (err) return next(err);
+
+      User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { bulk: newCard._id } },
+        (err) => {
+          if (err) return next(err);
+
+          res.redirect("/collection/home");
+        }
+      );
+    });
+  });
+};
 
 // ################# Sort Cards ###################
 
