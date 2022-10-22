@@ -29,7 +29,7 @@ block content
             ul 
               each pricePoint in card.value.priceHistory 
                 li.small-text= `${pricePoint[0]}: ` 
-                  span(style="font-size:1rem")= ` $${pricePoint[1]}`
+                  span(style="font-size:1rem")= ` $${Number(pricePoint[1]).toFixed(2)}`
 
     div.card-edits-container
       form.card-edit-form(method="POST" action=`/collection/${card._id}/edit`)
