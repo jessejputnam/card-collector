@@ -1,12 +1,16 @@
 extends layout 
 
 block content 
-  h1 Set Completion 
+  div.set-page-wrapper
+    h1 Set Completion 
 
-  div(style="width:800px;margin:50px 25px").sets-container
-    each set in list_sets 
-      hr(style="margin-top:15px")
-      h4= set[0].meta.set.name 
-      each card in set 
-        p(style="margin-top:5px;margin-left:25px")= card.pokemon.name + " "
-          span(style="font-size:.7rem")=  card.meta.set.number + "/" + card.meta.set.totalPrint
+    div.set-results-container
+      each set in list_sets 
+        hr(style="margin-top:15px")
+        div.set-container
+          h4= set[0].meta.set.name 
+            span(style="font-size:.8rem;color:gray;font-weight:normal")  #{set.length}/#{set[0].meta.set.totalPrint}
+          div.set-card-list
+            each card in set 
+              p= card.pokemon.name + " "
+                span(style="font-size:.7rem")=  card.meta.set.number + "/" + card.meta.set.totalPrint

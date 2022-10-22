@@ -9,6 +9,7 @@
     ## Home
     ## Card Detail
     ## Search
+    ## Sets View
 */
 
 /* ##################### # FORMATTING ################## */
@@ -108,8 +109,14 @@ textarea {
   box-shadow: 0 1px 2px 0 rgba(94, 0, 0, 0.676);
 }
 
+.sort-container > form {
+  width: 350px;
+}
+
 .sort-container > form > fieldset {
-  height: 100px;
+  padding: 15px;
+  display: flex;
+  column-gap: 10px;
 }
 
 .collection-container {
@@ -319,4 +326,33 @@ textarea {
 .result-number {
   font-size: 0.8rem;
   color: gray;
+}
+
+/* ########### ## SETS VIEW ############ */
+.set-page-wrapper {
+  padding: 25px;
+}
+
+.set-results-container {
+  width: 800px;
+  margin: 50px 25px;
+}
+
+.set-container {
+  padding: 20px;
+  box-shadow: -2px -2px 3px 0 rgba(50, 50, 50, 0.384);
+}
+
+.set-card-list {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  row-gap: 5px;
+  column-gap: 15px;
+  max-height: 500px;
+}
+
+.set-card-list > p {
+  margin-left: 15px;
 }

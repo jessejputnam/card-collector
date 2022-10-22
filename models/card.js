@@ -33,11 +33,7 @@ const CardSchema = new Schema(
     },
 
     pokemon: {
-      name: { type: String, required: true },
-      region: {
-        name: { type: String, default: null },
-        order: { type: Number, default: null }
-      }
+      name: { type: String, required: true }
     },
 
     value: {
