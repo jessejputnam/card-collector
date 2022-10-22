@@ -10,9 +10,11 @@ exports.search_get = (req, res, next) => {
   pokemon.set
     .all()
     .then((sets) => {
+      const reversedSets = sets.reverse();
+
       res.render("search-form", {
         title: "Search for a Card",
-        sets: sets
+        sets: reversedSets
       });
     })
     .catch((err) => {
