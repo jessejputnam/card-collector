@@ -17,7 +17,7 @@ const getRarityRating = {
   "Rare Holo Star": 1,
   "Rare Holo V": 1,
   "Rare Holo VMAX": 0,
-  "Rare Holo VSTAR": 1,
+  "Rare Holo VSTAR": 0,
   "Rare Prime": 2,
   "Rare Prism Star": 3,
   "Rare Rainbow": 0,
@@ -27,8 +27,8 @@ const getRarityRating = {
   "Rare Shiny GX": 0,
   "Rare Ultra": 1,
   Uncommon: 4,
-  V: 3,
-  VM: 3
+  V: 1,
+  VM: 0
 };
 
 module.exports = getRarityRating;

@@ -17,8 +17,9 @@ block content
           div 
             img(src=card.meta.set.symbol, alt=card.meta.set.name height="40px")
             div
-              p= card.meta.set.name 
+              p #{card.meta.set.name} 
               p.small-text= card.meta.set.series
+                span(style="font-size:.6rem; color:gray")  (#{card.meta.set.releaseDate.slice(0, 4)})
               p.small-text= `${card.meta.set.number}/${card.meta.set.totalPrint}`
         div.info-market-container
           div.current-price-container

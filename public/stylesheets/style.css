@@ -300,6 +300,10 @@ textarea {
   filter: brightness(0.6) grayscale(100%);
 }
 
+.result-img-container {
+  min-width: 125px;
+}
+
 .result-img-container > img {
   height: 200px;
   box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);

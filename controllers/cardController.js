@@ -149,24 +149,29 @@ exports.edit_card_post = (req, res, next) => {
       return next(err);
     }
 
-    if (req.body.reverseHolo) {
-      pokemon.card.find(pokemonId).then((tcgCard) => {
-        const marketValue = tcgCard.tcgplayer.prices.reverseHolofoil.market;
+    if (req.body.reverseHolo === "true") {
+      pokemon.card
+        .find(pokemonId)
+        .then((tcgCard) => {
+          const marketValue = tcgCard.tcgplayer.prices.reverseHolofoil.market;
 
-        card.meta.rarity.reverseHolo = true;
-        card.value.market = marketValue;
-        card.value.priceType = "reverseHolofoil";
-        card.value.priceHistory = [
-          [new Date().toLocaleDateString("en-US"), marketValue]
-        ];
-        card.value.count = req.body.count;
+          card.meta.rarity.reverseHolo = true;
+          card.value.market = marketValue;
+          card.value.priceType = "reverseHolofoil";
+          card.value.priceHistory = [
+            [new Date().toLocaleDateString("en-US"), marketValue]
+          ];
+          card.value.count = req.body.count;
 
-        card.save((err) => {
-          if (err) return next(err);
+          card.save((err) => {
+            if (err) return next(err);
 
-          res.redirect(`/collection/${card._id}`);
+            res.redirect(`/collection/${card._id}`);
+          });
+        })
+        .catch((err) => {
+          return next(err);
         });
-      });
     } else {
       card.value.count = req.body.count;
 
