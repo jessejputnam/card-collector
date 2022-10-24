@@ -301,13 +301,13 @@ textarea {
 }
 
 .result-img-container {
-  min-width: 125px;
+  min-width: 143.25px;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);
+  transition: transform 0.3s;
 }
 
 .result-img-container > img {
   height: 200px;
-  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);
-  transition: transform 0.3s;
 }
 
 @media (hover: hover) {
@@ -338,7 +338,7 @@ textarea {
 }
 
 .set-results-container {
-  width: 800px;
+  width: 900px;
   margin: 50px 25px;
 }
 
@@ -359,4 +359,9 @@ textarea {
 
 .set-card-list > p {
   margin-left: 15px;
+}
+
+.set-link {
+  color: rgb(59, 59, 59);
+  text-decoration: none;
 }

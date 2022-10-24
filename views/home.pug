@@ -5,7 +5,9 @@ block scripts
 
 block content 
   header.home-header 
-    h1= title 
+    h1= title + " " 
+      span(style="font-size:.8rem;color:gray;font-weight:normal")= '$' + total.toFixed(2)
+      span(style="margin-left:10px;font-size:.8rem;color:gray;font-weight:normal")= "(" + currentUser.cards.length + ")"
     div.sort-container 
       form.form-wrapper(method="GET" action="/collection/home/sort") 
         fieldset

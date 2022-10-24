@@ -13,10 +13,14 @@ exports.display_collection_get = (req, res, next) => {
     .populate("cards")
     .exec(function (err, user) {
       const cards = user.cards.sort((a, b) => b.value.market - a.value.market);
+      const total = user.cards.reduce((acc, next) => {
+        return acc + next.value.market;
+      }, 0);
 
       res.render("home", {
         title: "My Collection",
-        card_list: cards
+        card_list: cards,
+        total: total
       });
     });
 };
