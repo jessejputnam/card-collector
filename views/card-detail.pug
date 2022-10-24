@@ -63,7 +63,7 @@ block content
           option(value="none" selected=(!currentUser.prize.includes(card._id) && !currentUser.elite.includes(card._id) ? "selected" : false))
           option(value="prize" selected=(currentUser.prize.includes(card._id) ? "selected" : false)) Prize Binder
           option(value="elite" selected=(currentUser.elite.includes(card._id) ? "selected" : false)) Elite Binder
-        button.btn.btn-secondary(type="submit") Add to Binder
+        button.btn.btn-secondary(type="submit") Select Binder
 
 
       a(href=`/collection/${card._id}/delete`) Delete Card

@@ -31,7 +31,7 @@ block content
 
     else 
       each card in card_list
-        div.collection-item(id=card._id) 
+        div.collection-item(id=card._id class=`${currentUser.prize.includes(card._id) ? "prize-binder" : currentUser.elite.includes(card._id) ? "elite-binder" : ""}`) 
           div(style="width:10%").collection-item-img
             img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
           div.collection-item-details
@@ -45,7 +45,3 @@ block content
             p.collection-card-set-no=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
           div(style="width:10%").collection-item-value 
             p= `$${card.value.market.toFixed(2)}` 
-          if currentUser.prize.includes(card._id)
-            em(style="font-size:.8rem") Prize Binder
-          else if currentUser.elite.includes(card._id)
-            em(style="font-size:.8rem") Elite Binder

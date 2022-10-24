@@ -143,6 +143,19 @@ textarea {
   transition: box-shadow 0.3s, transform 0.1s;
 }
 
+.prize-binder {
+  filter: drop-shadow(0 0 0.5px rgba(255, 0, 0, 0.737));
+  /* box-shadow: 0 0 5px 0px rgba(248, 56, 56, 0.244); */
+  color: rgb(103, 103, 103);
+}
+
+.elite-binder {
+  filter: drop-shadow(0 0 0.5px rgba(196, 57, 243, 0.737));
+  /* box-shadow: 0 0 5px 0px rgba(23, 164, 66, 0.244); */
+  color: rgb(103, 103, 103);
+  color: rgb(103, 103, 103);
+}
+
 @media (hover: hover) {
   .collection-item:hover {
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.52);
