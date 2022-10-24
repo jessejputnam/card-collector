@@ -121,7 +121,7 @@ textarea {
 
 .collection-container {
   width: 95%;
-  max-width: 800px;
+  max-width: 1000px;
   padding: 25px;
   display: flex;
   flex-direction: column;
@@ -129,8 +129,9 @@ textarea {
 }
 
 .collection-item {
-  max-width: 600px;
+  max-width: 1000px;
   margin-left: 25px;
+  padding-right: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -190,16 +191,13 @@ textarea {
   row-gap: 10px;
 }
 
-.detail-wrapper > h1 {
-  margin-bottom: 50px;
-}
-
 .card-detail-container {
   display: flex;
   flex-wrap: wrap;
   column-gap: 50px;
   row-gap: 25px;
   max-width: 900px;
+  margin-top: 50px;
 }
 
 .detail-img-container > img {
@@ -256,11 +254,11 @@ textarea {
   width: clamp(400px, 80%, 850px);
   display: flex;
   justify-content: space-around;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .card-edit-form {
-  width: 200px;
+  max-width: 200px;
   display: flex;
   flex-direction: column;
   row-gap: 10px;

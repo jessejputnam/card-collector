@@ -35,4 +35,7 @@ router.post("/:id/delete", card_controller.delete_card_post);
 // POST request for update price history
 router.post("/:id/update-value", card_controller.update_price_history_post);
 
+// POST request for add to prize binder
+router.post("/:id/select-binder", card_controller.select_binder_post);
+
 module.exports = router;

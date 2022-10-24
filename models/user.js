@@ -14,7 +14,9 @@ const UserSchema = new Schema(
     },
     password: { type: String, required: true },
     cards: [{ type: Schema.Types.ObjectId, ref: "Card" }],
-    bulk: [{ type: Schema.Types.ObjectId, ref: "Card" }]
+    bulk: [{ type: Schema.Types.ObjectId, ref: "Card" }],
+    prize: [{ type: Schema.Types.ObjectId, ref: "Card" }],
+    elite: [{ type: Schema.Types.ObjectId, ref: "Card" }]
   },
   { timestamps: true }
 );

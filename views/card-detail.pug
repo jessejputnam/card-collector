@@ -3,6 +3,12 @@ extends layout
 block content 
   div.detail-wrapper
     h1= title 
+    if currentUser.prize.includes(card._id)
+      em(style='margin-top:-10px') Prize Binder 
+    else if currentUser.elite.includes(card._id) 
+      em(style='margin-top:-10px') Elite Binder
+    else 
+      em(style='margin-top:-10px;color:transparent') Collection Binder 
 
     div.card-detail-container 
       div.detail-img-container 
@@ -46,9 +52,18 @@ block content
           input#cardId(type="hidden" name="cardId" required="true" value=card.id)
         button.btn.secondary-btn(type="submit") Edit Card 
       
-      form.card-update-value-form(method="POST" action=`/collection/${card._id}/update-value`)
+      form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
         input#cardId(type="hidden" name="cardId" required="true" value=card.id)
         input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
         button.btn.secondary-btn(type="submit") Update Value
+
+      form.card-edit-form(method="POST" action=`/collection/${card._id}/select-binder`) 
+        input#objId(type="hidden" name="objId" required='true' value=card._id)
+        select#binder(type='select' name="binder" required="true") 
+          option(value="none" selected=(!currentUser.prize.includes(card._id) && !currentUser.elite.includes(card._id) ? "selected" : false))
+          option(value="prize" selected=(currentUser.prize.includes(card._id) ? "selected" : false)) Prize Binder
+          option(value="elite" selected=(currentUser.elite.includes(card._id) ? "selected" : false)) Elite Binder
+        button.btn.btn-secondary(type="submit") Add to Binder
+
 
       a(href=`/collection/${card._id}/delete`) Delete Card

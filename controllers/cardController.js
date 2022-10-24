@@ -6,13 +6,30 @@ pokemon.configure({ apikey: process.env.POKE_API_KEY });
 const Card = require("../models/card");
 const User = require("../models/user");
 const getRarityRating = require("../helpers/getRarityRating");
+const { response } = require("express");
+
+/* 
+
+  TABLE OF CONTENTS
+    - View Cards
+    - Update/Delete Cards
+    - Add Cards
+    - Sort Cards
+    - Filter Cards
+
+*/
+
+// ################# View Cards ##################
 
 // Handle display collection on GET
 exports.display_collection_get = (req, res, next) => {
   User.findById(req.user._id)
     .populate("cards")
     .exec(function (err, user) {
+      if (err) return next(err);
+
       const cards = user.cards.sort((a, b) => b.value.market - a.value.market);
+
       const total = user.cards.reduce((acc, next) => {
         return acc + next.value.market;
       }, 0);
@@ -21,97 +38,6 @@ exports.display_collection_get = (req, res, next) => {
         title: "My Collection",
         card_list: cards,
         total: total
-      });
-    });
-};
-
-// Handle display collection sorted on GET
-exports.display_collection_sorted_get = (req, res, next) => {
-  User.findById(req.user._id)
-    .populate("cards")
-    .exec(function (err, user) {
-      if (err) return next(err);
-
-      const sortBy = req.query.by;
-      const sortAsc = req.query.asc;
-
-      let cards;
-
-      if (sortBy === "value") {
-        !sortAsc
-          ? (cards = user.cards.sort((a, b) => a.value.market - b.value.market))
-          : (cards = user.cards.sort(
-              (a, b) => b.value.market - a.value.market
-            ));
-      } else if (sortBy === "rarity") {
-        !sortAsc
-          ? (cards = user.cards.sort(
-              (a, b) => b.meta.rarity.grade - a.meta.rarity.grade
-            ))
-          : (cards = user.cards.sort(
-              (a, b) => a.meta.rarity.grade - b.meta.rarity.grade
-            ));
-      } else if (sortBy === "name") {
-        !sortAsc
-          ? (cards = user.cards.sort((a, b) => {
-              const nameA = a.pokemon.name.toLowerCase();
-              const nameB = b.pokemon.name.toLowerCase();
-
-              if (nameA < nameB) return -1;
-              if (nameA > nameB) return 1;
-              return 0;
-            }))
-          : (cards = user.cards.sort((a, b) => {
-              const nameA = a.pokemon.name.toLowerCase();
-              const nameB = b.pokemon.name.toLowerCase();
-
-              if (nameA < nameB) return 1;
-              if (nameA > nameB) return -1;
-              return 0;
-            }));
-      } else if (sortBy === "set") {
-        !sortAsc
-          ? (cards = user.cards.sort((a, b) => {
-              const nameA = a.meta.set.releaseDate;
-              const nameB = b.meta.set.releaseDate;
-
-              if (nameA < nameB) return -1;
-              if (nameA > nameB) return 1;
-              return 0;
-            }))
-          : (cards = user.cards.sort((a, b) => {
-              const nameA = a.meta.set.releaseDate;
-              const nameB = b.meta.set.releaseDate;
-
-              if (nameA < nameB) return 1;
-              if (nameA > nameB) return -1;
-              return 0;
-            }));
-      } else if (sortBy === "supertype") {
-        !sortAsc
-          ? (cards = user.cards.sort((a, b) => {
-              const nameA = a.meta.supertype.toLowerCase();
-              const nameB = b.meta.supertype.toLowerCase();
-
-              if (nameA < nameB) return -1;
-              if (nameA > nameB) return 1;
-              return 0;
-            }))
-          : (cards = user.cards.sort((a, b) => {
-              const nameA = a.meta.supertype.toLowerCase();
-              const nameB = b.meta.supertype.toLowerCase();
-
-              if (nameA < nameB) return 1;
-              if (nameA > nameB) return -1;
-              return 0;
-            }));
-      } else {
-        res.redirect("/collection/home");
-      }
-
-      res.render("home", {
-        title: "My Collection",
-        card_list: cards
       });
     });
 };
@@ -137,7 +63,6 @@ exports.display_card_get = (req, res, next) => {
 };
 
 // ################# Update/Delete Cards ##################
-
 // Handle edit card detail on POST
 exports.edit_card_post = (req, res, next) => {
   const cardId = req.params.id;
@@ -188,6 +113,7 @@ exports.edit_card_post = (req, res, next) => {
   });
 };
 
+// Handle update price history
 exports.update_price_history_post = (req, res, next) => {
   const cardId = req.params.id;
   const pokemonId = req.body.cardId;
@@ -275,6 +201,51 @@ exports.delete_card_post = (req, res, next) => {
 
         res.redirect("/collection/home");
       });
+    });
+  });
+};
+
+// Handle select binder on POST
+exports.select_binder_post = (req, res, next) => {
+  User.findById(req.user._id, (err, result) => {
+    if (err) return next(err);
+
+    const binder = req.body.binder;
+    const cardId = req.body.objId;
+
+    const user = result;
+    if (!user) {
+      const err = new Error("User not found");
+      err.status = 404;
+      return next(err);
+    }
+
+    let prizeBinder = user.prize;
+    let eliteBinder = user.elite;
+
+    if (binder === "prize" || binder === "none") {
+      eliteBinder = user.elite.filter((card) => String(card) !== cardId);
+
+      if (binder === "prize") {
+        prizeBinder.push(cardId);
+      }
+    }
+
+    if (binder === "elite" || binder === "none") {
+      prizeBinder = user.prize.filter((card) => String(card) !== cardId);
+
+      if (binder === "elite") {
+        eliteBinder.push(cardId);
+      }
+    }
+
+    user.prize = prizeBinder;
+    user.elite = eliteBinder;
+
+    user.save((err) => {
+      if (err) return next(err);
+
+      res.redirect(`/collection/${cardId}`);
     });
   });
 };
@@ -411,6 +382,101 @@ exports.add_bulk_post = (req, res, next) => {
 };
 
 // ################# Sort Cards ###################
+// Handle display collection sorted on GET
+exports.display_collection_sorted_get = (req, res, next) => {
+  User.findById(req.user._id)
+    .populate("cards")
+    .exec(function (err, user) {
+      if (err) return next(err);
+
+      const total = user.cards.reduce((acc, next) => {
+        return acc + next.value.market;
+      }, 0);
+
+      const sortBy = req.query.by;
+      const sortAsc = req.query.asc;
+
+      let cards;
+
+      if (sortBy === "value") {
+        !sortAsc
+          ? (cards = user.cards.sort((a, b) => a.value.market - b.value.market))
+          : (cards = user.cards.sort(
+              (a, b) => b.value.market - a.value.market
+            ));
+      } else if (sortBy === "rarity") {
+        !sortAsc
+          ? (cards = user.cards.sort(
+              (a, b) => b.meta.rarity.grade - a.meta.rarity.grade
+            ))
+          : (cards = user.cards.sort(
+              (a, b) => a.meta.rarity.grade - b.meta.rarity.grade
+            ));
+      } else if (sortBy === "name") {
+        !sortAsc
+          ? (cards = user.cards.sort((a, b) => {
+              const nameA = a.pokemon.name.toLowerCase();
+              const nameB = b.pokemon.name.toLowerCase();
+
+              if (nameA < nameB) return -1;
+              if (nameA > nameB) return 1;
+              return 0;
+            }))
+          : (cards = user.cards.sort((a, b) => {
+              const nameA = a.pokemon.name.toLowerCase();
+              const nameB = b.pokemon.name.toLowerCase();
+
+              if (nameA < nameB) return 1;
+              if (nameA > nameB) return -1;
+              return 0;
+            }));
+      } else if (sortBy === "set") {
+        !sortAsc
+          ? (cards = user.cards.sort((a, b) => {
+              const nameA = a.meta.set.releaseDate;
+              const nameB = b.meta.set.releaseDate;
+
+              if (nameA < nameB) return -1;
+              if (nameA > nameB) return 1;
+              return 0;
+            }))
+          : (cards = user.cards.sort((a, b) => {
+              const nameA = a.meta.set.releaseDate;
+              const nameB = b.meta.set.releaseDate;
+
+              if (nameA < nameB) return 1;
+              if (nameA > nameB) return -1;
+              return 0;
+            }));
+      } else if (sortBy === "supertype") {
+        !sortAsc
+          ? (cards = user.cards.sort((a, b) => {
+              const nameA = a.meta.supertype.toLowerCase();
+              const nameB = b.meta.supertype.toLowerCase();
+
+              if (nameA < nameB) return -1;
+              if (nameA > nameB) return 1;
+              return 0;
+            }))
+          : (cards = user.cards.sort((a, b) => {
+              const nameA = a.meta.supertype.toLowerCase();
+              const nameB = b.meta.supertype.toLowerCase();
+
+              if (nameA < nameB) return 1;
+              if (nameA > nameB) return -1;
+              return 0;
+            }));
+      } else {
+        res.redirect("/collection/home");
+      }
+
+      res.render("home", {
+        title: "My Collection",
+        card_list: cards,
+        total: total
+      });
+    });
+};
 
 // ################ Filter Cards ##################
 // Handle display cards by set on GET
