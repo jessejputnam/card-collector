@@ -72,7 +72,9 @@ passport.deserializeUser(function (id, done) {
 app.use(
   session({
     name: "session",
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000
+    },
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true

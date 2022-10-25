@@ -144,16 +144,11 @@ textarea {
 }
 
 .prize-binder {
-  filter: drop-shadow(0 0 0.5px rgba(255, 0, 0, 0.737));
-  /* box-shadow: 0 0 5px 0px rgba(248, 56, 56, 0.244); */
-  color: rgb(103, 103, 103);
+  color: rgb(82, 39, 119);
 }
 
 .elite-binder {
-  filter: drop-shadow(0 0 0.5px rgba(196, 57, 243, 0.737));
-  /* box-shadow: 0 0 5px 0px rgba(23, 164, 66, 0.244); */
-  color: rgb(103, 103, 103);
-  color: rgb(103, 103, 103);
+  color: rgb(94, 59, 59);
 }
 
 @media (hover: hover) {
