@@ -11,6 +11,7 @@
     ## Search
     ## Sets View
     ## Binder View
+    ## Bulk View
 */
 
 /* ##################### # FORMATTING ################## */
@@ -18,6 +19,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Open Sans",
+    "Helvetica Neue", sans-serif;
 }
 
 a {
@@ -145,11 +148,11 @@ textarea {
 }
 
 .prize-binder {
-  color: rgb(82, 39, 119);
+  color: #7928ce;
 }
 
 .elite-binder {
-  color: rgb(94, 59, 59);
+  color: #2a9d8f;
 }
 
 @media (hover: hover) {
@@ -497,4 +500,43 @@ textarea {
   .prize-card-container > div > p {
     font-size: 0.6rem;
   }
+}
+
+/* ##################### ## BULK VIEW ################## */
+.bulk-wrapper {
+  padding: 25px;
+}
+
+.bulk-wrapper > h1 {
+  margin-bottom: 50px;
+}
+
+.bulk-set-container {
+  padding: 15px;
+}
+
+.bulk-card-list > li {
+  display: flex;
+  align-items: flex-end;
+  column-gap: 15px;
+}
+
+.bulk-card-list > li p {
+  font-size: 0.8rem;
+}
+
+.bulk-card-list > li > a {
+  width: 20%;
+}
+
+.bulk-card-list > li > {
+  width: 20%;
+}
+
+.bulk-card-list > li > .wide {
+  width: 40%;
+}
+
+.bulk-card-list > li > .thin {
+  width: 10%;
 }

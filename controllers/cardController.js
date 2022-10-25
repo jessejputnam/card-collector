@@ -107,6 +107,89 @@ exports.display_prize_get = (req, res, next) => {
     });
 };
 
+// Handle display bulk on GET
+exports.display_bulk_get = (req, res, next) => {
+  User.findById(req.user._id)
+    .populate("bulk")
+    .exec((err, result) => {
+      if (err) return next(err);
+      const user = result;
+
+      if (!user) {
+        const err = new Error("User not found");
+        err.status = 404;
+        return next(err);
+      }
+
+      // Find which sets exist in collection
+      let setOrderLength = 0;
+      const setOrder = {};
+      user.bulk.forEach((card) => {
+        const setId = card.meta.set.id;
+
+        if (!(setId in setOrder)) {
+          setOrder[setId] = true;
+          setOrderLength++;
+        }
+      });
+
+      pokemon.set
+        .all()
+        .then((sets) => {
+          let n = 0;
+
+          // Search through all sets and get the order of collection sets
+          sets.forEach((set) => {
+            if (set.id in setOrder) {
+              setOrder[set.id] = n;
+              n++;
+            }
+          });
+
+          // Organize the cards into the sets by date
+          const orderedSets = new Array(setOrderLength);
+          user.bulk.forEach((card) => {
+            const setId = card.meta.set.id;
+            if (!orderedSets[setOrder[setId]]) {
+              orderedSets[setOrder[setId]] = [];
+            }
+            orderedSets[setOrder[setId]].push(card);
+          });
+
+          // reverse to most recent first
+          orderedSets.reverse();
+          const orderedSetsByNum = [];
+          orderedSets.forEach((set) => {
+            set.sort((a, b) => {
+              const numA = Number(
+                a.meta.set.number
+                  .split("")
+                  .filter((x) => !!+x || x === "0")
+                  .join("")
+              );
+              const numB = Number(
+                b.meta.set.number
+                  .split("")
+                  .filter((x) => !!+x || x === "0")
+                  .join("")
+              );
+              return numA - numB;
+            });
+
+            orderedSetsByNum.push(set);
+          });
+
+          res.render("bulk", {
+            title: "Bulk Inventory",
+            list_sets: orderedSetsByNum
+          });
+        })
+        .catch((err) => {
+          return next(err);
+        });
+    });
+};
+
 // ################# Update/Delete Cards ##################
 // Handle edit card detail on POST
 exports.edit_card_post = (req, res, next) => {
@@ -423,20 +506,26 @@ exports.add_bulk_post = (req, res, next) => {
       return next(err);
     }
 
-    User.findById(req.user._id, (err, result) => {
+    card.value.count = card.value.count + 1;
+
+    card.save((err) => {
       if (err) return next(err);
-      const user = result;
-      if (!user) {
-        const err = new Error("User not found");
-        err.status = 404;
-        return next(err);
-      }
-      user.bulk.push(card_id);
 
-      user.save((err) => {
+      User.findById(req.user._id, (err, result) => {
         if (err) return next(err);
+        const user = result;
+        if (!user) {
+          const err = new Error("User not found");
+          err.status = 404;
+          return next(err);
+        }
+        user.bulk.push(card_id);
 
-        res.redirect("/collection/home");
+        user.save((err) => {
+          if (err) return next(err);
+
+          res.redirect("/collection/home");
+        });
       });
     });
   });

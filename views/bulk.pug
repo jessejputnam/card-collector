@@ -1,0 +1,22 @@
+extends layout 
+
+block content 
+  div.bulk-wrapper
+    h1= title
+
+    div.bulk-results-container
+      each set in list_sets 
+        hr(style="margin-top:15px")
+        div.bulk-set-container
+          h3= set[0].meta.set.name 
+            span(style="font-size:.8rem;color:gray;font-weight:normal")  #{set.length}/#{set[0].meta.set.totalPrint}
+            span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
+          div.bulk-card-list
+            each card in set 
+              li(style='list-style-type:hiragana;font-size:.5rem')  
+                p.thin(style="font-size:.7rem")= card.meta.set.number + ". "
+                a.set-link(href=`/collection/${card._id}` style=`font-size:.9rem;font-weight:normal;color:${card.meta.rarity.grade < 4 ? "#9e2a2b" : "inherit"}`)= (card.meta.supertype !== "Pokémon" ? card.meta.supertype + ": " : "") + card.pokemon.name + " "
+                p.wide= card.meta.rarity.type 
+                p.thin= card.value.count 
+                p.thin= "$" + card.value.market.toFixed(2) 
+                p.thin= "$" + (card.value.market * card.value.count).toFixed(2)
