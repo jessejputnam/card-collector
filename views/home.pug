@@ -8,7 +8,7 @@ block content
     div 
       h1= title + " " 
       p(style="margin-top:5px;font-size:.8rem;color:gray")= '$' + total.toFixed(2)
-      p(style="font-size:.8rem;color:gray")= currentUser.cards.length + " cards"
+      p(style="font-size:.8rem;color:gray")= card_list.length + " cards"
     div.sort-container 
       form.form-wrapper(method="GET" action="/collection/home/sort") 
         fieldset

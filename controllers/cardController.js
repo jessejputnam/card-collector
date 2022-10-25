@@ -28,9 +28,15 @@ exports.display_collection_get = (req, res, next) => {
     .exec(function (err, user) {
       if (err) return next(err);
 
-      const cards = user.cards.sort((a, b) => b.value.market - a.value.market);
+      const pokemonCards = user.cards.filter(
+        (card) => card.meta.supertype === "Pokémon"
+      );
 
-      const total = user.cards.reduce((acc, next) => {
+      const cards = pokemonCards.sort(
+        (a, b) => b.value.market - a.value.market
+      );
+
+      const total = cards.reduce((acc, next) => {
         return acc + next.value.market;
       }, 0);
 
@@ -60,6 +66,45 @@ exports.display_card_get = (req, res, next) => {
       card: result
     });
   });
+};
+
+// Handle display prize binder on GET
+exports.display_prize_get = (req, res, next) => {
+  const userId = req.user._id;
+
+  User.findById(userId)
+    .populate("prize")
+    .exec((err, result) => {
+      if (err) return next(err);
+
+      if (!result) {
+        const err = new Error("Could not find user");
+        err.status = 404;
+        return next(err);
+      }
+
+      const user = result;
+
+      const ultraRare = user.prize.filter((card) => {
+        return card.meta.rarity.grade < 2;
+      });
+      const rare = user.prize.filter((card) => {
+        return card.meta.rarity.grade > 1;
+      });
+
+      ultraRare.sort((a, b) => {
+        return b.value.market - a.value.market;
+      });
+      rare.sort((a, b) => {
+        return b.value.market - a.value.market;
+      });
+
+      res.render("binder-prize", {
+        title: "Prize Binder",
+        cards_ultra: ultraRare,
+        cards_rare: rare
+      });
+    });
 };
 
 // ################# Update/Delete Cards ##################
@@ -128,28 +173,34 @@ exports.update_price_history_post = (req, res, next) => {
       return next(err);
     }
 
-    pokemon.card.find(pokemonId).then((tcgCard) => {
-      const newDate = new Date().toLocaleDateString("en-US");
+    pokemon.card
+      .find(pokemonId)
+      .then((tcgCard) => {
+        const newDate = new Date().toLocaleDateString("en-US");
 
-      const marketValue = tcgCard.tcgplayer.prices[card.value.priceType].market;
+        const marketValue =
+          tcgCard.tcgplayer.prices[card.value.priceType].market;
 
-      card.value.market = marketValue;
+        card.value.market = marketValue;
 
-      if (card.value.priceHistory[0][0] === newDate) {
-        card.value.priceHistory[0][1] === marketValue;
-      } else {
-        card.value.priceHistory.unshift([
-          new Date().toLocaleDateString("en-US"),
-          marketValue
-        ]);
-      }
+        if (card.value.priceHistory[0][0] === newDate) {
+          card.value.priceHistory[0][1] === marketValue;
+        } else {
+          card.value.priceHistory.unshift([
+            new Date().toLocaleDateString("en-US"),
+            marketValue
+          ]);
+        }
 
-      card.save((err) => {
-        if (err) return next(err);
+        card.save((err) => {
+          if (err) return next(err);
 
-        res.redirect(`/collection/${card._id}`);
+          res.redirect(`/collection/${card._id}`);
+        });
+      })
+      .catch((err) => {
+        return next(err);
       });
-    });
   });
 };
 
@@ -220,23 +271,15 @@ exports.select_binder_post = (req, res, next) => {
       return next(err);
     }
 
-    let prizeBinder = user.prize;
-    let eliteBinder = user.elite;
+    let prizeBinder = user.prize.filter((card) => String(card) !== cardId);
+    let eliteBinder = user.elite.filter((card) => String(card) !== cardId);
 
-    if (binder === "prize" || binder === "none") {
-      eliteBinder = user.elite.filter((card) => String(card) !== cardId);
-
-      if (binder === "prize") {
-        prizeBinder.push(cardId);
-      }
+    if (binder === "prize") {
+      prizeBinder.push(cardId);
     }
 
-    if (binder === "elite" || binder === "none") {
-      prizeBinder = user.prize.filter((card) => String(card) !== cardId);
-
-      if (binder === "elite") {
-        eliteBinder.push(cardId);
-      }
+    if (binder === "elite") {
+      eliteBinder.push(cardId);
     }
 
     user.prize = prizeBinder;
@@ -250,100 +293,122 @@ exports.select_binder_post = (req, res, next) => {
   });
 };
 
+// Handle edit rarity on POST
+exports.edit_card_rarity = (req, res, next) => {
+  const cardId = req.body.objId;
+  const newRarityRating = req.body.rarity;
+
+  Card.findByIdAndUpdate(
+    cardId,
+    { "meta.rarity.grade": newRarityRating },
+    (err, card) => {
+      if (err) return next(err);
+
+      res.redirect(`/collection/${cardId}`);
+    }
+  );
+};
+
 // ################## Add Cards ###################
 exports.add_card_post = (req, res, next) => {
   const cardId = req.body.cardId;
 
-  pokemon.card.find(cardId).then((card) => {
-    let marketValue;
-    let priceType;
+  pokemon.card
+    .find(cardId)
+    .then((card) => {
+      let marketValue;
+      let priceType;
 
-    if (!card.tcgplayer) {
-      marketValue = 0;
-      priceType = null;
-    } else if (card.tcgplayer.prices.holofoil) {
-      marketValue =
-        card.tcgplayer.prices.holofoil.market ||
-        card.tcgplayer.prices.holofoil.mid;
-      priceType = "holofoil";
-    } else if (card.tcgplayer.prices.normal) {
-      marketValue =
-        card.tcgplayer.prices.normal.market || card.tcgplayer.prices.normal.mid;
-      priceType = "normal";
-    } else if (card.tcgplayer.prices.unlimited) {
-      marketValue = card.tcgplayer.prices.unlimited.market;
-      priceType = "unlimited";
-    } else if (card.tcgplayer.prices.unlimitedHolofoil) {
-      marketValue = card.tcgplayer.prices.unlimitedHolofoil.market;
-      priceType = "unlimitedHolofoil";
-    } else if (card.tcgplayer.prices["1stEditionHolofoil"]) {
-      marketValue = card.tcgplayer.prices["1stEditionHolofoil"].market;
-      priceType = "1stEditionHolofoil";
-    } else if (card.tcgplayer.prices["1stEdition"]) {
-      marketValue = card.tcgplayer.prices["1stEdition"].market;
-      priceType = "1stEdition";
-    } else if (card.tcgplayer.prices.reverseHolofoil) {
-      marketValue = card.tcgplayer.prices.reverseHolofoil.market;
-      priceType = "reverseHolofoil";
-    } else {
-      marketValue = 0;
-      priceType = null;
-    }
-
-    const newCard = new Card({
-      id: card.id,
-
-      meta: {
-        images: {
-          small: card.images.small,
-          large: card.images.large
-        },
-        rarity: {
-          type: card.rarity,
-          grade: getRarityRating[card.rarity]
-        },
-        supertype: card.supertype,
-        subtypes: card.subtypes,
-        set: {
-          symbol: card.set.images.symbol,
-          logo: card.set.images.logo,
-          name: card.set.name,
-          id: card.set.id,
-          series: card.set.series,
-          number: card.number,
-          totalPrint: card.set.printedTotal,
-          releaseDate: card.set.releaseDate
-        }
-      },
-
-      pokemon: {
-        name: card.name
-      },
-
-      value: {
-        market: marketValue,
-        priceHistory: [
-          [new Date().toLocaleDateString("en-US"), marketValue.toFixed(2)]
-        ],
-        priceType: priceType,
-        count: 1
+      if (!card.tcgplayer) {
+        marketValue = 0;
+        priceType = null;
+      } else if (card.tcgplayer.prices.holofoil) {
+        marketValue =
+          card.tcgplayer.prices.holofoil.market ||
+          card.tcgplayer.prices.holofoil.mid;
+        priceType = "holofoil";
+      } else if (card.tcgplayer.prices.normal) {
+        marketValue =
+          card.tcgplayer.prices.normal.market ||
+          card.tcgplayer.prices.normal.mid;
+        priceType = "normal";
+      } else if (card.tcgplayer.prices.unlimited) {
+        marketValue = card.tcgplayer.prices.unlimited.market;
+        priceType = "unlimited";
+      } else if (card.tcgplayer.prices.unlimitedHolofoil) {
+        marketValue = card.tcgplayer.prices.unlimitedHolofoil.market;
+        priceType = "unlimitedHolofoil";
+      } else if (card.tcgplayer.prices["1stEditionHolofoil"]) {
+        marketValue = card.tcgplayer.prices["1stEditionHolofoil"].market;
+        priceType = "1stEditionHolofoil";
+      } else if (card.tcgplayer.prices["1stEdition"]) {
+        marketValue = card.tcgplayer.prices["1stEdition"].market;
+        priceType = "1stEdition";
+      } else if (card.tcgplayer.prices.reverseHolofoil) {
+        marketValue = card.tcgplayer.prices.reverseHolofoil.market;
+        priceType = "reverseHolofoil";
+      } else {
+        marketValue = 0;
+        priceType = null;
       }
-    });
 
-    newCard.save((err) => {
-      if (err) return next(err);
+      const newCard = new Card({
+        id: card.id,
 
-      User.findByIdAndUpdate(
-        req.user._id,
-        { $push: { cards: newCard._id } },
-        (err) => {
-          if (err) return next(err);
+        meta: {
+          images: {
+            small: card.images.small,
+            large: card.images.large
+          },
+          rarity: {
+            type: card.rarity,
+            grade: getRarityRating[card.rarity]
+          },
+          supertype: card.supertype,
+          subtypes: card.subtypes,
+          set: {
+            symbol: card.set.images.symbol,
+            logo: card.set.images.logo,
+            name: card.set.name,
+            id: card.set.id,
+            series: card.set.series,
+            number: card.number,
+            totalPrint: card.set.printedTotal,
+            releaseDate: card.set.releaseDate
+          }
+        },
 
-          res.redirect("/collection/home");
+        pokemon: {
+          name: card.name
+        },
+
+        value: {
+          market: marketValue,
+          priceHistory: [
+            [new Date().toLocaleDateString("en-US"), marketValue.toFixed(2)]
+          ],
+          priceType: priceType,
+          count: 1
         }
-      );
+      });
+
+      newCard.save((err) => {
+        if (err) return next(err);
+
+        User.findByIdAndUpdate(
+          req.user._id,
+          { $push: { cards: newCard._id } },
+          (err) => {
+            if (err) return next(err);
+
+            res.redirect("/collection/home");
+          }
+        );
+      });
+    })
+    .catch((err) => {
+      return next(err);
     });
-  });
 };
 
 exports.add_bulk_post = (req, res, next) => {
@@ -351,10 +416,6 @@ exports.add_bulk_post = (req, res, next) => {
     if (err) return next(err);
     const card_id = result._id;
     const card = result;
-    console.log("CARD", card);
-    console.log("CARDID", card.id);
-    console.log("CARD-ID", card_id);
-    console.log("CARD._ID", card._id);
 
     if (!card) {
       const err = new Error("Card not found");

@@ -11,6 +11,9 @@ router.get("/home", card_controller.display_collection_get);
 // GET request for home sorted
 router.get("/home/sort", card_controller.display_collection_sorted_get);
 
+// GET request for prize binder
+router.get("/prize", card_controller.display_prize_get);
+
 // GET request for collection by set
 router.get("/sets", card_controller.display_filter_by_set_get);
 
@@ -37,5 +40,8 @@ router.post("/:id/update-value", card_controller.update_price_history_post);
 
 // POST request for add to prize binder
 router.post("/:id/select-binder", card_controller.select_binder_post);
+
+// POST request for edit rarity
+router.post("/:id/edit-rarity", card_controller.edit_card_rarity);
 
 module.exports = router;
