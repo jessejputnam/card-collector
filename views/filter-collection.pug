@@ -1,0 +1,98 @@
+extends layout 
+
+block content 
+  header.filter-header 
+    h1= title
+    div.filter-control-container 
+      form.filter-form(method="GET" action="/collection/filter") 
+        fieldset.filter-fieldsets-container
+          legend Filter 
+          div(style="display:flex;column-gap:25px") 
+            fieldset.filter-fieldset
+              legend Sort
+
+              select#sort-by(name="sortby")  
+                option(value="value" selected) Market Value
+                option(value="rarity") Rarity 
+                option(value="name") Name 
+                option(value="set") Set
+                option(value="supertype") Card Type
+              select#sort-asc(name="asc") 
+                option(value='false' selected='selected') Descending
+                option(value='true') Ascending 
+
+            fieldset.filter-fieldset
+              legend Card Name
+              div.filter-card-name
+                input#name(type="text" name="name" value=(savedQuery.name === undefined ? "" : savedQuery.name))
+                div.filter-checkbox-container 
+                  input#reverseholo(type="checkbox" name="reverseholo" value="reverseholo") 
+                  label(for="reverseholo" checked=savedQuery.reverseholo)  Reverse Holofoil
+            
+            fieldset.filter-fieldset
+              legend Card Value
+              div.filter-card-value
+                input#value(type="number" name="value" min="0" step="0.01" value=(savedQuery.value === undefined ? 0 : savedQuery.value) required="true")
+                select#compareValue(name="compareValue")
+                  option(value=">=" selected) and above 
+                  option(value="<=") and below 
+
+          fieldset.filter-fieldset.filter-fieldset-rarity 
+            legend Rarity
+            each rarity in rarities 
+              div.filter-checkbox-container 
+                input(type="checkbox" id=rarity name="rarities" value=rarity checked=(savedQuery.rarities === undefined ? false : savedQuery.rarities.includes(rarity)))
+                label(for=rarity)= " " + rarity 
+
+          fieldset.filter-fieldset.filter-fieldset-supertype 
+            legend Supertype
+            div.filter-checkbox-container 
+              input#pokemon(type="checkbox" name="supertypes" value="Pokémon" checked=(savedQuery.supertypes === undefined ? false : savedQuery.supertypes.includes("Pokémon")))
+              label(for="pokemon")  Pokémon 
+            div.filter-checkbox-container 
+              input#trainer(type="checkbox" name="supertypes" value="Trainer" checked=(savedQuery.supertypes === undefined ? false : savedQuery.supertypes.includes("Trainer")))
+              label(for="trainer")  Trainer 
+            div.filter-checkbox-container 
+              input#energy(type="checkbox" name="supertypes" value="Energy" checked=(savedQuery.supertypes === undefined ? false : savedQuery.supertypes.includes("Energy")))
+              label(for="energy")  Energy 
+
+          fieldset.filter-fieldset.filter-fieldset-subtypes 
+            legend Subtypes
+            each subtype in subtypes 
+              div.filter-checkbox-container 
+                input(type="checkbox" id=subtype name="subtypes" value=subtype checked=(savedQuery.subtypes === undefined ? false : savedQuery.subtypes.includes(subtype)))
+                label(for=subtype)= " " + subtype 
+
+          fieldset.filter-fieldset.filter-fieldset-sets 
+            legend Sets
+            each set in sets 
+              div.filter-checkbox-container 
+                input(type="checkbox" id=set[1] name="setid" value=set[1] checked=(savedQuery.sets === undefined ? false : savedQuery.sets.includes(set[1])))
+                label(for=set[1])= " " + set[2]
+
+        button.btn.btn-secondary(type="submit") Filter
+
+      form.filter-form(method="GET" action="/collection/filter") 
+        button.btn.btn-secondary(type="submit") Reset
+  div.filter-results-container 
+    if !results.length 
+      p Sorry, no matching results 
+
+    else  
+      div.collection-container
+        each card in results
+          div.collection-item(id=card._id class=`${currentUser.prize.includes(card._id) ? "prize-binder" : currentUser.elite.includes(card._id) ? "elite-binder" : ""}`) 
+            div(style="width:10%").collection-item-img
+              img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
+            div.collection-item-details
+              div
+                p.collection-card-name= card.pokemon.name 
+                  if card.meta.rarity.reverseHolo 
+                    span(style="font-size:.7rem;color:gray")  Reverse Holo
+                p.collection-card-rarity= card.meta.rarity.type
+            div
+              p.collection-card-set= card.meta.set.name
+              p.collection-card-set-no=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
+            div(style="width:10%").collection-item-value 
+              p= `$${card.value.market.toFixed(2)}` 
+

@@ -4,10 +4,15 @@ block content
   div.set-page-wrapper
     h1 Set Completion 
 
+    ul.page-nav  
+      each set in list_sets 
+        li 
+          a(href=`#${set[0].meta.set.id}`)= set[0].meta.set.name
+
     div.set-results-container
       each set in list_sets 
         hr(style="margin-top:15px")
-        div.set-container
+        div.set-container(id=set[0].meta.set.id)
           h3= set[0].meta.set.name 
             span(style="font-size:.8rem;color:gray;font-weight:normal")  #{set.length}/#{set[0].meta.set.totalPrint}
             span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
@@ -15,4 +20,4 @@ block content
             each card in set 
               li(style='list-style-type:hiragana;font-size:.6rem')  
                 a.set-link(href=`/collection/${card._id}` style=`font-size:.9rem;font-weight:normal;color:${card.meta.rarity.grade < 3 ? "#9e2a2b" : "inherit"}`)= card.pokemon.name + " "
-                  span(style="font-size:.7rem")=  card.meta.set.number + "/" + card.meta.set.totalPrint
+                  span(style="font-size:.7rem;color:gray")=  card.meta.set.number + "/" + card.meta.set.totalPrint

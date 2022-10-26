@@ -12,6 +12,7 @@
     ## Sets View
     ## Binder View
     ## Bulk View
+    ## Filter View
 */
 
 /* ##################### # FORMATTING ################## */
@@ -50,6 +51,10 @@ ul {
 select,
 textarea {
   padding: 5px;
+}
+
+.btn {
+  padding: 2.5px 10px;
 }
 
 /* #################### # NO AUTH HEADER ##################### */
@@ -102,6 +107,7 @@ textarea {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  scroll-behavior: smooth;
 }
 
 /* ########### ## HOME ############ */
@@ -147,12 +153,14 @@ textarea {
   transition: box-shadow 0.3s, transform 0.1s;
 }
 
-.prize-binder {
-  color: #7928ce;
+.prize-binder > div > div > .collection-card-name {
+  color: rgb(244, 183, 183);
+  text-shadow: 1px 1px 1px rgb(0, 0, 0);
 }
 
-.elite-binder {
-  color: #2a9d8f;
+.elite-binder > div > div > .collection-card-name {
+  color: rgb(211, 145, 255);
+  text-shadow: 1px 1px 1px rgb(0, 0, 0);
 }
 
 @media (hover: hover) {
@@ -362,6 +370,23 @@ textarea {
   padding: 25px;
 }
 
+.set-page-wrapper > .page-nav {
+  height: 250px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  width: 70%;
+  list-style-type: "〄 ";
+}
+
+.set-page-wrapper > .page-nav > li > a {
+  color: grey;
+  text-decoration: none;
+}
+
 .set-results-container {
   width: 900px;
   margin: 50px 25px;
@@ -487,10 +512,12 @@ textarea {
 @media only screen and (max-width: 1600px) {
   .prize-img-container > img {
     height: 250px;
+    width: 179.19px;
   }
 
   .prize-overlay {
     height: 250px;
+    width: 179.19px;
   }
 
   .prize-card-container > div > a {
@@ -539,4 +566,81 @@ textarea {
 
 .bulk-card-list > li > .thin {
   width: 10%;
+}
+
+/* ##################### ## FILTER VIEW ################## */
+.filter-header {
+  border-bottom: solid 1px black;
+  padding: 15px;
+}
+
+.filter-control-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  max-width: 875px;
+}
+
+.filter-fieldsets-container {
+  padding: 5px 10px 10px;
+  font-size: 0.8rem;
+}
+
+.filter-fieldset {
+  padding: 5px 10px;
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 5px;
+  max-height: 100px;
+}
+
+.filter-fieldset-supertype {
+  flex-direction: row;
+}
+
+.filter-fieldset-supertype > div {
+  width: 80px;
+}
+
+.filter-fieldset-rarity > div {
+  width: 100px;
+}
+
+.filter-fieldset-subtypes > div {
+  width: 80px;
+}
+
+.filter-fieldset-sets {
+  max-height: 200px;
+  row-gap: 10px;
+}
+
+.filter-card-name {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-card-value {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-checkbox-container {
+  display: flex;
+  font-size: 0.55rem;
+  align-items: center;
+  column-gap: 3px;
+  width: 95px;
+  height: 15px;
 }

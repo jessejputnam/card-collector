@@ -6,7 +6,6 @@ pokemon.configure({ apikey: process.env.POKE_API_KEY });
 const Card = require("../models/card");
 const User = require("../models/user");
 const getRarityRating = require("../helpers/getRarityRating");
-const { response } = require("express");
 
 /* 
 
@@ -29,7 +28,7 @@ exports.display_collection_get = (req, res, next) => {
       if (err) return next(err);
 
       const pokemonCards = user.cards.filter(
-        (card) => card.meta.supertype === "Pokémon"
+        (card) => card.meta.supertype === "Pokémon" || card.value.market > 1
       );
 
       const cards = pokemonCards.sort(
@@ -709,5 +708,216 @@ exports.display_filter_by_set_get = (req, res, next) => {
         .catch((err) => {
           return next(err);
         });
+    });
+};
+
+// Handle get filter page
+exports.display_filter_page_get = (req, res, next) => {
+  const user_id = req.user._id;
+  let results = [];
+
+  User.findById(user_id)
+    .populate("cards")
+    .exec((err, result) => {
+      if (err) return next(err);
+
+      // Populate form data
+      const collection = result.cards;
+
+      const sets_set = new Set();
+      const subtypes_set = new Set();
+      const rarities_set = new Set();
+
+      collection.forEach((card) => {
+        sets_set.add(
+          `${card.meta.set.releaseDate}||${card.meta.set.id}||${card.meta.set.name}`
+        );
+
+        card.meta.subtypes.forEach((subtype) => subtypes_set.add(subtype));
+
+        rarities_set.add(card.meta.rarity.type);
+      });
+
+      const sets = Array.from(sets_set)
+        .map((set) => {
+          return set.split("||");
+        })
+        .sort((a, b) => {
+          if (a[0] < b[0]) return 1;
+          if (a[0] > b[0]) return -1;
+          return 0;
+        });
+
+      const subtypes = Array.from(subtypes_set).sort();
+
+      const rarities = Array.from(rarities_set).sort();
+
+      let savedQuery = {};
+
+      // Filter data if filter request
+      if (req.query.asc) {
+        savedQuery = {
+          value: req.query.value,
+          reverseholo: req.query.reverseholo,
+          compareValue: req.query.compareValue,
+          name: req.query.name,
+          rarities: req.query.rarities,
+          supertypes: req.query.supertypes,
+          subtypes: req.query.subtypes,
+          sets: req.query.setid,
+          sortby: req.query.sortby,
+          asc: req.query.asc === "true" ? true : false
+        };
+
+        console.log(savedQuery);
+
+        // Run through queries
+        const filteredByReverse = !savedQuery.reverseholo
+          ? collection
+          : collection.filter((card) => {
+              return card.meta.rarity.reverseHolo;
+            });
+
+        const filteredByVal = filteredByReverse.filter((card) => {
+          if (savedQuery.compareValue === ">=") {
+            return card.value.market >= Number(savedQuery.value);
+          } else {
+            return card.value.market <= Number(savedQuery.value);
+          }
+        });
+
+        const filteredByName = filteredByVal.filter((card) => {
+          return card.pokemon.name
+            .toLowerCase()
+            .includes(savedQuery.name.toLowerCase());
+        });
+
+        const filteredByRare = !savedQuery.rarities
+          ? filteredByName
+          : filteredByName.filter((card) => {
+              if (!Array.isArray(savedQuery.rarities))
+                savedQuery.rarities = [savedQuery.rarities];
+              return savedQuery.rarities.includes(card.meta.rarity.type);
+            });
+
+        const filteredBySupertypes = !savedQuery.supertypes
+          ? filteredByRare
+          : filteredByRare.filter((card) => {
+              if (!Array.isArray(savedQuery.supertypes))
+                savedQuery.supertypes = [savedQuery.supertypes];
+              return savedQuery.supertypes.includes(card.meta.supertype);
+            });
+
+        const filteredBySubtypes = !savedQuery.subtypes
+          ? filteredBySupertypes
+          : filteredBySupertypes.filter((card) => {
+              let check = 0;
+              if (!Array.isArray(savedQuery.subtypes))
+                savedQuery.subtypes = [savedQuery.subtypes];
+
+              card.meta.subtypes.forEach((subtype) => {
+                if (savedQuery.subtypes.includes(subtype)) check++;
+              });
+
+              return check > 0;
+            });
+
+        const filteredBySets = !savedQuery.sets
+          ? filteredBySubtypes
+          : filteredBySubtypes.filter((card) => {
+              if (!Array.isArray(savedQuery.sets))
+                savedQuery.sets = [savedQuery.sets];
+              return savedQuery.sets.includes(card.meta.set.id);
+            });
+
+        const sortBy = savedQuery.sortby;
+        const sortAsc = savedQuery.asc;
+
+        let cards;
+
+        if (sortBy === "value") {
+          !sortAsc
+            ? (cards = filteredBySets.sort(
+                (a, b) => b.value.market - a.value.market
+              ))
+            : (cards = filteredBySets.sort(
+                (a, b) => a.value.market - b.value.market
+              ));
+        } else if (sortBy === "rarity") {
+          !sortAsc
+            ? (cards = filteredBySets.sort(
+                (a, b) => a.meta.rarity.grade - b.meta.rarity.grade
+              ))
+            : (cards = filteredBySets.sort(
+                (a, b) => b.meta.rarity.grade - a.meta.rarity.grade
+              ));
+        } else if (sortBy === "name") {
+          !sortAsc
+            ? (cards = filteredBySets.sort((a, b) => {
+                const nameA = a.pokemon.name.toLowerCase();
+                const nameB = b.pokemon.name.toLowerCase();
+
+                if (nameA > nameB) return -1;
+                if (nameA < nameB) return 1;
+                return 0;
+              }))
+            : (cards = filteredBySets.sort((a, b) => {
+                const nameA = a.pokemon.name.toLowerCase();
+                const nameB = b.pokemon.name.toLowerCase();
+
+                if (nameA > nameB) return 1;
+                if (nameA < nameB) return -1;
+                return 0;
+              }));
+        } else if (sortBy === "set") {
+          !sortAsc
+            ? (cards = filteredBySets.sort((a, b) => {
+                const nameA = a.meta.set.releaseDate;
+                const nameB = b.meta.set.releaseDate;
+
+                if (nameA > nameB) return -1;
+                if (nameA < nameB) return 1;
+                return 0;
+              }))
+            : (cards = filteredBySets.sort((a, b) => {
+                const nameA = a.meta.set.releaseDate;
+                const nameB = b.meta.set.releaseDate;
+
+                if (nameA > nameB) return 1;
+                if (nameA < nameB) return -1;
+                return 0;
+              }));
+        } else if (sortBy === "supertype") {
+          !sortAsc
+            ? (cards = filteredBySets.sort((a, b) => {
+                const nameA = a.meta.supertype.toLowerCase();
+                const nameB = b.meta.supertype.toLowerCase();
+
+                if (nameA > nameB) return -1;
+                if (nameA < nameB) return 1;
+                return 0;
+              }))
+            : (cards = filteredBySets.sort((a, b) => {
+                const nameA = a.meta.supertype.toLowerCase();
+                const nameB = b.meta.supertype.toLowerCase();
+
+                if (nameA > nameB) return 1;
+                if (nameA < nameB) return -1;
+                return 0;
+              }));
+        }
+        results = cards;
+      }
+
+      const page_data = {
+        title: "Filter Collection",
+        sets,
+        subtypes,
+        rarities,
+        savedQuery,
+        results
+      };
+
+      res.render("filter-collection", page_data);
     });
 };

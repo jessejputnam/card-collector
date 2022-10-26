@@ -3,7 +3,6 @@
 const getRarityRating = {
   "Amazing Rare": 0,
   LEGEND: 0,
-  "Radiant Rare": 0,
   "Rare Holo VMAX": 0,
   VM: 0,
   "Rare Holo VSTAR": 0,
@@ -16,8 +15,9 @@ const getRarityRating = {
   "Rare Holo EX": 1,
   "Rare Holo GX": 1,
   "Rare Holo LV.X": 1,
-  "Rare Shiny": 1,
   "Rare Holo V": 1,
+  "Radiant Rare": 2,
+  "Rare Shiny": 2,
   "Classic Collection": 2,
   "Rare ACE": 2,
   "Rare BREAK": 2,

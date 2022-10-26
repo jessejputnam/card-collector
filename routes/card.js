@@ -26,6 +26,9 @@ router.post("/add-bulk", card_controller.add_bulk_post);
 // GET request for display Bulk
 router.get("/bulk", card_controller.display_bulk_get);
 
+// GET request for filter page
+router.get("/filter", card_controller.display_filter_page_get);
+
 // GET request for display card detail
 router.get("/:id", card_controller.display_card_get);
 
