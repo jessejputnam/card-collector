@@ -217,7 +217,6 @@ exports.edit_card_post = (req, res, next) => {
           card.value.priceHistory = [
             [new Date().toLocaleDateString("en-US"), marketValue]
           ];
-          card.value.count = req.body.count;
 
           card.save((err) => {
             if (err) return next(err);
@@ -234,7 +233,25 @@ exports.edit_card_post = (req, res, next) => {
       card.save((err) => {
         if (err) return next(err);
 
-        res.redirect(`/collection/${card._id}`);
+        if (card.value.count === 0) {
+          User.findById(req.user._id, (err, result) => {
+            if (err) return next(err);
+
+            const user = result;
+            const filteredBulk = user.bulk.filter((cardId) => {
+              return String(cardId) !== String(card._id);
+            });
+            user.bulk = filteredBulk;
+
+            user.save((err) => {
+              if (err) return next(err);
+
+              res.redirect("/collection/bulk");
+            });
+          });
+        }
+
+        res.redirect(`/collection/bulk`);
       });
     }
   });
@@ -370,7 +387,7 @@ exports.select_binder_post = (req, res, next) => {
     user.save((err) => {
       if (err) return next(err);
 
-      res.redirect(`/collection/${cardId}`);
+      return res.redirect(`/collection/${cardId}`);
     });
   });
 };
@@ -386,14 +403,34 @@ exports.edit_card_rarity = (req, res, next) => {
     (err, card) => {
       if (err) return next(err);
 
-      res.redirect(`/collection/${cardId}`);
+      return res.redirect(`/collection/${cardId}`);
     }
   );
 };
 
 // ################## Add Cards ###################
-exports.add_card_post = (req, res, next) => {
+exports.add_card_post = async (req, res, next) => {
   const cardId = req.body.cardId;
+
+  const allDbCards = await Card.find();
+  for (let card of allDbCards) {
+    if (card.id === cardId) {
+      console.log(card);
+      if (card.meta.supertype === "Pokémon" || card.value.market >= 0.9) {
+        User.findByIdAndUpdate(
+          req.user._id,
+          { $push: { cards: card._id } },
+          (err) => {
+            if (err) return next(err);
+
+            return res.redirect("/collection/home");
+          }
+        );
+      } else {
+        return res.redirect("/collection/home");
+      }
+    }
+  }
 
   pokemon.card
     .find(cardId)
@@ -470,22 +507,30 @@ exports.add_card_post = (req, res, next) => {
             [new Date().toLocaleDateString("en-US"), marketValue.toFixed(2)]
           ],
           priceType: priceType,
-          count: 1
+          count: 0
         }
       });
 
       newCard.save((err) => {
         if (err) return next(err);
 
-        User.findByIdAndUpdate(
-          req.user._id,
-          { $push: { cards: newCard._id } },
-          (err) => {
-            if (err) return next(err);
+        // Only add to collection if pokemon or worth more than 90 cents
+        if (
+          newCard.meta.supertype === "Pokémon" ||
+          newCard.value.market > 0.9
+        ) {
+          User.findByIdAndUpdate(
+            req.user._id,
+            { $push: { cards: newCard._id } },
+            (err) => {
+              if (err) return next(err);
 
-            res.redirect("/collection/home");
-          }
-        );
+              return res.redirect("/collection/home");
+            }
+          );
+        } else {
+          return res.redirect("/collection/home");
+        }
       });
     })
     .catch((err) => {
@@ -505,7 +550,7 @@ exports.add_bulk_post = (req, res, next) => {
       return next(err);
     }
 
-    card.value.count = card.value.count + 1;
+    card.value.count = 1;
 
     card.save((err) => {
       if (err) return next(err);
@@ -523,7 +568,7 @@ exports.add_bulk_post = (req, res, next) => {
         user.save((err) => {
           if (err) return next(err);
 
-          res.redirect("/collection/home");
+          return res.redirect("/collection/home");
         });
       });
     });

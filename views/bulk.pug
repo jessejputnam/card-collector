@@ -16,7 +16,13 @@ block content
               li(style='list-style-type:hiragana;font-size:.5rem')  
                 p.thin(style="font-size:.7rem")= card.meta.set.number + ". "
                 a.set-link(href=`/collection/${card._id}` style=`font-size:.9rem;font-weight:normal;color:${card.meta.rarity.grade < 4 ? "#9e2a2b" : "inherit"}`)= (card.meta.supertype !== "Pokémon" ? card.meta.supertype + ": " : "") + card.pokemon.name + " "
-                p.wide= card.meta.rarity.type 
-                p.thin= card.value.count 
+                p.wide= card.meta.rarity.type
+                form.thin(method="PUT" action='') 
+                  input#objId(type="hidden" name="objId" value=card._id)
+                  input#bulkCount(type="number" required="true" value=card.bulkCount min="0")
+                  button.btn.btn-secondary(type="submit") Update
+                //- p.thin= card.bulkCount 
                 p.thin= "$" + card.value.market.toFixed(2) 
                 p.thin= "$" + (card.value.market * card.value.count).toFixed(2)
+                form.thin(method="PUT" action='') 
+                  input#objId(type="hidden" name="objId" value=card._id)

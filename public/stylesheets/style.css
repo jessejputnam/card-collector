@@ -155,7 +155,7 @@ textarea {
 
 .prize-binder > div > div > .collection-card-name {
   color: rgb(244, 183, 183);
-  text-shadow: 1px 1px 1px rgb(0, 0, 0);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.844);
 }
 
 .elite-binder > div > div > .collection-card-name {
@@ -373,13 +373,21 @@ textarea {
 .set-page-wrapper > .page-nav {
   height: 250px;
   padding: 15px;
+  margin-left: 20px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  justify-content: flex-start;
+  gap: 5px 20px;
   flex-wrap: wrap;
   font-size: 0.8rem;
-  width: 70%;
-  list-style-type: "〄 ";
+  list-style-type: "〄";
+  width: fit-content;
+}
+
+.set-page-wrapper > .page-nav > li {
+  padding-left: 5px;
+  margin-left: 12px;
+  max-width: 200px;
 }
 
 .set-page-wrapper > .page-nav > li > a {

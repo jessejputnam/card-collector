@@ -46,10 +46,11 @@ block content
             select#reverseHolo(name="reverseHolo") 
               option(value="false" default) No 
               option(value="true") Yes 
-        div 
-          label(for="count") Owned:
-          input#count(type="number" value=(card.value.count) name="count")
-          input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+        if currentUser.bulk.includes(card._id)
+          div 
+            label(for="count") Owned:
+            input#count(type="number" value=(card.value.count) name="count" min="0")
+            input#cardId(type="hidden" name="cardId" required="true" value=card.id)
         button.btn.secondary-btn(type="submit") Edit Card 
       
       div.form-separator
