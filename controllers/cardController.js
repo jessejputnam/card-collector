@@ -113,6 +113,12 @@ exports.display_bulk_get = (req, res, next) => {
     .exec((err, result) => {
       if (err) return next(err);
       const user = result;
+      let totalCount = 0;
+      let bulkTotal = 0;
+      user.bulk.forEach((card) => {
+        bulkTotal += card.value.market * card.value.count;
+        totalCount += card.value.count;
+      });
 
       if (!user) {
         const err = new Error("User not found");
@@ -180,7 +186,9 @@ exports.display_bulk_get = (req, res, next) => {
 
           res.render("bulk", {
             title: "Bulk Inventory",
-            list_sets: orderedSetsByNum
+            list_sets: orderedSetsByNum,
+            total: bulkTotal,
+            count: totalCount
           });
         })
         .catch((err) => {

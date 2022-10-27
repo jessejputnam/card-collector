@@ -370,8 +370,9 @@ textarea {
   padding: 25px;
 }
 
-.set-page-wrapper > .page-nav {
-  height: 250px;
+.set-page-wrapper > .page-nav,
+.bulk-wrapper > .page-nav {
+  max-height: 250px;
   padding: 15px;
   margin-left: 20px;
   display: flex;
@@ -384,13 +385,15 @@ textarea {
   width: fit-content;
 }
 
-.set-page-wrapper > .page-nav > li {
+.set-page-wrapper > .page-nav > li,
+.bulk-wrapper > .page-nav > li {
   padding-left: 5px;
   margin-left: 12px;
   max-width: 200px;
 }
 
-.set-page-wrapper > .page-nav > li > a {
+.set-page-wrapper > .page-nav > li > a,
+.bulk-wrapper > .page-nav > li > a {
   color: grey;
   text-decoration: none;
 }
@@ -543,7 +546,16 @@ textarea {
 }
 
 .bulk-wrapper > h1 {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
+}
+
+.bulk-wrapper > .page-nav {
+  font-size: 0.7rem;
+  border-left: solid 1px rgba(0, 0, 0, 0.157);
+  border-top-left-radius: 20px;
+  max-height: 200px;
+  list-style-type: "⍛";
+  color: gray;
 }
 
 .bulk-set-container {
@@ -561,19 +573,20 @@ textarea {
 }
 
 .bulk-card-list > li > a {
-  width: 20%;
+  min-width: 270px;
 }
 
 .bulk-card-list > li > {
   width: 20%;
 }
 
-.bulk-card-list > li > .wide {
-  width: 40%;
+.bulk-card-list > li > .thin {
+  width: 20px;
+  text-align: center;
 }
 
-.bulk-card-list > li > .thin {
-  width: 10%;
+.bulk-card-list > li > .thin2 {
+  width: 45px;
 }
 
 /* ##################### ## FILTER VIEW ################## */
