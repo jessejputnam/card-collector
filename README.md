@@ -1,4 +1,4 @@
-# String Theory Express
+# Card Collector
 
 - Live Site URL: [Card Collector](https://card-collector.onrender.com)
 
