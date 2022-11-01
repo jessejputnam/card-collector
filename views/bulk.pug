@@ -13,14 +13,20 @@ block content
       each set in list_sets 
         hr(style="margin-top:15px")
         div.bulk-set-container(id=set[0].meta.set.id)
-          h3(style="margin-bottom:15px;")= set[0].meta.set.name 
-            span(style="font-size:.8rem;color:gray;font-weight:normal")  #{set.length}/#{set[0].meta.set.totalPrint}
+          h3(style="margin-bottom:15px;")= set[0].meta.set.name + " "
+            span(style="font-size:.8rem;color:gray;font-weight:normal")  #{" -"} #{set.length}/#{set[0].meta.set.totalPrint}
             span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
           div.bulk-card-list
             each card in set 
               li(style='font-size:.5rem;margin-left:15px')  
-                p.thin(style="font-size:.7rem")= card.meta.set.number + ". "
-                a.set-link(href=`/collection/${card._id}` style=`font-size:.9rem;font-weight:normal;color:${card.meta.rarity.grade < 4 ? "#9e2a2b" : "inherit"}`)= (card.meta.supertype !== "Pokémon" ? card.meta.supertype + ": " : "") + card.pokemon.name + " "
+                p.thin3(style="font-size:.7rem;font-family:monospace")= card.meta.set.number.padStart(3, "0")
+
+                if card.meta.supertype !== "Pokémon"
+                p(style="font-size:.7rem;color:gray").thin2= card.meta.supertype !== "Pokémon" ? card.meta.supertype : ""
+
+                a.set-link(href=`/collection/${card._id}` style=`font-size:.9rem;font-weight:normal;color:${card.meta.rarity.grade < 4 ? "#9e2a2b" : "inherit"}`)= card.pokemon.name + " "
+                  span(style="font-size:.6rem;color:rgb(180, 159, 39)")= card.meta.rarity.reverseHolo ? "(Reverse Holo)" : ""
+                
                 p(style="width:70px")= card.meta.rarity.type 
                 p.thin= card.value.count 
                 p.thin2= "$" + card.value.market.toFixed(2) 

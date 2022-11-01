@@ -50,8 +50,9 @@ block content
           div 
             label(for="count") Owned:
             input#count(type="number" value=(card.value.count) name="count" min="0")
-            input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-        button.btn.secondary-btn(type="submit") Edit Card 
+        input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+        if !card.meta.rarity.reverseHolo || currentUser.bulk.includes(card._id)
+          button.btn.secondary-btn(type="submit") Edit Card 
       
       div.form-separator
         form.card-edit-rarity-form(method="POST" action=`/collection/${card._id}/edit-rarity`)

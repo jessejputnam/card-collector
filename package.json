@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --exec babel-node ./bin/www",
+    "start": "node ./bin/www",
     "devstart": "nodemon --exec babel-node ./bin/www",
     "serverstart": "DEBUG=card-collector:* npm run devstart"
   },

@@ -8,22 +8,9 @@ block content
     h1= title 
     p(style="font-size:0.8rem;color:gray")= "$" + total.toFixed(2)
 
-    h3 Ultra Rare Cards
     hr
-    div.binder-container 
-      each card in cards_ultra 
-        div.prize-card-container
-          div.prize-img-container(id=card._id)
-            img(src=card.meta.images.large, alt=card.pokemon.name)
-            div.prize-overlay 
-          div 
-            a(href=`/collection/${card._id}`)= card.pokemon.name 
-            p= "$" + card.value.market.toFixed(2)
-
-    h3 Rare Cards
-    hr
-    div.binder-container 
-      each card in cards_rare 
+    div.binder-container
+      each card in cards 
         div.prize-card-container
           div.prize-img-container(id=card._id)
             img(src=card.meta.images.large, alt=card.pokemon.name)

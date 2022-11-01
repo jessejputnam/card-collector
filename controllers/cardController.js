@@ -83,6 +83,8 @@ exports.display_prize_get = (req, res, next) => {
       }
 
       const user = result;
+      let total = 0;
+      user.prize.forEach((card) => (total += card.value.market));
 
       const ultraRare = user.prize.filter((card) => {
         return card.meta.rarity.grade < 2;
@@ -101,7 +103,41 @@ exports.display_prize_get = (req, res, next) => {
       res.render("binder-prize", {
         title: "Prize Binder",
         cards_ultra: ultraRare,
-        cards_rare: rare
+        cards_rare: rare,
+        total
+      });
+    });
+};
+
+// Handle display elite binder on GET
+exports.display_elite_get = (req, res, next) => {
+  const userId = req.user._id;
+
+  User.findById(userId)
+    .populate("elite")
+    .exec((err, result) => {
+      if (err) return next(err);
+
+      if (!result) {
+        const err = new Error("Could not find user");
+        err.status = 404;
+        return next(err);
+      }
+
+      const user = result;
+
+      const cards = user.elite;
+      let total = 0;
+      cards.forEach((card) => (total += card.value.market));
+
+      cards.sort((a, b) => {
+        return b.value.market - a.value.market;
+      });
+
+      res.render("binder-elite", {
+        title: "Elite Binder",
+        cards: cards,
+        total: total
       });
     });
 };
@@ -254,12 +290,12 @@ exports.edit_card_post = (req, res, next) => {
             user.save((err) => {
               if (err) return next(err);
 
-              res.redirect("/collection/bulk");
+              return res.redirect("/collection/bulk");
             });
           });
         }
 
-        res.redirect(`/collection/bulk`);
+        return res.redirect(`/collection/bulk`);
       });
     }
   });
@@ -423,7 +459,6 @@ exports.add_card_post = async (req, res, next) => {
   const allDbCards = await Card.find();
   for (let card of allDbCards) {
     if (card.id === cardId) {
-      console.log(card);
       if (card.meta.supertype === "Pokémon" || card.value.market >= 0.9) {
         User.findByIdAndUpdate(
           req.user._id,
@@ -821,8 +856,6 @@ exports.display_filter_page_get = (req, res, next) => {
           sortby: req.query.sortby,
           asc: req.query.asc === "true" ? true : false
         };
-
-        console.log(savedQuery);
 
         // Run through queries
         const filteredByReverse = !savedQuery.reverseholo

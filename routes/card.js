@@ -14,6 +14,9 @@ router.get("/home/sort", card_controller.display_collection_sorted_get);
 // GET request for prize binder
 router.get("/prize", card_controller.display_prize_get);
 
+// GET request for elite binder
+router.get("/elite", card_controller.display_elite_get);
+
 // GET request for collection by set
 router.get("/sets", card_controller.display_filter_by_set_get);
 
