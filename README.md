@@ -2,7 +2,7 @@
 
 - Live Site URL: [Card Collector](https://card-collector.onrender.com)
 
-Summary:
+## Summary:
 
 - Register to begin your collection
 - ADD CARDS to your collection by searching from a deep database of all pokémon cards from base set to current
