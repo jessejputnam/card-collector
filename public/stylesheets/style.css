@@ -158,6 +158,7 @@ textarea {
   column-gap: 50px;
   box-shadow: 0 1px 2px 0 rgba(94, 0, 0, 0.676);
   border-radius: 10px;
+  background-color: rgb(250, 245, 245);
 }
 
 .sort-container > form {
@@ -190,24 +191,43 @@ textarea {
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.573);
+  background-color: rgba(232, 232, 232, 0.725);
 
-  transition: background-color 0.3s;
+  transition: filter 0.3s;
 }
 
-.prize-binder > div > div > .collection-card-name {
-  color: rgb(136, 0, 93);
-  /* text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.844); */
+.prize-binder {
+  background: linear-gradient(
+    to bottom right,
+    rgba(197, 170, 16, 0.2),
+    rgba(197, 170, 16, 0.2),
+    rgba(197, 170, 16, 0.2),
+    rgba(197, 170, 16, 0.2),
+    white,
+    rgba(197, 170, 16, 0.2),
+    rgba(197, 170, 16, 0.2),
+    rgba(197, 170, 16, 0.2)
+  );
 }
 
-.elite-binder > div > div > .collection-card-name {
-  color: rgb(71, 25, 199);
-  /* text-shadow: 1px 1px 1px rgb(0, 0, 0); */
+.elite-binder {
+  background: linear-gradient(
+    to bottom right,
+    rgba(200, 0, 255, 0.168),
+    rgba(200, 0, 251, 0.212),
+    rgba(200, 0, 251, 0.186),
+    rgba(200, 0, 251, 0.187),
+    white,
+    rgba(200, 0, 251, 0.171),
+    rgba(200, 0, 251, 0.154),
+    rgba(200, 0, 251, 0.175)
+  );
 }
 
 @media (hover: hover) {
   .collection-item:hover {
-    background-color: rgba(240, 239, 235, 0.725);
-    /* transform: scale(1.03); */
+    /* background-color: rgba(240, 239, 235, 0.725); */
+    filter: brightness(120%);
   }
 }
 
@@ -416,6 +436,8 @@ textarea {
   font-size: 0.8rem;
   list-style-type: "〄";
   width: fit-content;
+  background-color: rgb(250, 245, 245);
+  width: 95%;
 }
 
 .page-wrapper > .page-nav > li {
@@ -636,6 +658,7 @@ textarea {
 .filter-fieldsets-container {
   padding: 5px 10px 10px;
   font-size: 0.8rem;
+  background-color: rgb(250, 245, 245);
 }
 
 .filter-fieldset {
