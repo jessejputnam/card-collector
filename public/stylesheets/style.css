@@ -297,6 +297,10 @@ textarea {
   margin-bottom: 50px;
 }
 
+.current-price-container > h2 {
+  font-family: "Rajdhani", Georgia, "Times New Roman", Times, serif;
+}
+
 .price-history-container {
   height: 300px;
   width: 400px;
