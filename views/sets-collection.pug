@@ -1,17 +1,17 @@
 extends layout 
 
 block content 
-  div.set-page-wrapper
+  div.page-wrapper.sets-page
     h1 Set Collection
 
-    ul.page-nav  
+    ul.page-nav
       each set in list_sets 
         li 
           a(href=`#${set[0].meta.set.id}`)= set[0].meta.set.name
 
     div.set-results-container
       each set in list_sets 
-        hr(style="margin-top:15px")
+        hr
         div.set-container(id=set[0].meta.set.id)
           h3= set[0].meta.set.name 
             span(style="font-size:.8rem;color:gray;font-weight:normal")  #{set.length}/#{set[0].meta.set.totalPrint}

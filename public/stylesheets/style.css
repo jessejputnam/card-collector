@@ -24,12 +24,28 @@
     "Helvetica Neue", sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Bad Script", Georgia, "Times New Roman", Times, serif;
+}
+
+a,
+p {
+  font-family: "Rajdhani", Arial, Helvetica, sans-serif;
+}
+
 a {
   color: #00b7ff;
 }
 
 ul {
   list-style: none;
+}
+
+hr {
+  border-color: rgba(128, 128, 128, 0.09);
 }
 
 /* ########### ## FORMS ############ */
@@ -74,16 +90,28 @@ textarea {
 
 /* #################### # SIDEBAR ##################### */
 .sidebar {
-  padding: 20px;
-  width: 15%;
+  padding: 20px 20px 20px 25px;
+  width: 150px;
   box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.543);
   height: 100vh;
+  background-color: #212f3c;
+}
+
+.sidebar > img {
+  height: 70px;
+  margin-left: 5px;
+  margin-bottom: 30px;
 }
 
 .nav-bar > ul {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+}
+
+.nav-bar a {
+  text-decoration: none;
+  color: rgb(190, 190, 190);
 }
 
 .nav-bar > ul > li > ul {
@@ -102,21 +130,34 @@ textarea {
 }
 
 .main-wrapper {
-  width: 85%;
+  width: 100%;
+  padding: 20px 2vw;
   overflow-y: auto;
   height: 100vh;
   display: flex;
   flex-direction: column;
   scroll-behavior: smooth;
+  background-color: rgb(224, 224, 224);
 }
 
 /* ########### ## HOME ############ */
+.page-wrapper {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  background-color: white;
+  border-radius: 10px;
+  max-width: 1100px;
+}
+
 .home-header {
   padding: 25px;
   display: flex;
   flex-direction: row;
   column-gap: 50px;
   box-shadow: 0 1px 2px 0 rgba(94, 0, 0, 0.676);
+  border-radius: 10px;
 }
 
 .sort-container > form {
@@ -141,16 +182,16 @@ textarea {
 .collection-item {
   max-width: 1000px;
   margin-left: 25px;
-  padding-right: 10px;
+  padding: 3px 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  border-bottom-right-radius: 10px;
-  border-top-right-radius: 10px;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.573);
 
-  transition: box-shadow 0.3s, transform 0.1s;
+  transition: background-color 0.3s;
 }
 
 .prize-binder > div > div > .collection-card-name {
@@ -165,8 +206,8 @@ textarea {
 
 @media (hover: hover) {
   .collection-item:hover {
-    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.52);
-    transform: scale(1.03);
+    background-color: rgba(240, 239, 235, 0.725);
+    /* transform: scale(1.03); */
   }
 }
 
@@ -186,7 +227,7 @@ textarea {
 
 @media (hover: hover) {
   .collection-item-img > img:hover {
-    transform: scale(2);
+    transform: scale(3);
   }
 }
 
@@ -204,7 +245,7 @@ textarea {
 }
 
 /* ########### ## CARD DETAIL ############ */
-.detail-wrapper {
+.page-wrapper {
   padding: 25px;
   display: flex;
   flex-direction: column;
@@ -358,12 +399,8 @@ textarea {
 }
 
 /* ########### ## SETS VIEW ############ */
-.set-page-wrapper {
-  padding: 25px;
-}
 
-.set-page-wrapper > .page-nav,
-.bulk-wrapper > .page-nav {
+.page-wrapper > .page-nav {
   max-height: 250px;
   padding: 15px;
   margin-left: 20px;
@@ -377,27 +414,26 @@ textarea {
   width: fit-content;
 }
 
-.set-page-wrapper > .page-nav > li,
-.bulk-wrapper > .page-nav > li {
+.page-wrapper > .page-nav > li {
   padding-left: 5px;
   margin-left: 12px;
   max-width: 200px;
 }
 
-.set-page-wrapper > .page-nav > li > a,
-.bulk-wrapper > .page-nav > li > a {
+.page-wrapper > .page-nav > li > a {
   color: grey;
   text-decoration: none;
 }
 
 .set-results-container {
-  width: 900px;
-  margin: 50px 25px;
+  margin: 0 25px;
 }
 
 .set-container {
   padding: 20px;
-  box-shadow: -2px -2px 3px 0 rgba(50, 50, 50, 0.384);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  box-shadow: -2px -2px 2px 0 rgba(50, 50, 50, 0.384);
 }
 
 .set-card-list {
@@ -420,16 +456,9 @@ textarea {
 }
 
 /* ##################### ## BINDER VIEW ################## */
-.binder-wrapper {
-  padding: 25px;
-}
 
-.binder-wrapper > h3 {
-  margin-top: 50px;
-}
-
-.binder-wrapper hr {
-  margin: 10px 0 25px;
+.page-wrapper hr {
+  margin: 10px 0;
 }
 
 .binder-container {
@@ -438,7 +467,7 @@ textarea {
   justify-content: center;
   gap: 25px;
   width: 95%;
-  margin: 0 auto;
+  margin: 0 auto 20px;
   background-image: url("/images/micro_carbon.png");
   padding: 50px 5px 75px;
   border-radius: 25px;
@@ -538,20 +567,11 @@ textarea {
 }
 
 /* ##################### ## BULK VIEW ################## */
-.bulk-wrapper {
-  padding: 25px;
-}
-
-.bulk-wrapper > h1 {
-  margin-bottom: 20px;
-}
-
-.bulk-wrapper > .page-nav {
+.page-wrapper > .page-nav {
   font-size: 0.7rem;
   border-left: solid 1px rgba(0, 0, 0, 0.157);
   border-top-left-radius: 20px;
   max-height: 200px;
-  list-style-type: "⍛";
   color: gray;
 }
 

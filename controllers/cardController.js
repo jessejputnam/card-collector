@@ -86,24 +86,57 @@ exports.display_prize_get = (req, res, next) => {
       let total = 0;
       user.prize.forEach((card) => (total += card.value.market));
 
-      const ultraRare = user.prize.filter((card) => {
-        return card.meta.rarity.grade < 2;
-      });
-      const rare = user.prize.filter((card) => {
-        return card.meta.rarity.grade > 1;
-      });
-
-      ultraRare.sort((a, b) => {
-        return b.value.market - a.value.market;
-      });
-      rare.sort((a, b) => {
-        return b.value.market - a.value.market;
-      });
+      const fullArt = user.prize
+        .filter((card) => {
+          return card.meta.rarity.grade === -3;
+        })
+        .sort((a, b) => {
+          return b.value.market - a.value.market;
+        });
+      const vmax = user.prize
+        .filter((card) => {
+          return card.meta.rarity.grade === -2;
+        })
+        .sort((a, b) => {
+          return b.value.market - a.value.market;
+        });
+      const vstar = user.prize
+        .filter((card) => {
+          return card.meta.rarity.grade === -1;
+        })
+        .sort((a, b) => {
+          return b.value.market - a.value.market;
+        });
+      const halfArt = user.prize
+        .filter((card) => {
+          return card.meta.rarity.grade === 0;
+        })
+        .sort((a, b) => {
+          return b.value.market - a.value.market;
+        });
+      const specialHolo = user.prize
+        .filter((card) => {
+          return card.meta.rarity.grade === 1;
+        })
+        .sort((a, b) => {
+          return b.value.market - a.value.market;
+        });
+      const holo = user.prize
+        .filter((card) => {
+          return card.meta.rarity.grade > 1;
+        })
+        .sort((a, b) => {
+          return b.value.market - a.value.market;
+        });
 
       res.render("binder-prize", {
         title: "Prize Binder",
-        cards_ultra: ultraRare,
-        cards_rare: rare,
+        full_art: fullArt,
+        vmax,
+        vstar,
+        half_art: halfArt,
+        special_holo: specialHolo,
+        holo,
         total
       });
     });

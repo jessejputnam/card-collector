@@ -5,6 +5,11 @@ html(lang='en')
     met(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/stylesheets/style.css')
+
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Rajdhani&display=swap" rel="stylesheet")
+
     block scripts
   
   body 
@@ -23,6 +28,8 @@ html(lang='en')
     else  
       div.app-wrapper 
         div.sidebar 
+          img(src="/images/pokeball.png", alt="Pokeball")
+          
           nav.nav-bar 
             ul 
               li 
@@ -37,8 +44,6 @@ html(lang='en')
                     a(href="/collection/filter") Filter
                   li 
                     a(href="/collection/sets") Sets
-                  li 
-                    a(href="/collection/set-completion") Set Completion
 
               li(style="margin-top:15px") 
                 a(href="/collection/bulk") Bulk Cards

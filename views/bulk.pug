@@ -1,7 +1,7 @@
 extends layout 
 
 block content 
-  div.bulk-wrapper
+  div.page-wrapper.bulk-page
     h1= title
 
     ul.page-nav  
@@ -9,10 +9,10 @@ block content
         li 
           a(href=`#${set[0].meta.set.id}`)= set[0].meta.set.name
 
-    div.bulk-results-container
+    div.set-results-container
       each set in list_sets 
         hr(style="margin-top:15px")
-        div.bulk-set-container(id=set[0].meta.set.id)
+        div.set-container(id=set[0].meta.set.id)
           h3(style="margin-bottom:15px;")= set[0].meta.set.name + " "
             span(style="font-size:.8rem;color:gray;font-weight:normal")  #{" -"} #{set.length}/#{set[0].meta.set.totalPrint}
             span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
