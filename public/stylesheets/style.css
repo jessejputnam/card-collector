@@ -31,8 +31,7 @@
   row-gap: 10px;
   background-color: white;
   border-radius: 10px;
-  max-width: 1100px;
-  margin: 0 auto;
+  max-width: 1200px;
 }
 
 h1,
@@ -46,7 +45,6 @@ a,
 p {
   font-family: "Rajdhani", Arial, Helvetica, sans-serif;
   font-weight: 500;
-  cursor: default;
 }
 
 a {
@@ -67,7 +65,7 @@ a {
   border: unset;
   border-radius: 15px;
   color: #212121;
-  z-index: 1;
+  z-index: 0;
   background: #e8e8e8;
   position: relative;
   font-weight: 1000;
@@ -117,7 +115,8 @@ hr {
   flex-direction: column;
   row-gap: 5px;
   width: 600px;
-  margin: 0 auto;
+  height: 300px;
+  margin: 50px auto 0;
 }
 
 .form-control {
@@ -127,9 +126,13 @@ hr {
 }
 
 .form-control > input,
-select,
-textarea {
-  padding: 5px;
+.form-control select,
+.form-control textarea {
+  padding: 7px 10px;
+  font-family: "Rajdhani", Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.1ch;
 }
 
 .form-control-btns {
@@ -163,6 +166,7 @@ textarea {
   background-image: url("../images/pattern-background.jpg");
   background-size: cover;
   height: 94vh;
+  max-width: none;
 }
 
 .landing-page > .intro {
@@ -272,6 +276,8 @@ textarea {
   flex-direction: column;
   scroll-behavior: smooth;
   background-color: rgb(224, 224, 224);
+  background-image: url("../images/pattern-background.jpg");
+  background-size: cover;
 }
 
 /* ########### ## HOME ############ */
@@ -283,10 +289,7 @@ textarea {
   box-shadow: 0 1px 2px 0 rgba(94, 0, 0, 0.676);
   border-radius: 10px;
   background-color: rgb(250, 245, 245);
-}
-
-.sort-container > form {
-  width: 350px;
+  max-width: 1100px;
 }
 
 .sort-container > form > fieldset {
@@ -350,7 +353,6 @@ textarea {
 
 @media (hover: hover) {
   .collection-item:hover {
-    /* background-color: rgba(240, 239, 235, 0.725); */
     filter: brightness(120%);
   }
 }
@@ -389,30 +391,33 @@ textarea {
 }
 
 /* ########### ## CARD DETAIL ############ */
-.page-wrapper {
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  row-gap: 10px;
-}
 
 .card-detail-container {
   display: flex;
   flex-wrap: wrap;
   column-gap: 50px;
   row-gap: 25px;
-  max-width: 900px;
+  max-width: 1100px;
   margin-top: 50px;
 }
 
 .detail-img-container > img {
   height: 600px;
+  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.546));
 }
 
 .detail-info-container {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+}
+
+.detail-info-container > div {
+  background-color: rgba(255, 255, 255, 0.782);
+  backdrop-filter: blur(4px);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.546);
 }
 
 .info-set-container > div {
@@ -453,6 +458,7 @@ textarea {
   border-top-left-radius: 10px;
   padding: 15px;
   overflow-y: scroll;
+  background: white;
 }
 
 .price-history-container > ul > li {
@@ -511,6 +517,8 @@ textarea {
 
 .owned {
   filter: brightness(0.6) grayscale(100%);
+  position: relative;
+  z-index: 100;
 }
 .result-img-container {
   min-width: 143.25px;
@@ -527,6 +535,8 @@ textarea {
 @media (hover: hover) {
   .result-img-container > img:hover {
     transform: scale(1.5);
+    z-index: 100;
+    position: relative;
   }
 }
 
@@ -612,6 +622,7 @@ textarea {
   justify-content: center;
   gap: 25px;
   width: 95%;
+  max-width: 1200px;
   margin: 0 auto 20px;
   background-image: url("/images/micro_carbon.png");
   padding: 50px 5px 75px;

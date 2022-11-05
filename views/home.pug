@@ -11,7 +11,7 @@ block content
         p(style="margin-top:5px;font-size:.8rem;color:gray")= '$' + total.toFixed(2)
         p(style="font-size:.8rem;color:gray")= card_list.length + " cards"
       div.sort-container 
-        form.form-wrapper(method="GET" action="/collection/home/sort") 
+        form(method="GET" action="/collection/home/sort") 
           fieldset
             legend Sort by...
             select#by(name="by") 
