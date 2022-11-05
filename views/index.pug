@@ -1,10 +1,22 @@
 extends layout
 
-block noUser 
-  main.page-wrapper
-    h1= title 
+block scripts
+  script(type="module" src="/javascripts/scriptIndex.js" defer)
 
-    p Register or login to start cataloging your collection
+block noUser 
+  main.page-wrapper.landing-page
+    div.intro
+      h1= title 
+
+      p Register or login to start cataloging your collection
+
+    div.slideshow
+      div(role="list") 
+        div.first-slide.active 
+          img(src="https://assets.pokemon.com/assets/cms2/img/trading-card-game/_tiles/generic/tcg-product-gallery-169-en.jpg", alt="Welcome")
+        each image in images 
+          div.slide 
+            img(src=image.src, alt=image.alt)
 
   footer
     div.footer-wrapper

@@ -24,6 +24,17 @@
     "Helvetica Neue", sans-serif;
 }
 
+.page-wrapper {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  background-color: white;
+  border-radius: 10px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
 h1,
 h2,
 h3,
@@ -35,10 +46,61 @@ a,
 p {
   font-family: "Rajdhani", Arial, Helvetica, sans-serif;
   font-weight: 500;
+  cursor: default;
 }
 
 a {
-  color: #00b7ff;
+  color: grey;
+  text-decoration: underline 0.15em rgba(0, 0, 0, 0);
+  transition: text-decoration-color 0.3s, color 0.3s;
+  text-underline-offset: 0.3rem;
+}
+
+@media (hover: hover) {
+  a:hover {
+    text-decoration-color: rgba(54, 54, 54, 0.643);
+  }
+}
+
+.btn {
+  padding: 2.5px 10px;
+  border: unset;
+  border-radius: 15px;
+  color: #212121;
+  z-index: 1;
+  background: #e8e8e8;
+  position: relative;
+  font-weight: 1000;
+  font-size: 17px;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.27);
+  transition: all 250ms;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  border-radius: 15px;
+  background-color: #212121;
+  z-index: -1;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  transition: all 250ms;
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    color: #e8e8e8;
+  }
+
+  .btn:hover::before {
+    width: 100%;
+  }
 }
 
 ul {
@@ -70,8 +132,10 @@ textarea {
   padding: 5px;
 }
 
-.btn {
-  padding: 2.5px 10px;
+.form-control-btns {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
 }
 
 /* #################### # NO AUTH HEADER ##################### */
@@ -80,13 +144,82 @@ textarea {
   display: flex;
   align-items: center;
   column-gap: 15px;
-  height: 50px;
-  box-shadow: -3px 0px 3px 0 rgba(0, 0, 0, 0.455);
+  height: 60px;
+  padding: 5px 10px;
+  background-color: #212f3c;
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.455);
+}
+
+@media (hover: hover) {
+  .no-auth-header a:hover {
+    color: rgba(228, 228, 228, 0.742);
+    text-decoration-color: rgba(197, 197, 197, 0.742);
+  }
 }
 
 /* #################### # LANDING PAGE ################ */
 .landing-page {
+  text-align: center;
+  background-image: url("../images/pattern-background.jpg");
+  background-size: cover;
+  height: 94vh;
+}
+
+.landing-page > .intro {
+  background: rgba(255, 255, 255, 0.424);
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.319);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   padding: 20px;
+  border-radius: 10px;
+}
+
+.slideshow {
+  margin: 0 auto;
+  position: relative;
+  background: rgba(255, 255, 255, 0.273);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.319);
+  height: clamp(192px, 37vw, 370px);
+  width: clamp(330px, 60vw, 600px);
+  margin-top: 100px;
+  border-radius: 10px;
+}
+
+.slide {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 10%);
+  opacity: 0;
+
+  transition: opacity 3s;
+}
+
+.first-slide {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 8%);
+  transition: opacity 2.5s;
+}
+
+.slide > img,
+.first-slide > img {
+  height: clamp(165px, 30vw, 300px);
+  width: clamp(280px, 50vw, 500px);
+  border-radius: 10px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.567);
+}
+
+.slide.active {
+  opacity: 100%;
+}
+.first-slide.inactive {
+  opacity: 0;
+}
+
+.slide-wrapper {
+  width: calc(400px * 4);
 }
 
 /* #################### # SIDEBAR ##################### */
@@ -142,16 +275,6 @@ textarea {
 }
 
 /* ########### ## HOME ############ */
-.page-wrapper {
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  row-gap: 10px;
-  background-color: white;
-  border-radius: 10px;
-  max-width: 1100px;
-}
-
 .home-header {
   padding: 25px;
   display: flex;
@@ -447,11 +570,6 @@ textarea {
   max-width: 200px;
 }
 
-.page-wrapper > .page-nav > li > a {
-  color: grey;
-  text-decoration: none;
-}
-
 .set-results-container {
   margin: 0 25px;
 }
@@ -562,7 +680,6 @@ textarea {
 .prize-card-container > div > a {
   margin-top: 5px;
   color: rgba(221, 224, 140, 0.878);
-  text-decoration: none;
   text-shadow: 1px 1px 1px black;
 }
 
