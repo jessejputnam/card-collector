@@ -5,26 +5,14 @@ const { body, validationResult } = require("express-validator");
 
 const User = require("../models/user");
 
+const indexImages = require("../helpers/indexImages");
+
+// ########################################################
+// ########################################################
+
 // Display correct page on index GET
 exports.index_get = (req, res, next) => {
-  const images = [
-    {
-      src: "https://images.saymedia-content.com/.image/c_limit%2Ccs_srgb%2Cq_auto:eco%2Cw_620/MTgzNzMyNzQyNzI5NTA4MzU2/so-you-discovered-your-old-pokmon-card-collection-how-to-know-if-you-struck-gold-or-struck-out.webp",
-      alt: "Collection of cards"
-    },
-    {
-      src: "https://i.ebayimg.com/images/g/iVoAAOSwS49hzfyC/s-l500.jpg",
-      alt: "Neat collection of cards"
-    },
-    {
-      src: "https://ichef.bbci.co.uk/news/976/cpsprodpb/D08F/production/_117619335_21f28cd1-f1fa-4ff2-9d4f-3cf2b1a8a0f8.jpg",
-      alt: "Shiny Charizard"
-    },
-    {
-      src: "https://www.wargamer.com/wp-content/sites/wargamer/2021/05/classic-pokemon-cards-and-pokeball-thimo-pedersen-unsplash.jpg",
-      alt: "Pokeball and cards"
-    }
-  ];
+  const images = indexImages;
 
   res.render("index", {
     title: "Card Collector",

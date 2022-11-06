@@ -10,7 +10,9 @@ html(lang='en')
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Rajdhani:wght@400;500&display=swap" rel="stylesheet")
 
+    script(type="module" src="/javascripts/scriptNav.js" defer)
     block scripts
+
   
   body 
     if !currentUser
@@ -27,7 +29,7 @@ html(lang='en')
     else  
       div.app-wrapper 
         div.sidebar 
-          img(src="/images/pokeball.png", alt="Pokeball")
+          img.nav-img(src="/images/pokeball.png", alt="Pokeball")
           
           nav.nav-bar 
             ul 
@@ -60,6 +62,44 @@ html(lang='en')
 
               li(style="margin-top:50px")
                 a(href="/logout") Logout
+        
+        div.topbar
+          img.nav-img(src="/images/pokeball.png", alt="Pokeball")
+
+          nav
+            div 
+              p#collection-menu-btn Collection 
+              div.collection-menu 
+                ul 
+                  li 
+                    a(href="/collection/home") Collection 
+                  li 
+                    a(href="/collection/elite") Elite Binder
+                  li 
+                    a(href="/collection/prize") Prize Binder
+                  li 
+                    a(href="/collection/filter") Filter
+                  li 
+                    a(href="/collection/sets") Sets
+
+            div 
+              p#bulk-menu-btn Bulk 
+              div.bulk-menu 
+                ul 
+                  li(style="margin-top:15px") 
+                    a(href="/collection/bulk") Bulk Cards
+                  li 
+                    a(href="/collection/bulk/rare") Rare
+                  li 
+                    a(href="/collection/bulk/nonrare") Non-Rare
+                  li 
+                    a(href="/collection/bulk/trainer") Trainer
+
+            div 
+              a(href="/search") Add Cards 
+            div 
+              a(href="/logout") Logout
+            
 
         main.main-wrapper
           block content
