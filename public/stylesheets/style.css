@@ -29,9 +29,18 @@
   display: flex;
   flex-direction: column;
   row-gap: 10px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.631);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-radius: 10px;
   max-width: 1200px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.568);
+}
+
+@media only screen and (max-width: 670px) {
+  .page-wrapper {
+    padding: 10px;
+  }
 }
 
 h1,
@@ -62,6 +71,7 @@ a {
 
 .btn {
   padding: 2.5px 10px;
+  min-width: 75px;
   border: unset;
   border-radius: 15px;
   color: #212121;
@@ -114,9 +124,10 @@ hr {
   display: flex;
   flex-direction: column;
   row-gap: 5px;
-  width: 600px;
-  height: 300px;
+  max-width: 600px;
   margin: 50px auto 0;
+  padding: 10px 10px 20px;
+  border-radius: 10px;
 }
 
 .form-control {
@@ -252,8 +263,14 @@ hr {
 }
 
 .nav-bar a {
-  text-decoration: none;
-  color: rgb(190, 190, 190);
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .nav-bar a:hover {
+    text-decoration-color: rgba(228, 228, 228, 0.742);
+    color: rgba(228, 228, 228, 0.742);
+  }
 }
 
 .nav-bar > ul > li > ul {
@@ -305,19 +322,42 @@ hr {
     width: 100%;
   }
 
-  .topbar > nav > div {
-  }
-
   .collection-menu {
     overflow: hidden;
     height: 0;
     position: absolute;
+    transition: height 0.5s, padding 0.5s;
+    z-index: 100;
+    background-color: #212f3cd3;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.441);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+
+  .collection-menu > ul > li {
+    color: white;
   }
 
   .bulk-menu {
+    z-index: 100;
     overflow: hidden;
     height: 0;
     position: absolute;
+    transition: height 0.5s, padding 0.5s;
+    z-index: 100;
+    background-color: #212f3cd3;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.441);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+
+  .menu-open {
+    height: 120px;
+    padding: 10px;
   }
 }
 
@@ -350,7 +390,7 @@ hr {
 .home-header {
   padding: 25px;
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   column-gap: 50px;
   box-shadow: 0 1px 2px 0 rgba(94, 0, 0, 0.676);
   border-radius: 10px;
@@ -358,10 +398,36 @@ hr {
   max-width: 1100px;
 }
 
+@media only screen and (max-width: 670px) {
+  .home-header > .title-container {
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+  }
+}
+
 .sort-container > form > fieldset {
   padding: 15px;
   display: flex;
+  flex-wrap: wrap;
   column-gap: 10px;
+  row-gap: 10px;
+  justify-content: space-around;
+}
+
+@media only screen and (max-width: 446px) {
+  .home-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sort-container {
+    width: 80%;
+  }
+
+  .sort-container > form > fieldset {
+    flex-direction: column;
+  }
 }
 
 .collection-container {
@@ -373,9 +439,15 @@ hr {
   row-gap: 5px;
 }
 
+@media only screen and (max-width: 800px) {
+  .collection-container {
+    width: 100%;
+    padding: 25px 5px;
+  }
+}
+
 .collection-item {
   max-width: 1000px;
-  margin-left: 25px;
   padding: 3px 10px;
   display: flex;
   flex-direction: row;
@@ -387,6 +459,22 @@ hr {
   background-color: rgba(232, 232, 232, 0.725);
 
   transition: filter 0.3s;
+}
+
+@media only screen and (max-width: 670px) {
+  .collection-item {
+    justify-content: space-between;
+    /* position: relative; */
+  }
+
+  .collection-card-set {
+    display: none;
+  }
+
+  .collection-item-details {
+    padding: 0 5px;
+    flex-grow: 2;
+  }
 }
 
 .prize-binder {
@@ -427,9 +515,16 @@ hr {
   width: 35%;
 }
 
-.collection-item-img {
+@media only screen and (max-width: 670px) {
+  .collection-item > div {
+    width: auto;
+  }
+}
+
+div.collection-item-img {
   display: flex;
   align-items: center;
+  width: 10%;
 }
 
 .collection-item-img > img {
@@ -443,17 +538,24 @@ hr {
   }
 }
 
-.collection-card-rarity,
-.collection-card-set {
+.collection-card-rarity {
   font-size: 0.8rem;
 }
 
-.collection-card-set-no {
-  font-size: 0.6rem;
+.collection-card-set {
+  font-size: 0.7rem;
 }
 
-.collection-item-value {
+div.collection-item-value {
   font-size: 1.1rem;
+  width: 10%;
+}
+
+@media only screen and (max-width: 670px) {
+  div.collection-item-value,
+  div.collection-item-img {
+    width: auto;
+  }
 }
 
 /* ########### ## CARD DETAIL ############ */
@@ -475,13 +577,25 @@ hr {
 
 .detail-img-container > img {
   height: 600px;
-  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.546));
+  max-height: 600px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.672);
+  border-radius: 25px;
+  /* width: 430.08px; */
+}
+
+@media only screen and (max-width: 485px) {
+  .detail-img-container > img {
+    height: auto;
+    width: 90%;
+    min-width: 255px;
+  }
 }
 
 .detail-info-container {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+  width: clamp(250px, 90%, 400px);
 }
 
 .detail-info-container > div {
@@ -524,7 +638,6 @@ hr {
 
 .price-history-container {
   height: 300px;
-  width: 400px;
   box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.527);
   border-bottom-left-radius: 10px;
   border-top-left-radius: 10px;
@@ -538,13 +651,13 @@ hr {
 }
 
 .card-edits-container {
-  width: clamp(300px, 80%, 850px);
+  width: clamp(200px, 80%, 850px);
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 .card-edits-container > div,
@@ -553,6 +666,7 @@ hr {
   padding: 10px;
   border-radius: 10px;
   height: 100px;
+  width: 190px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -591,6 +705,17 @@ hr {
   .card-detail-container {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+@media only screen and (max-width: 530px) {
+  .card-edits-container {
+    width: 80%;
+  }
+  .card-edits-container > div,
+  .card-edits-container > form {
+    width: 100%;
+    max-width: none;
   }
 }
 
@@ -689,6 +814,7 @@ hr {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   box-shadow: -2px -2px 2px 0 rgba(50, 50, 50, 0.384);
+  background-color: whitesmoke;
 }
 
 .set-card-list {

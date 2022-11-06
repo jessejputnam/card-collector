@@ -6,10 +6,11 @@ block scripts
 block content 
   div.page-wrapper
     header.home-header 
-      div 
+      div.title-container 
         h1= title + " " 
-        p(style="margin-top:5px;font-size:.8rem;color:gray")= '$' + total.toFixed(2)
-        p(style="font-size:.8rem;color:gray")= card_list.length + " cards"
+        div 
+          p(style="margin-top:5px;font-size:.8rem;color:gray")= '$' + total.toFixed(2)
+          p(style="font-size:.8rem;color:gray")= card_list.length + " cards"
       div.sort-container 
         form(method="GET" action="/collection/home/sort") 
           fieldset
@@ -34,7 +35,7 @@ block content
       else 
         each card in card_list
           div.collection-item(id=card._id class=`${currentUser.prize.includes(card._id) ? "prize-binder" : currentUser.elite.includes(card._id) ? "elite-binder" : ""}`) 
-            div(style="width:10%").collection-item-img
+            div.collection-item-img
               img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
             div.collection-item-details
               div
@@ -42,8 +43,8 @@ block content
                   if card.meta.rarity.reverseHolo 
                     span(style="font-size:.7rem;color:gray")  Reverse Holo
                 p.collection-card-rarity= card.meta.rarity.type
-            div
-              p.collection-card-set= card.meta.set.name
-              p.collection-card-set-no=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
-            div(style="width:10%").collection-item-value 
+            div.collection-card-set
+              p= card.meta.set.name
+              p=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
+            div.collection-item-value 
               p= `$${card.value.market.toFixed(2)}` 
