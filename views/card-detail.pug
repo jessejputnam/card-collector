@@ -41,13 +41,13 @@ block content
     div.card-edits-container
       form.card-edit-form(method="POST" action=`/collection/${card._id}/edit`)
         if !card.meta.rarity.reverseHolo
-          div 
+          div.reverse-holo-container
             label(for="reverseHolo") Reverse Holo:
             select#reverseHolo(name="reverseHolo") 
               option(value="false" default) No 
               option(value="true") Yes 
         if currentUser.bulk.includes(card._id)
-          div 
+          div.owned-container 
             label(for="count") Owned:
             input#count(type="number" value=(card.value.count) name="count" min="0")
         input#cardId(type="hidden" name="cardId" required="true" value=card.id)

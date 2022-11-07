@@ -580,7 +580,6 @@ div.collection-item-value {
   max-height: 600px;
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.672);
   border-radius: 25px;
-  /* width: 430.08px; */
 }
 
 @media only screen and (max-width: 485px) {
@@ -665,7 +664,7 @@ div.collection-item-value {
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.709);
   padding: 10px;
   border-radius: 10px;
-  height: 100px;
+  height: 110px;
   width: 190px;
   display: flex;
   flex-direction: column;
@@ -679,6 +678,35 @@ div.collection-item-value {
   row-gap: 10px;
 }
 
+.reverse-holo-container {
+  display: flex;
+  column-gap: 10px;
+}
+
+.reverse-holo-container > select {
+  padding: 1px;
+}
+
+.owned-container {
+  display: flex;
+  column-gap: 55px;
+}
+
+.owned-container > input {
+  width: 45px;
+  padding: 1px 0;
+  text-align: center;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.owned-container > input::-webkit-inner-spin-button,
+.owned-container > input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
 .form-separator {
   display: flex;
   flex-direction: column;
@@ -690,8 +718,26 @@ div.collection-item-value {
   column-gap: 10px;
 }
 
+.card-edit-rarity-form > input {
+  text-align: center;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.card-edit-rarity-form > input::-webkit-inner-spin-button,
+.card-edit-rarity-form > input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
 .card-edit-rarity-form > #rarity {
   width: 50px;
+}
+
+select#binder {
+  padding: 2px 0;
+  text-align: center;
 }
 
 .delete-card {
