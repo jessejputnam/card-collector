@@ -870,7 +870,7 @@ select#binder {
   flex-direction: column;
   row-gap: 5px;
   column-gap: 5px;
-  max-height: 550px;
+  max-height: 750px;
 }
 
 .set-card-list > p {

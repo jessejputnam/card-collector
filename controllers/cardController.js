@@ -298,7 +298,7 @@ exports.edit_card_post = (req, res, next) => {
           card.save((err) => {
             if (err) return next(err);
 
-            res.redirect(`/collection/${card._id}`);
+            return res.redirect(`/collection/${card._id}`);
           });
         })
         .catch((err) => {
@@ -371,7 +371,7 @@ exports.update_price_history_post = (req, res, next) => {
         card.save((err) => {
           if (err) return next(err);
 
-          res.redirect(`/collection/${card._id}`);
+          return res.redirect(`/collection/${card._id}`);
         });
       })
       .catch((err) => {
@@ -396,6 +396,7 @@ exports.delete_card_get = (req, res, next) => {
       cardId: card._id,
       cardName: card.pokemon.name
     });
+    return;
   });
 };
 
@@ -426,7 +427,7 @@ exports.delete_card_post = (req, res, next) => {
       Card.findByIdAndRemove(cardId, (err) => {
         if (err) return next(err);
 
-        res.redirect("/collection/home");
+        return res.redirect("/collection/home");
       });
     });
   });
@@ -601,7 +602,7 @@ exports.add_card_post = async (req, res, next) => {
             (err) => {
               if (err) return next(err);
 
-              return res.redirect("/collection/home");
+              res.redirect("/collection/home");
             }
           );
         } else {
@@ -737,7 +738,7 @@ exports.display_collection_sorted_get = (req, res, next) => {
               return 0;
             }));
       } else {
-        res.redirect("/collection/home");
+        return redirect("/collection/home");
       }
 
       res.render("home", {
@@ -745,6 +746,7 @@ exports.display_collection_sorted_get = (req, res, next) => {
         card_list: cards,
         total: total
       });
+      return;
     });
 };
 
@@ -825,6 +827,7 @@ exports.display_filter_by_set_get = (req, res, next) => {
             title: "Set Collection",
             list_sets: orderedSetsByNum
           });
+          return;
         })
         .catch((err) => {
           return next(err);
@@ -1037,6 +1040,6 @@ exports.display_filter_page_get = (req, res, next) => {
         results
       };
 
-      res.render("filter-collection", page_data);
+      return res.render("filter-collection", page_data);
     });
 };

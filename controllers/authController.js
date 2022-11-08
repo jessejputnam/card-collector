@@ -18,11 +18,12 @@ exports.index_get = (req, res, next) => {
     title: "Card Collector",
     images: images
   });
+  return;
 };
 
 // Display sign up on GET
 exports.signup_get = (req, res, next) => {
-  res.render("form-sign-up", { title: "Register" });
+  return res.render("form-sign-up", { title: "Register" });
 };
 
 // Handle sign up on POST
@@ -50,6 +51,7 @@ exports.sign_up_post = [
         title: "Register",
         errors: errors.array()
       });
+      return;
     }
 
     try {
@@ -75,7 +77,7 @@ exports.sign_up_post = [
         }
 
         // Successful, redirect to login
-        res.redirect("/login");
+        return res.redirect("/login");
       });
     } catch (err) {
       return next(err);
@@ -89,6 +91,7 @@ exports.login_get = (req, res, next) => {
     title: "Log In",
     errors: req.flash("error")
   });
+  return;
 };
 
 // Handle login on POST
@@ -102,6 +105,10 @@ exports.login_post = passport.authenticate("local", {
 exports.logout_get = (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);
-    res.redirect("/");
+
+    req.session.destroy((err) => {
+      if (err) return next(err);
+      return res.redirect("/");
+    });
   });
 };

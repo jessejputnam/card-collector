@@ -6,6 +6,7 @@ const createError = require("http-errors");
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -33,6 +34,15 @@ const searchRouter = require("./routes/search");
 const User = require("./models/user");
 
 const app = express();
+const sessionStore = new MongoDBStore({
+  uri: process.env.MONGODB_URI,
+  collection: "mySessions",
+  databaseName: "test"
+});
+sessionStore.on(
+  "error",
+  console.error.bind(console, "MongoDB Session Storage connection error")
+);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -73,9 +83,12 @@ app.use(
   session({
     name: "session",
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: true
     },
+    store: sessionStore,
     secret: process.env.SESSION_SECRET,
+    name: "session-id",
     resave: false,
     saveUninitialized: true
   })
