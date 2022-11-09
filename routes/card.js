@@ -29,6 +29,15 @@ router.post("/add-bulk", card_controller.add_bulk_post);
 // GET request for display Bulk
 router.get("/bulk", card_controller.display_bulk_get);
 
+// GET request for display Bulk Rare
+router.get("/bulk/rare", card_controller.display_bulk_filter_get);
+
+// GET request for display Bulk Non Rare
+router.get("/bulk/nonrare", card_controller.display_bulk_filter_get);
+
+// GET request for display Bulk Trainers
+router.get("/bulk/trainer", card_controller.display_bulk_filter_get);
+
 // GET request for filter page
 router.get("/filter", card_controller.display_filter_page_get);
 

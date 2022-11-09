@@ -6,6 +6,7 @@ pokemon.configure({ apikey: process.env.POKE_API_KEY });
 const Card = require("../models/card");
 const User = require("../models/user");
 const getRarityRating = require("../helpers/getRarityRating");
+const e = require("connect-flash");
 
 /* 
 
@@ -181,6 +182,205 @@ exports.display_bulk_get = (req, res, next) => {
     .populate("bulk")
     .exec((err, result) => {
       if (err) return next(err);
+
+      const user = result;
+      let totalCount = 0;
+      let bulkTotal = 0;
+      user.bulk.forEach((card) => {
+        bulkTotal += card.value.market * card.value.count;
+        totalCount += card.value.count;
+      });
+
+      if (!user) {
+        const err = new Error("User not found");
+        err.status = 404;
+        return next(err);
+      }
+
+      // Find which sets exist in collection
+      let setOrderLength = 0;
+      const setOrder = {};
+      user.bulk.forEach((card) => {
+        const setId = card.meta.set.id;
+
+        if (!(setId in setOrder)) {
+          setOrder[setId] = true;
+          setOrderLength++;
+        }
+      });
+
+      pokemon.set
+        .all()
+        .then((sets) => {
+          let n = 0;
+
+          // Search through all sets and get the order of collection sets
+          sets.forEach((set) => {
+            if (set.id in setOrder) {
+              setOrder[set.id] = n;
+              n++;
+            }
+          });
+
+          // Organize the cards into the sets by date
+          const orderedSets = new Array(setOrderLength);
+          user.bulk.forEach((card) => {
+            const setId = card.meta.set.id;
+            if (!orderedSets[setOrder[setId]]) {
+              orderedSets[setOrder[setId]] = [];
+            }
+            orderedSets[setOrder[setId]].push(card);
+          });
+
+          // reverse to most recent first
+          orderedSets.reverse();
+          const orderedSetsByNum = [];
+          orderedSets.forEach((set) => {
+            set.sort((a, b) => {
+              const numA = Number(
+                a.meta.set.number
+                  .split("")
+                  .filter((x) => !!+x || x === "0")
+                  .join("")
+              );
+              const numB = Number(
+                b.meta.set.number
+                  .split("")
+                  .filter((x) => !!+x || x === "0")
+                  .join("")
+              );
+              return numA - numB;
+            });
+
+            orderedSetsByNum.push(set);
+          });
+
+          res.render("bulk", {
+            title: "Bulk Inventory",
+            list_sets: orderedSetsByNum,
+            total: bulkTotal,
+            count: totalCount
+          });
+        })
+        .catch((err) => {
+          return next(err);
+        });
+    });
+};
+
+// Handle display bulk rare pokemon on GET
+exports.display_bulk_filter_get = async (req, res, next) => {
+  const bulk_filter = req.url.split("/bulk/")[1];
+  // rare, nonrare, trainer
+  try {
+    const user = await User.findById(req.user._id).populate("bulk").exec();
+
+    if (!user) {
+      const err = new Error("User not found");
+      err.status = 404;
+      return next(err);
+    }
+
+    const filteredCards = user.bulk.filter((card) => {
+      if (bulk_filter === "rare") {
+        return (
+          (card.meta.rarity.grade < 4 && card.meta.supertype === "Pokémon") ||
+          (card.meta.supertype === "Pokémon" && card.meta.rarity.reverseHolo)
+        );
+      } else if (bulk_filter === "nonrare") {
+        return card.meta.rarity.grade > 3 && card.meta.supertype === "Pokémon";
+      } else {
+        return card.meta.supertype === "Trainer";
+      }
+    });
+
+    let totalCount = 0;
+    let bulkTotal = 0;
+    filteredCards.forEach((card) => {
+      bulkTotal += card.value.market * card.value.count;
+      totalCount += card.value.count;
+    });
+
+    // Find which sets exist in collection
+    let setOrderLength = 0;
+    const setOrder = {};
+    filteredCards.forEach((card) => {
+      const setId = card.meta.set.id;
+
+      if (!(setId in setOrder)) {
+        setOrder[setId] = true;
+        setOrderLength++;
+      }
+    });
+
+    pokemon.set
+      .all()
+      .then((sets) => {
+        let n = 0;
+
+        // Search through all sets and get the order of collection sets
+        sets.forEach((set) => {
+          if (set.id in setOrder) {
+            setOrder[set.id] = n;
+            n++;
+          }
+        });
+
+        // Organize the cards into the sets by date
+        const orderedSets = new Array(setOrderLength);
+
+        filteredCards.forEach((card) => {
+          const setId = card.meta.set.id;
+          if (!orderedSets[setOrder[setId]]) {
+            orderedSets[setOrder[setId]] = [];
+          }
+          orderedSets[setOrder[setId]].push(card);
+        });
+
+        // reverse to most recent first
+        orderedSets.reverse();
+        const orderedSetsByNum = [];
+        orderedSets.forEach((set) => {
+          set.sort((a, b) => {
+            const numA = Number(
+              a.meta.set.number
+                .split("")
+                .filter((x) => !!+x || x === "0")
+                .join("")
+            );
+            const numB = Number(
+              b.meta.set.number
+                .split("")
+                .filter((x) => !!+x || x === "0")
+                .join("")
+            );
+            return numA - numB;
+          });
+
+          orderedSetsByNum.push(set);
+        });
+
+        res.render("bulk-rare", {
+          title: "Bulk Inventory",
+          list_sets: orderedSetsByNum,
+          total: bulkTotal,
+          count: totalCount
+        });
+      })
+      .catch((err) => {
+        return next(err);
+      });
+  } catch (err) {
+    return next(err);
+  }
+
+  return;
+
+  User.findById(req.user._id)
+    .populate("bulk")
+    .exec((err, result) => {
+      if (err) return next(err);
+
       const user = result;
       let totalCount = 0;
       let bulkTotal = 0;
