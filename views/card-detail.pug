@@ -39,20 +39,18 @@ block content
                   span(style="font-size:1rem")= ` $${Number(pricePoint[1]).toFixed(2)}`
 
     div.card-edits-container
-      form.card-edit-form(method="POST" action=`/collection/${card._id}/edit`)
-        if !card.meta.rarity.reverseHolo
-          div.reverse-holo-container
-            label(for="reverseHolo") Reverse Holo:
-            select#reverseHolo(name="reverseHolo") 
-              option(value="false" default) No 
-              option(value="true") Yes 
-        if currentUser.bulk.includes(card._id)
-          div.owned-container 
-            label(for="count") Owned:
+      if currentUser.bulk.includes(card._id)
+        form.card-edit-form(method="POST" action=`/collection/${card._id}/edit`)
+          input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+          div.bulk-container 
+            label(for="count") Bulk Count:
             input#count(type="number" value=(card.value.count) name="count" min="0")
-        input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-        if !card.meta.rarity.reverseHolo || currentUser.bulk.includes(card._id)
-          button.btn.secondary-btn(type="submit") Edit Card 
+          button.btn.secondary-btn(type="submit") Update 
+      else 
+        form.add-card-form(method="POST" action="/collection/add-bulk") 
+          input#cardId(type="hidden" name="cardId" required="true" value=card._id)
+          button.btn.btn-secondary(type="submit") Add Bulk
+        
       
       div.form-separator
         form.card-edit-rarity-form(method="POST" action=`/collection/${card._id}/edit-rarity`)
@@ -60,8 +58,7 @@ block content
           input#rarity(type="number" name="rarity" required="true" value=card.meta.rarity.grade)
           button.btn.btn-primary(type="submit") Edit Rarity 
 
-        hr(style="margin: 2px")
-
+      div.form-separator
         form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
           input#cardId(type="hidden" name="cardId" required="true" value=card.id)
           input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)

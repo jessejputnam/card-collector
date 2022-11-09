@@ -20,10 +20,15 @@ block content
               if !user_cards.has(card.id)
                 form.add-card-form(method="POST" action="/collection/add-card") 
                   input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+                  input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value=false)
                   button.btn.btn-secondary(type="submit") Add Card
               else 
-                em.result-in-collection In collection
-              //- if !bulk_cards.has(card.id) && user_cards.has(card.id)
-              //-   form.add-card-form(method="POST" action="/collection/add-bulk") 
-              //-     input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-              //-     button.btn.btn-secondary(type="submit") Add Bulk
+                p.result-in-collection(style="font-size:.7rem") In collection: ✔️
+              
+              if !user_reverse_cards.has(card.id)
+                form.add-card-form(method="POST" action="/collection/add-card") 
+                  input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+                  input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="true")
+                  button.btn.btn-secondary(type="submit" style="font-size:.7rem;width:91px") Add Reverse Holo
+              else 
+                p.result-in-collection(style="font-size:.7rem") Reverse Holo: ✔️

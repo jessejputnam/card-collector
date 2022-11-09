@@ -267,10 +267,9 @@ exports.display_bulk_get = (req, res, next) => {
 };
 
 // ################# Update/Delete Cards ##################
-// Handle edit card detail on POST
+// Handle edit bulk amount on POST
 exports.edit_card_post = (req, res, next) => {
   const cardId = req.params.id;
-  const pokemonId = req.body.cardId;
 
   Card.findById(cardId).exec((err, result) => {
     if (err) return next(err);
@@ -282,55 +281,31 @@ exports.edit_card_post = (req, res, next) => {
       return next(err);
     }
 
-    if (req.body.reverseHolo === "true") {
-      pokemon.card
-        .find(pokemonId)
-        .then((tcgCard) => {
-          const marketValue = tcgCard.tcgplayer.prices.reverseHolofoil.market;
+    card.value.count = req.body.count;
 
-          card.meta.rarity.reverseHolo = true;
-          card.value.market = marketValue;
-          card.value.priceType = "reverseHolofoil";
-          card.value.priceHistory = [
-            [new Date().toLocaleDateString("en-US"), marketValue]
-          ];
+    card.save((err) => {
+      if (err) return next(err);
 
-          card.save((err) => {
+      if (card.value.count === 0) {
+        User.findById(req.user._id, (err, result) => {
+          if (err) return next(err);
+
+          const user = result;
+          const filteredBulk = user.bulk.filter((cardId) => {
+            return String(cardId) !== String(card._id);
+          });
+          user.bulk = filteredBulk;
+
+          user.save((err) => {
             if (err) return next(err);
 
-            return res.redirect(`/collection/${card._id}`);
+            return res.redirect("/collection/bulk");
           });
-        })
-        .catch((err) => {
-          return next(err);
         });
-    } else {
-      card.value.count = req.body.count;
-
-      card.save((err) => {
-        if (err) return next(err);
-
-        if (card.value.count === 0) {
-          User.findById(req.user._id, (err, result) => {
-            if (err) return next(err);
-
-            const user = result;
-            const filteredBulk = user.bulk.filter((cardId) => {
-              return String(cardId) !== String(card._id);
-            });
-            user.bulk = filteredBulk;
-
-            user.save((err) => {
-              if (err) return next(err);
-
-              return res.redirect("/collection/bulk");
-            });
-          });
-        }
-
+      } else {
         return res.redirect(`/collection/bulk`);
-      });
-    }
+      }
+    });
   });
 };
 
@@ -487,27 +462,10 @@ exports.edit_card_rarity = (req, res, next) => {
 };
 
 // ################## Add Cards ###################
+
 exports.add_card_post = async (req, res, next) => {
   const cardId = req.body.cardId;
-
-  const allDbCards = await Card.find();
-  for (let card of allDbCards) {
-    if (card.id === cardId) {
-      if (card.meta.supertype === "Pokémon" || card.value.market >= 0.9) {
-        User.findByIdAndUpdate(
-          req.user._id,
-          { $push: { cards: card._id } },
-          (err) => {
-            if (err) return next(err);
-
-            return res.redirect("/collection/home");
-          }
-        );
-      } else {
-        return res.redirect("/collection/home");
-      }
-    }
-  }
+  const revHolo = req.body.reverseHoloCheck === "true" ? true : false;
 
   pokemon.card
     .find(cardId)
@@ -515,7 +473,10 @@ exports.add_card_post = async (req, res, next) => {
       let marketValue;
       let priceType;
 
-      if (!card.tcgplayer) {
+      if (revHolo) {
+        marketValue = card.tcgplayer.prices.reverseHolofoil.market;
+        priceType = "reverseHolofoil";
+      } else if (!card.tcgplayer) {
         marketValue = 0;
         priceType = null;
       } else if (card.tcgplayer.prices.holofoil) {
@@ -558,7 +519,8 @@ exports.add_card_post = async (req, res, next) => {
           },
           rarity: {
             type: card.rarity,
-            grade: getRarityRating[card.rarity]
+            grade: getRarityRating[card.rarity],
+            reverseHolo: revHolo
           },
           supertype: card.supertype,
           subtypes: card.subtypes,
@@ -603,6 +565,7 @@ exports.add_card_post = async (req, res, next) => {
               if (err) return next(err);
 
               res.redirect("/collection/home");
+              return;
             }
           );
         } else {
@@ -616,10 +579,8 @@ exports.add_card_post = async (req, res, next) => {
 };
 
 exports.add_bulk_post = (req, res, next) => {
-  Card.findOne({ id: req.body.cardId }, function (err, result) {
+  Card.findById(req.body.cardId, function (err, card) {
     if (err) return next(err);
-    const card_id = result._id;
-    const card = result;
 
     if (!card) {
       const err = new Error("Card not found");
@@ -640,12 +601,12 @@ exports.add_bulk_post = (req, res, next) => {
           err.status = 404;
           return next(err);
         }
-        user.bulk.push(card_id);
 
+        user.bulk.push(card._id);
         user.save((err) => {
           if (err) return next(err);
 
-          return res.redirect("/collection/home");
+          return res.redirect(`/collection/${card._id}`);
         });
       });
     });

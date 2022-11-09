@@ -650,13 +650,12 @@ div.collection-item-value {
 }
 
 .card-edits-container {
-  width: clamp(200px, 80%, 850px);
+  max-width: 900px;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
-  margin: 10px auto;
 }
 
 .card-edits-container > div,
@@ -664,11 +663,12 @@ div.collection-item-value {
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.709);
   padding: 10px;
   border-radius: 10px;
-  height: 110px;
-  width: 190px;
+  height: 90px;
+  width: 180px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .card-edit-form {
@@ -687,24 +687,22 @@ div.collection-item-value {
   padding: 1px;
 }
 
-.owned-container {
+.bulk-container {
   display: flex;
-  column-gap: 55px;
+  align-items: center;
+  column-gap: 15px;
+  margin: 0 auto;
 }
 
-.owned-container > input {
+.bulk-container > input {
   width: 45px;
-  padding: 1px 0;
+  height: 22px;
   text-align: center;
-  -moz-appearance: textfield;
-  appearance: textfield;
 }
 
-.owned-container > input::-webkit-inner-spin-button,
-.owned-container > input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
+.bulk-container > input::-webkit-inner-spin-button,
+.bulk-container > input::-webkit-outer-spin-button {
+  opacity: 1;
 }
 
 .form-separator {
@@ -715,20 +713,19 @@ div.collection-item-value {
 
 .card-edit-rarity-form {
   display: flex;
+  align-items: center;
   column-gap: 10px;
+  margin: 0 auto;
 }
 
 .card-edit-rarity-form > input {
   text-align: center;
-  -moz-appearance: textfield;
-  appearance: textfield;
+  height: 22px;
 }
 
 .card-edit-rarity-form > input::-webkit-inner-spin-button,
 .card-edit-rarity-form > input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
+  opacity: 1;
 }
 
 .card-edit-rarity-form > #rarity {
@@ -757,6 +754,7 @@ select#binder {
 @media only screen and (max-width: 530px) {
   .card-edits-container {
     width: 80%;
+    margin: 0 auto;
   }
   .card-edits-container > div,
   .card-edits-container > form {
