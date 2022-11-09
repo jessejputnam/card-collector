@@ -499,11 +499,11 @@ exports.edit_card_post = (req, res, next) => {
           user.save((err) => {
             if (err) return next(err);
 
-            return res.redirect("/collection/bulk");
+            return res.redirect(`/collection/${cardId}`);
           });
         });
       } else {
-        return res.redirect(`/collection/bulk`);
+        return res.redirect(`/collection/${cardId}`);
       }
     });
   });

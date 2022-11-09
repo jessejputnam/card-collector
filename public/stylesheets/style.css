@@ -737,11 +737,35 @@ select#binder {
   text-align: center;
 }
 
+.delete-card-container {
+  max-width: 900px;
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .delete-card {
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.617);
-  margin: 10px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
   padding: 5px 10px;
+  background-color: rgba(255, 102, 102, 0.162);
+
+  transition: background-color 0.5s, color 0.5s;
+}
+
+@media (hover: hover) {
+  .delete-card:hover {
+    background-color: rgba(220, 0, 0, 0.677);
+    color: white;
+  }
+
+  .delete-card:hover a {
+    color: white;
+  }
 }
 
 @media only screen and (max-width: 1150px) {

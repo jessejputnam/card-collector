@@ -28,7 +28,7 @@ block content
               fieldset.filter-fieldset
                 legend Card Name
                 div.filter-card-name
-                  input#name(type="text" name="name" value=(savedQuery.name === undefined ? "" : savedQuery.name))
+                  input#name(autofocus type="text" name="name" value=(savedQuery.name === undefined ? "" : savedQuery.name))
                   div.filter-checkbox-container 
                     input#reverseholo(type="checkbox" name="reverseholo" value="reverseholo") 
                     label(for="reverseholo" checked=savedQuery.reverseholo)  Reverse Holofoil

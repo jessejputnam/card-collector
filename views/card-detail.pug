@@ -2,6 +2,7 @@ extends layout
 
 block content 
   div.page-wrapper
+    a(href=`/collection/sets#${card.meta.set.id}`) Back to sets
     h1= title 
     if currentUser.prize.includes(card._id)
       em(style='margin-top:-10px') Prize Binder 
@@ -72,5 +73,6 @@ block content
           option(value="elite" selected=(currentUser.elite.includes(card._id) ? "selected" : false)) Elite Binder
         button.btn.btn-secondary(type="submit") Select Binder
 
-    div.delete-card 
-      a(href=`/collection/${card._id}/delete`) Delete Card
+    div.delete-card-container
+      div.delete-card 
+        a(href=`/collection/${card._id}/delete`) Delete Card
