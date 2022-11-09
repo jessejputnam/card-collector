@@ -10,7 +10,7 @@ block content
       div.results-wrapper
         each card in card_list 
           div.result-container
-            div(class=`result-img-container${user_cards.has(card.id) ? " owned" : ""}`) 
+            div(class=`result-img-container${user_cards.has(card.id) || user_reverse_cards.has(card.id) ? " owned" : ""}`) 
               img(src=card.images.small, alt=card.name)
             div.result-info-container 
               p.result-title= card.name 

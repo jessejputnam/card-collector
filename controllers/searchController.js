@@ -56,25 +56,17 @@ exports.search_results_get = (req, res, next) => {
 
             const reverseHoloSet = new Set();
             const cardSet = new Set();
-            const reverseHoloBulkSet = new Set();
-            const bulkSet = new Set();
+
             user.cards.forEach((card) => {
               if (!card.meta.rarity.reverseHolo) cardSet.add(card.id);
               else reverseHoloSet.add(card.id);
-            });
-            user.bulk.forEach((card) => {
-              if (!card.meta.rarity.reverseHolo) bulkSet.add(card.id);
-              else reverseHoloBulkSet.add(card.id);
             });
 
             res.render("search-results", {
               title: "Results",
               card_list: result.data,
               user_cards: cardSet,
-              user_reverse_cards: reverseHoloSet,
-              bulk_cards: bulkSet,
-              bulk_reverse_cards: reverseHoloBulkSet,
-              cardIds
+              user_reverse_cards: reverseHoloSet
             });
           });
       })
