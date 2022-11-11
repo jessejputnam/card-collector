@@ -2,7 +2,8 @@ extends layout
 
 block content 
   div.page-wrapper.bulk-page
-    h1= title
+    h1= title 
+      span(style="font-size:1rem;color:gray")= " : " + filter_title
     div 
       p #{count} - Total: $#{total.toFixed(2)}
     hr 

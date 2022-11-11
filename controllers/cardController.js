@@ -271,6 +271,7 @@ exports.display_bulk_get = (req, res, next) => {
 // Handle display bulk rare pokemon on GET
 exports.display_bulk_filter_get = async (req, res, next) => {
   const bulk_filter = req.url.split("/bulk/")[1];
+  let filter_title;
   // rare, nonrare, trainer
   try {
     const user = await User.findById(req.user._id).populate("bulk").exec();
@@ -283,13 +284,16 @@ exports.display_bulk_filter_get = async (req, res, next) => {
 
     const filteredCards = user.bulk.filter((card) => {
       if (bulk_filter === "rare") {
+        filter_title = "Rare Pokémon";
         return (
           (card.meta.rarity.grade < 4 && card.meta.supertype === "Pokémon") ||
           (card.meta.supertype === "Pokémon" && card.meta.rarity.reverseHolo)
         );
       } else if (bulk_filter === "nonrare") {
+        filter_title = "Non-Rare Pokémon";
         return card.meta.rarity.grade > 3 && card.meta.supertype === "Pokémon";
       } else {
+        filter_title = "Trainer";
         return card.meta.supertype === "Trainer";
       }
     });
@@ -362,6 +366,7 @@ exports.display_bulk_filter_get = async (req, res, next) => {
 
         res.render("bulk-rare", {
           title: "Bulk Inventory",
+          filter_title,
           list_sets: orderedSetsByNum,
           total: bulkTotal,
           count: totalCount
@@ -373,97 +378,6 @@ exports.display_bulk_filter_get = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-
-  return;
-
-  User.findById(req.user._id)
-    .populate("bulk")
-    .exec((err, result) => {
-      if (err) return next(err);
-
-      const user = result;
-      let totalCount = 0;
-      let bulkTotal = 0;
-      user.bulk.forEach((card) => {
-        bulkTotal += card.value.market * card.value.count;
-        totalCount += card.value.count;
-      });
-
-      if (!user) {
-        const err = new Error("User not found");
-        err.status = 404;
-        return next(err);
-      }
-
-      // Find which sets exist in collection
-      let setOrderLength = 0;
-      const setOrder = {};
-      user.bulk.forEach((card) => {
-        const setId = card.meta.set.id;
-
-        if (!(setId in setOrder)) {
-          setOrder[setId] = true;
-          setOrderLength++;
-        }
-      });
-
-      pokemon.set
-        .all()
-        .then((sets) => {
-          let n = 0;
-
-          // Search through all sets and get the order of collection sets
-          sets.forEach((set) => {
-            if (set.id in setOrder) {
-              setOrder[set.id] = n;
-              n++;
-            }
-          });
-
-          // Organize the cards into the sets by date
-          const orderedSets = new Array(setOrderLength);
-          user.bulk.forEach((card) => {
-            const setId = card.meta.set.id;
-            if (!orderedSets[setOrder[setId]]) {
-              orderedSets[setOrder[setId]] = [];
-            }
-            orderedSets[setOrder[setId]].push(card);
-          });
-
-          // reverse to most recent first
-          orderedSets.reverse();
-          const orderedSetsByNum = [];
-          orderedSets.forEach((set) => {
-            set.sort((a, b) => {
-              const numA = Number(
-                a.meta.set.number
-                  .split("")
-                  .filter((x) => !!+x || x === "0")
-                  .join("")
-              );
-              const numB = Number(
-                b.meta.set.number
-                  .split("")
-                  .filter((x) => !!+x || x === "0")
-                  .join("")
-              );
-              return numA - numB;
-            });
-
-            orderedSetsByNum.push(set);
-          });
-
-          res.render("bulk", {
-            title: "Bulk Inventory",
-            list_sets: orderedSetsByNum,
-            total: bulkTotal,
-            count: totalCount
-          });
-        })
-        .catch((err) => {
-          return next(err);
-        });
-    });
 };
 
 // ################# Update/Delete Cards ##################
@@ -709,6 +623,12 @@ exports.add_card_post = async (req, res, next) => {
         priceType = null;
       }
 
+      // Make a check to see if you need to add to bulk
+      const addToBulk =
+        card.supertype === "Pokémon" || getRarityRating[card.rarity] < 2
+          ? false
+          : true;
+
       const newCard = new Card({
         id: card.id,
 
@@ -746,17 +666,17 @@ exports.add_card_post = async (req, res, next) => {
             [new Date().toLocaleDateString("en-US"), marketValue.toFixed(2)]
           ],
           priceType: priceType,
-          count: 0
+          count: addToBulk ? 1 : 0
         }
       });
 
       newCard.save((err) => {
         if (err) return next(err);
 
-        // Only add to collection if pokemon or worth more than 90 cents
+        // Only add to collection if pokemon or at least promo rare
         if (
           newCard.meta.supertype === "Pokémon" ||
-          newCard.value.market > 0.9
+          newCard.meta.rarity.grade < 2
         ) {
           User.findByIdAndUpdate(
             req.user._id,
@@ -769,7 +689,17 @@ exports.add_card_post = async (req, res, next) => {
             }
           );
         } else {
-          return res.redirect("/collection/home");
+          // Otherwise, add it to bulk
+          User.findByIdAndUpdate(
+            req.user._id,
+            { $push: { bulk: newCard._id } },
+            (err) => {
+              if (err) return next(err);
+
+              res.redirect("/collection/home");
+              return;
+            }
+          );
         }
       });
     })

@@ -855,16 +855,14 @@ select#binder {
   max-height: 250px;
   padding: 15px;
   margin-left: 20px;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 5px 20px;
   flex-wrap: wrap;
   font-size: 0.8rem;
   list-style-type: "〄";
-  width: fit-content;
   background-color: rgb(250, 245, 245);
-  width: 95%;
 }
 
 .page-wrapper > .page-nav > li {
@@ -904,6 +902,42 @@ select#binder {
   text-decoration: none;
 }
 
+@media only screen and (max-width: 1100px) {
+  .page-wrapper > .page-nav {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 3px solid #faf5f5;
+    margin-left: 0;
+  }
+
+  .page-wrapper > .page-nav > li {
+    width: 260px;
+    max-width: none;
+  }
+
+  .page-wrapper > .page-nav > li > a {
+    font-size: 0.9rem;
+  }
+
+  .set-results-container {
+    margin: 0;
+  }
+
+  .set-container {
+    border-radius: 10px;
+    /* width: 110%; */
+  }
+
+  .set-card-list {
+    max-height: 480px;
+    overflow-x: auto;
+  }
+
+  .set-card-list > li {
+    width: 250px;
+  }
+}
+
 /* ##################### ## BINDER VIEW ################## */
 
 .page-wrapper hr {
@@ -932,7 +966,7 @@ select#binder {
 .prize-img-container > img {
   height: 350px;
   border-radius: 13px;
-  box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.772);
+  box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.437);
   filter: saturate(140%);
 }
 
@@ -982,13 +1016,18 @@ select#binder {
   column-gap: 10px;
 }
 
-.prize-card-container > div > a {
+.prize-info-container {
+  backdrop-filter: blur(1px);
+}
+
+.prize-info-container > a {
   margin-top: 5px;
   color: rgba(221, 224, 140, 0.878);
   text-shadow: 1px 1px 1px black;
+  text-decoration: none;
 }
 
-.prize-card-container > div > p {
+.prize-info-container > p {
   font-size: 0.8rem;
   line-height: 0.7rem;
   color: rgba(216, 216, 216, 0.901);
@@ -1006,11 +1045,11 @@ select#binder {
     width: 179.19px;
   }
 
-  .prize-card-container > div > a {
+  .prize-info-container > a {
     font-size: 0.8rem;
   }
 
-  .prize-card-container > div > p {
+  .prize-info-container > p {
     font-size: 0.6rem;
   }
 }
