@@ -684,7 +684,7 @@ exports.add_card_post = async (req, res, next) => {
             (err) => {
               if (err) return next(err);
 
-              res.redirect("/collection/home");
+              res.redirect(`/collection/sets#${newCard.meta.set.id}`);
               return;
             }
           );
@@ -696,7 +696,7 @@ exports.add_card_post = async (req, res, next) => {
             (err) => {
               if (err) return next(err);
 
-              res.redirect("/collection/home");
+              res.redirect(`/collection/sets#${newCard.meta.set.id}`);
               return;
             }
           );

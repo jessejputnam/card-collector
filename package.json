@@ -24,7 +24,8 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pokemontcgsdk": "^2.0.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.19.3",
