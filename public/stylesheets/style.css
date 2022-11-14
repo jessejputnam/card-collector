@@ -580,6 +580,7 @@ div.collection-item-value {
   max-height: 600px;
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.672);
   border-radius: 25px;
+  width: 430.08px;
 }
 
 @media only screen and (max-width: 485px) {

@@ -588,7 +588,9 @@ exports.add_card_post = async (req, res, next) => {
       let priceType;
 
       if (revHolo) {
-        marketValue = card.tcgplayer.prices.reverseHolofoil.market;
+        marketValue =
+          card.tcgplayer.prices.reverseHolofoil.market ||
+          card.tcgplayer.prices.reverseHolofoil.mid;
         priceType = "reverseHolofoil";
       } else if (!card.tcgplayer) {
         marketValue = 0;

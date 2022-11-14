@@ -20,7 +20,7 @@ block content
               if !user_cards.has(card.id)
                 form.add-card-form(method="POST" action="/collection/add-card") 
                   input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-                  input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value=false)
+                  input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="false")
                   button.btn.btn-secondary(type="submit") Add Card
               else 
                 p.result-in-collection(style="font-size:.7rem") In collection: ✔️
