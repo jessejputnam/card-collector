@@ -294,7 +294,9 @@ exports.display_bulk_filter_get = async (req, res, next) => {
         return card.meta.rarity.grade > 3 && card.meta.supertype === "Pokémon";
       } else {
         filter_title = "Trainer";
-        return card.meta.supertype === "Trainer";
+        return (
+          card.meta.supertype === "Trainer" || card.meta.supertype === "Energy"
+        );
       }
     });
 
