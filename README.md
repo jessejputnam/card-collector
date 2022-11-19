@@ -60,13 +60,9 @@ Users should be able to:
 - [Express](https://expressjs.com/) - Web framework for Node.js
 - [MongoDB](https://www.mongodb.com/) - NoSQL cloud database
 - [Mongoose](https://mongoosejs.com/) - MongoDB object modeling for Node.js
+- [Passport](https://www.passportjs.org/) - Authorization and session security
 
 ### Continued Development
-
-- Working on the aesthetics of the site
-- Creating routes for sorting bulk cards
-- Changing the reverse holofoil logic to separate from non-holo cards in collection
-- Fix Elite binder bug on deployment
 
 ## Author
 
