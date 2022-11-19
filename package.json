@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "devstart": "nodemon --exec babel-node ./bin/www",
+    "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=card-collector:* npm run devstart"
   },
   "dependencies": {

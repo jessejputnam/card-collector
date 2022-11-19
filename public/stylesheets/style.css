@@ -322,26 +322,9 @@ hr {
     width: 100%;
   }
 
-  .collection-menu {
-    overflow: hidden;
-    height: 0;
-    position: absolute;
-    transition: height 0.5s, padding 0.5s;
-    z-index: 100;
-    background-color: #212f3cd3;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.441);
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-
-  .collection-menu > ul > li {
-    color: white;
-  }
-
+  .collection-menu,
   .bulk-menu {
-    z-index: 100;
+    margin-left: -10px;
     overflow: hidden;
     height: 0;
     position: absolute;
@@ -353,11 +336,25 @@ hr {
     box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.441);
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
+  }
+
+  .collection-menu > ul,
+  .bulk-menu > ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: start;
+    align-items: center;
+  }
+
+  .collection-menu > ul > li > a,
+  .bulk-menu > ul > li > a {
+    color: rgba(255, 255, 255, 0.597);
   }
 
   .menu-open {
     height: 120px;
-    padding: 10px;
+    padding: 5px 10px 10px;
   }
 }
 
@@ -1124,6 +1121,11 @@ select#binder {
   background-color: rgb(250, 245, 245);
 }
 
+.filter-fieldsets-container > div {
+  display: flex;
+  column-gap: 25px;
+}
+
 .filter-fieldset {
   padding: 5px 10px;
   display: flex;
@@ -1135,6 +1137,7 @@ select#binder {
 
 .filter-fieldset-supertype {
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .filter-fieldset-supertype > div {
@@ -1150,8 +1153,28 @@ select#binder {
 }
 
 .filter-fieldset-sets {
-  max-height: 200px;
+  max-height: 220px;
   row-gap: 10px;
+}
+
+@media only screen and (max-width: 800px) {
+  .filter-fieldsets-container > div {
+    flex-wrap: wrap;
+  }
+
+  .filter-fieldsets-container > div > .filter-fieldset {
+    width: 100%;
+  }
+
+  .filter-fieldset {
+    max-height: none;
+    align-items: center;
+  }
+
+  .filter-fieldset-sets {
+    max-height: none;
+    padding-left: 25px;
+  }
 }
 
 .filter-card-name {
