@@ -23,6 +23,7 @@ const e = require("connect-flash");
 
 // Handle display collection on GET
 exports.display_collection_get = (req, res, next) => {
+  console.log(req.session);
   User.findById(req.user._id)
     .populate("cards")
     .exec(function (err, user) {
@@ -1138,3 +1139,10 @@ exports.display_filter_page_get = (req, res, next) => {
       return res.render("filter-collection", page_data);
     });
 };
+
+// exports.update_prices_post = async (req, res, next) => {
+//   const collection = req.user.cards;
+
+//   for (let card of collection) {
+//   }
+// };
