@@ -2,7 +2,7 @@ extends layout
 
 block content 
   div.page-wrapper.bulk-page
-    h1= title
+    h1#top= title
     div 
       p #{count} - Total: $#{total.toFixed(2)}
     hr 
@@ -16,6 +16,7 @@ block content
       each set in list_sets 
         hr(style="margin-top:15px")
         div.set-container(id=set[0].meta.set.id)
+          a(href="#top" style="display:inline-block;font-size:.7rem;margin-bottom:10px") Back to Top 
           h3(style="margin-bottom:15px;")= set[0].meta.set.name + " "
             span(style="font-size:.8rem;color:gray;font-weight:normal")  #{" -"} #{set.length}/#{set[0].meta.set.totalPrint}
             span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)

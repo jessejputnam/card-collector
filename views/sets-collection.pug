@@ -2,7 +2,7 @@ extends layout
 
 block content 
   div.page-wrapper.sets-page
-    h1 Set Collection
+    h1#top Set Collection
 
     ul.page-nav
       each set in list_sets 
@@ -13,6 +13,7 @@ block content
       each set in list_sets 
         hr
         div.set-container(id=set[0].meta.set.id)
+          a(href="#top" style="display:inline-block;font-size:.7rem;margin-bottom:10px") Back to Top 
           h3= set[0].meta.set.name 
             span(style="font-size:.8rem;color:gray;font-weight:normal")  #{set.length}/#{set[0].meta.set.totalPrint}
             span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
