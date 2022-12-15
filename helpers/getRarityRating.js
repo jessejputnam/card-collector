@@ -6,6 +6,7 @@ const getRarityRating = {
   "Rare Rainbow": -3,
   "Trainer Gallery Rare Holo": -3,
   "Trainer Gallery Rare Holo V": -3,
+  "Trainer Gallery Rare Ultra": -3,
   LEGEND: -2,
   "Rare Holo VMAX": -2,
   "Rare Shiny GX": -2,
