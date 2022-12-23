@@ -23,7 +23,6 @@ const e = require("connect-flash");
 
 // Handle display collection on GET
 exports.display_collection_get = (req, res, next) => {
-  console.log(req.session);
   User.findById(req.user._id)
     .populate("cards")
     .exec(function (err, user) {
