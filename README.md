@@ -50,6 +50,18 @@ Users should be able to:
 
 ![](./collage.jpg)
 
+<!-- Env Variables -->
+
+### :key: Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`MONGODB_URI` - MongoDB key [MongoDB](https://www.mongodb.com/)
+
+`SESSION_SECRET` - Random string for security
+
+`POKE_API_KEY` - API key for the TCG database [PokeAPI](https://pokemontcg.io/)
+
 ## My process
 
 ### Built with
