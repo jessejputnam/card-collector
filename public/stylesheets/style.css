@@ -176,7 +176,8 @@ hr {
   text-align: center;
   background-image: url("../images/pattern-background.jpg");
   background-size: cover;
-  height: 94vh;
+  /* height: 94vh; */
+  min-height: 94vh;
   max-width: none;
 }
 
@@ -207,7 +208,6 @@ hr {
   left: 50%;
   transform: translate(-50%, 10%);
   opacity: 0;
-
   transition: opacity 3s;
 }
 
@@ -894,9 +894,8 @@ select#binder {
   row-gap: 5px;
   column-gap: 5px;
   max-height: 850px;
-}np
-
-.set-card-list > p {
+}
+np .set-card-list > p {
   margin-left: 15px;
 }
 
