@@ -3,6 +3,7 @@
 const getRarityRating = {
   "Rare Ultra": -3,
   "Rare Secret": -3,
+  "Hyper Rare": -3,
   "Rare Rainbow": -3,
   "Trainer Gallery Rare Holo": -3,
   "Trainer Gallery Rare Holo V": -3,
@@ -13,6 +14,7 @@ const getRarityRating = {
   "Rare Holo GX": -2,
   VM: -2,
   "Rare Holo VSTAR": -1,
+  "Double Rare": -1,
   "Rare Holo V": 0,
   V: 0,
   "Rare Holo EX": 1,
