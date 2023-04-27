@@ -589,6 +589,8 @@ exports.add_card_post = async (req, res, next) => {
       let marketValue;
       let priceType;
 
+      console.log(card.rarity);
+
       if (revHolo) {
         marketValue =
           card.tcgplayer.prices.reverseHolofoil.market ||

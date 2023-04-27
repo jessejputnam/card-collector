@@ -19,7 +19,7 @@ const getRarityRating = {
   "Illustration Rare": -1,
   "Rare Holo V": 0,
   V: 0,
-  "Double rare": 1,
+  "Double Rare": 1,
   "Rare Holo EX": 1,
   "Rare Holo LV.X": 1,
   "Radiant Rare": 1,
