@@ -11,9 +11,6 @@ router.get("/home", card_controller.display_collection_get);
 // GET request for home sorted
 router.get("/home/sort", card_controller.display_collection_sorted_get);
 
-// POST request for update all prices
-// router.post("/update-prices", card_controller.update_prices_post);
-
 // GET request for prize binder
 router.get("/prize", card_controller.display_prize_get);
 

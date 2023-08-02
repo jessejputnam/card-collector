@@ -8,6 +8,8 @@ const User = require("../models/user");
 const getRarityRating = require("../helpers/getRarityRating");
 const e = require("connect-flash");
 
+const sortByDate = require("../helpers/sortByDate");
+
 /* 
 
   TABLE OF CONTENTS
@@ -848,7 +850,7 @@ exports.display_collection_sorted_get = (req, res, next) => {
 // ################ Filter Cards ##################
 // Handle display cards by set on GET
 exports.display_filter_by_set_get = (req, res, next) => {
-  // Finf User
+  // Find User
   User.findById(req.user._id)
     .populate("cards")
     .exec((err, result) => {
@@ -868,24 +870,18 @@ exports.display_filter_by_set_get = (req, res, next) => {
         const setId = card.meta.set.id;
 
         if (!(setId in setOrder)) {
-          setOrder[setId] = true;
+          setOrder[setId] = card.meta.set.releaseDate;
           setOrderLength++;
         }
       });
+      const setArr = [];
+      for (const set in setOrder) setArr.push([set, setOrder[set]]);
+      setArr.sort((a, b) => sortByDate(a, b));
+      for (let i = 0; i < setArr.length; i++) setOrder[setArr[i][0]] = i;
 
       pokemon.set
         .all()
-        .then((sets) => {
-          let n = 0;
-
-          // Search through all sets and get the order of collection sets
-          sets.forEach((set) => {
-            if (set.id in setOrder) {
-              setOrder[set.id] = n;
-              n++;
-            }
-          });
-
+        .then(() => {
           // Organize the cards into the sets by date
           const orderedSets = new Array(setOrderLength);
           user.cards.forEach((card) => {
@@ -896,7 +892,6 @@ exports.display_filter_by_set_get = (req, res, next) => {
             orderedSets[setOrder[setId]].push(card);
           });
 
-          orderedSets.reverse();
           const orderedSetsByNum = [];
           orderedSets.forEach((set) => {
             set.sort((a, b) => {
@@ -1138,10 +1133,3 @@ exports.display_filter_page_get = (req, res, next) => {
       return res.render("filter-collection", page_data);
     });
 };
-
-// exports.update_prices_post = async (req, res, next) => {
-//   const collection = req.user.cards;
-
-//   for (let card of collection) {
-//   }
-// };
