@@ -9,9 +9,9 @@ const Card = require("../models/card");
 // Display search form on GET
 exports.search_get = (req, res, next) => {
   pokemon.set
-    .all()
+    .all({ orderBy: "-releaseDate" })
     .then((sets) => {
-      const reversedSets = sets.reverse();
+      const reversedSets = sets;
 
       res.render("search-form", {
         title: "Search for a Card",
