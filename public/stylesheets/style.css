@@ -63,11 +63,17 @@ a {
   text-underline-offset: 0.3rem;
 }
 
+.not-a {
+  color: inherit;
+  text-decoration: none;
+}
+
 @media (hover: hover) {
   a:hover {
     text-decoration-color: rgba(54, 54, 54, 0.643);
   }
 }
+
 
 .btn {
   padding: 2.5px 10px;

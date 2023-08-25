@@ -11,10 +11,11 @@ block content
     hr
     div.binder-container
       each card in cards 
-        div.prize-card-container
-          div.prize-img-container(id=card._id)
-            img(src=card.meta.images.large, alt=card.pokemon.name)
-            div.prize-overlay 
-          div.prize-info-container 
-            a(href=`/collection/${card._id}`)= card.pokemon.name 
-            p= "$" + card.value.market.toFixed(2)
+        a(href=`/collection/${card._id}`)
+          div.prize-card-container
+            div.prize-img-container(id=card._id)
+              img(src=card.meta.images.large, alt=card.pokemon.name)
+              div.prize-overlay 
+            div.prize-info-container 
+              a(href=`/collection/${card._id}`)= card.pokemon.name 
+              p= "$" + card.value.market.toFixed(2)
