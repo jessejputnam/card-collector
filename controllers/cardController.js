@@ -676,37 +676,19 @@ exports.add_card_post = async (req, res, next) => {
         }
       });
 
-      newCard.save((err) => {
-        if (err) return next(err);
+    newCard.save((err) => {
+      if (err) return next(err);
 
-        // Only add to collection if pokemon or at least promo rare
-        if (
-          newCard.meta.supertype === "Pokémon" ||
-          newCard.meta.rarity.grade < 2
-        ) {
-          User.findByIdAndUpdate(
-            req.user._id,
-            { $push: { cards: newCard._id } },
-            (err) => {
-              if (err) return next(err);
+        User.findByIdAndUpdate(
+          req.user._id,
+          { $push: { cards: newCard._id } },
+          (err) => {
+            if (err) return next(err);
 
-              res.redirect(`/collection/sets#${newCard.meta.set.id}`);
-              return;
-            }
-          );
-        } else {
-          // Otherwise, add it to bulk
-          User.findByIdAndUpdate(
-            req.user._id,
-            { $push: { bulk: newCard._id } },
-            (err) => {
-              if (err) return next(err);
-
-              res.redirect(`/collection/sets#${newCard.meta.set.id}`);
-              return;
-            }
-          );
-        }
+            res.redirect(`/collection/sets#${newCard.meta.set.id}`);
+            return;
+          }
+        );
       });
     })
     .catch((err) => {
