@@ -1017,7 +1017,7 @@ np .set-card-list > p {
   filter: brightness(200%);
 }
 
-.prize-card-container > div {
+.prize-card-container div {
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1040,6 +1040,7 @@ np .set-card-list > p {
   line-height: 0.7rem;
   color: rgba(216, 216, 216, 0.901);
   text-shadow: 1px 1px 1px black;
+  padding-bottom: 4px;
 }
 
 @media only screen and (max-width: 1600px) {
@@ -1051,6 +1052,14 @@ np .set-card-list > p {
   .prize-overlay {
     height: 250px;
     width: 179.19px;
+  }
+
+  .prize-info-container{
+    width: 179.19px;
+  }
+
+  .prize-info-container > p {
+    padding-bottom: 1px;
   }
 
   .prize-info-container > a {
