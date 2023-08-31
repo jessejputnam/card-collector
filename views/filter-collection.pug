@@ -85,18 +85,19 @@ block content
       else  
         div.collection-container
           each card in results
-            div.collection-item(id=card._id class=`${currentUser.prize.includes(card._id) ? "prize-binder" : currentUser.elite.includes(card._id) ? "elite-binder" : ""}`) 
-              div(style="width:10%").collection-item-img
-                img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
-              div.collection-item-details
+            a.not-a(href=`/collection/${card._id}`)
+              div.collection-item(id=card._id class=`${currentUser.prize.includes(card._id) ? "prize-binder" : currentUser.elite.includes(card._id) ? "elite-binder" : ""}`) 
+                div(style="width:10%").collection-item-img
+                  img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
+                div.collection-item-details
+                  div
+                    p.collection-card-name= card.pokemon.name 
+                      if card.meta.rarity.reverseHolo 
+                        span(style="font-size:.7rem;color:gray")  Reverse Holo
+                    p.collection-card-rarity= card.meta.rarity.type
                 div
-                  p.collection-card-name= card.pokemon.name 
-                    if card.meta.rarity.reverseHolo 
-                      span(style="font-size:.7rem;color:gray")  Reverse Holo
-                  p.collection-card-rarity= card.meta.rarity.type
-              div
-                p.collection-card-set= card.meta.set.name
-                p.collection-card-set-no=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
-              div(style="width:10%").collection-item-value 
-                p= `$${card.value.market.toFixed(2)}` 
+                  p.collection-card-set= card.meta.set.name
+                  p.collection-card-set-no=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
+                div(style="width:10%").collection-item-value 
+                  p= `$${card.value.market.toFixed(2)}` 
 
