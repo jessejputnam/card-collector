@@ -829,6 +829,7 @@ select#binder {
   box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);
   transition: transform 0.3s;
   border-radius: 10px;
+  z-index: 1000;
 }
 
 .result-img-container > img {
