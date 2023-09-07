@@ -822,6 +822,7 @@ select#binder {
   position: relative;
   z-index: 100;
 }
+
 .result-img-container {
   min-width: 143.25px;
   height: 200px;
@@ -835,9 +836,9 @@ select#binder {
 }
 
 @media (hover: hover) {
-  .result-img-container > img:hover {
+  .result-img-container:hover {
     transform: scale(1.5);
-    z-index: 100;
+    z-index: 1000;
     position: relative;
   }
 }
