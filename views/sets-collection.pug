@@ -15,7 +15,7 @@ block content
         div.set-container(id=set[0].meta.set.id)
           a(href="#top" style="display:inline-block;font-size:.7rem;margin-bottom:10px") Back to Top 
           h3= set[0].meta.set.name 
-            span(style="font-size:.8rem;color:gray;font-weight:normal")  #{set.length}/#{set[0].meta.set.totalPrint}
+            span(style="font-size:.8rem;color:gray;font-weight:normal")  #{(new Set(set.map(card => card.meta.set.number))).size}/#{set[0].meta.set.totalPrint}
             span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
           div.set-card-list
             each card in set 
