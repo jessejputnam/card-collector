@@ -820,7 +820,6 @@ select#binder {
 .owned {
   filter: brightness(0.6) grayscale(100%);
   position: relative;
-  z-index: 100;
 }
 
 .result-img-container {
@@ -829,7 +828,7 @@ select#binder {
   box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);
   transition: transform 0.3s;
   border-radius: 10px;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .result-img-container > img {
