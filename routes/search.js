@@ -3,7 +3,7 @@
 const express = require("express");
 const router = express.Router();
 
-const search_controller = require("../controllers/searchController");
+const search_controller = require("../controllers/searchController.js");
 
 // Display search form on GET
 router.get("/", search_controller.search_get);

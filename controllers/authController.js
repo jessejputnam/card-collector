@@ -14,11 +14,10 @@ const indexImages = require("../helpers/indexImages");
 exports.index_get = (req, res, next) => {
   const images = indexImages;
 
-  res.render("index", {
+  return res.render("index", {
     title: "Card Collector",
     images: images
   });
-  return;
 };
 
 // Display sign up on GET
@@ -47,11 +46,10 @@ exports.sign_up_post = [
 
     if (!errors.isEmpty()) {
       // There are errors, rerender
-      res.render("form-sign-up", {
+      return res.render("form-sign-up", {
         title: "Register",
         errors: errors.array()
       });
-      return;
     }
 
     try {
