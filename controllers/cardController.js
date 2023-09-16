@@ -6,7 +6,9 @@ pokemon.configure({ apikey: process.env.POKE_API_KEY });
 const Card = require("../models/card");
 const User = require("../models/user");
 const getRarityRating = require("../helpers/getRarityRating");
-const e = require("connect-flash");
+const handle = require("../helpers/errorHandler");
+const errs = require("../helpers/errs");
+const sort = require("../helpers/sort");
 
 const sortByDate = require("../helpers/sortByDate");
 
@@ -24,364 +26,82 @@ const sortByDate = require("../helpers/sortByDate");
 // ################# View Cards ##################
 
 // Handle display collection on GET
-exports.display_collection_get = (req, res, next) => {
-  User.findById(req.user._id)
-    .populate("cards")
-    .exec(function (err, user) {
-      if (err) return next(err);
+exports.display_collection_get = async (req, res, next) => {
+  const [userErr, user] = await handle(User.findById(req.user._id).populate("cards").exec())
+  if (userErr) return next(userErr);
 
-      const pokemonCards = user.cards.filter(
-        (card) => card.meta.supertype === "Pokémon" || card.value.market > 1
-      );
+  const card_list = user.cards.sort(sort.byValueDesc);
+  const total = card_list.reduce((acc, next) => acc + next.value.market, 0);
 
-      const cards = pokemonCards.sort(
-        (a, b) => b.value.market - a.value.market
-      );
-
-      const total = cards.reduce((acc, next) => {
-        return acc + next.value.market;
-      }, 0);
-
-      res.render("home", {
-        title: "My Collection",
-        card_list: cards,
-        total: total
-      });
-    });
+  return res.render("home", {
+    title: "My Collection",
+    card_list,
+    total
+  });
 };
 
 // Handle display card detail on GET
-exports.display_card_get = (req, res, next) => {
+exports.display_card_get = async (req, res, next) => {
   const cardId = req.params.id;
+  const [cardErr, card] = await handle(Card.findById(cardId).exec());
+  if (cardErr) return next(cardErr);
+  if (!card) return next(errs.cardNotFound())
 
-  Card.findById(cardId).exec((err, result) => {
-    if (err) return next(err);
-
-    if (result === null) {
-      const err = new Error("Collection card not found");
-      err.status = 404;
-      return next(err);
-    }
-    // Successful, so render
-    res.render("card-detail", {
-      title: `Collection: ${result.pokemon.name}`,
-      card: result
-    });
+  return res.render("card-detail", {
+    title: `Collection: ${card.pokemon.name}`,
+    card
   });
 };
 
 // Handle display prize binder on GET
-exports.display_prize_get = (req, res, next) => {
+exports.display_prize_get = async (req, res, next) => {
   const userId = req.user._id;
+  const [userErr, user] = await handle(User.findById(userId).populate("prize").exec());
+  if (userErr) return next(userErr);
+  if (!user) return next(errs.userNotFound());
 
-  User.findById(userId)
-    .populate("prize")
-    .exec((err, result) => {
-      if (err) return next(err);
+  const cards = user.prize;
 
-      if (!result) {
-        const err = new Error("Could not find user");
-        err.status = 404;
-        return next(err);
-      }
+  const total = cards.reduce((acc, next) => acc + next.value.market, 0);
 
-      const user = result;
-      let total = 0;
-      user.prize.forEach((card) => (total += card.value.market));
+  const fullArt = cards.filter(card => card.meta.rarity.grade === -3).sort(sort.byValueDesc);
+  const vmax = cards.filter(card => card.meta.rarity.grade === -2).sort(sort.byValueDesc);
+  const vstar = cards.filter(card => card.meta.rarity.grade === -1).sort(sort.byValueDesc);
+  const halfArt = cards.filter(card => card.meta.rarity.grade === 0).sort(sort.byValueDesc);
+  const specialHolo = cards.filter(card => card.meta.rarity.grade === 1).sort(sort.byValueDesc);
+  const holo = cards.filter(card => card.meta.rarity.grade > 1).sort(sort.byValueDesc);
 
-      const fullArt = user.prize
-        .filter((card) => {
-          return card.meta.rarity.grade === -3;
-        })
-        .sort((a, b) => {
-          return b.value.market - a.value.market;
-        });
-      const vmax = user.prize
-        .filter((card) => {
-          return card.meta.rarity.grade === -2;
-        })
-        .sort((a, b) => {
-          return b.value.market - a.value.market;
-        });
-      const vstar = user.prize
-        .filter((card) => {
-          return card.meta.rarity.grade === -1;
-        })
-        .sort((a, b) => {
-          return b.value.market - a.value.market;
-        });
-      const halfArt = user.prize
-        .filter((card) => {
-          return card.meta.rarity.grade === 0;
-        })
-        .sort((a, b) => {
-          return b.value.market - a.value.market;
-        });
-      const specialHolo = user.prize
-        .filter((card) => {
-          return card.meta.rarity.grade === 1;
-        })
-        .sort((a, b) => {
-          return b.value.market - a.value.market;
-        });
-      const holo = user.prize
-        .filter((card) => {
-          return card.meta.rarity.grade > 1;
-        })
-        .sort((a, b) => {
-          return b.value.market - a.value.market;
-        });
+  console.log(fullArt)
 
-      res.render("binder-prize", {
-        title: "Prize Binder",
-        full_art: fullArt,
-        vmax,
-        vstar,
-        half_art: halfArt,
-        special_holo: specialHolo,
-        holo,
-        total
-      });
-    });
+  return res.render("binder-prize", {
+    title: "Prize Binder",
+    full_art: fullArt,
+    vmax,
+    vstar,
+    half_art: halfArt,
+    special_holo: specialHolo,
+    holo,
+    total
+  });
 };
 
 // Handle display elite binder on GET
-exports.display_elite_get = (req, res, next) => {
+exports.display_elite_get = async (req, res, next) => {
   const userId = req.user._id;
+  const [userErr, user] = await handle(User.findById(userId).populate("elite").exec());
+  if (userErr) return next(userErr);
+  if (!user) return next(errs.userNotFound());
 
-  User.findById(userId)
-    .populate("elite")
-    .exec((err, result) => {
-      if (err) return next(err);
+  const cards = user.elite;
 
-      if (!result) {
-        const err = new Error("Could not find user");
-        err.status = 404;
-        return next(err);
-      }
+  const total = cards.reduce((acc, next) => acc + next.value.market, 0);
+  cards.sort(sort.byValueDesc);
 
-      const user = result;
-
-      const cards = user.elite;
-      let total = 0;
-      cards.forEach((card) => (total += card.value.market));
-
-      cards.sort((a, b) => {
-        return b.value.market - a.value.market;
-      });
-
-      res.render("binder-elite", {
-        title: "Elite Binder",
-        cards: cards,
-        total: total
-      });
-    });
-};
-
-// Handle display bulk on GET
-exports.display_bulk_get = (req, res, next) => {
-  User.findById(req.user._id)
-    .populate("bulk")
-    .exec((err, result) => {
-      if (err) return next(err);
-
-      const user = result;
-      let totalCount = 0;
-      let bulkTotal = 0;
-      user.bulk.forEach((card) => {
-        bulkTotal += card.value.market * card.value.count;
-        totalCount += card.value.count;
-      });
-
-      if (!user) {
-        const err = new Error("User not found");
-        err.status = 404;
-        return next(err);
-      }
-
-      // Find which sets exist in collection
-      let setOrderLength = 0;
-      const setOrder = {};
-      user.bulk.forEach((card) => {
-        const setId = card.meta.set.id;
-
-        if (!(setId in setOrder)) {
-          setOrder[setId] = true;
-          setOrderLength++;
-        }
-      });
-
-      pokemon.set
-        .all()
-        .then((sets) => {
-          let n = 0;
-
-          // Search through all sets and get the order of collection sets
-          sets.forEach((set) => {
-            if (set.id in setOrder) {
-              setOrder[set.id] = n;
-              n++;
-            }
-          });
-
-          // Organize the cards into the sets by date
-          const orderedSets = new Array(setOrderLength);
-          user.bulk.forEach((card) => {
-            const setId = card.meta.set.id;
-            if (!orderedSets[setOrder[setId]]) {
-              orderedSets[setOrder[setId]] = [];
-            }
-            orderedSets[setOrder[setId]].push(card);
-          });
-
-          // reverse to most recent first
-          orderedSets.reverse();
-          const orderedSetsByNum = [];
-          orderedSets.forEach((set) => {
-            set.sort((a, b) => {
-              const numA = Number(
-                a.meta.set.number
-                  .split("")
-                  .filter((x) => !!+x || x === "0")
-                  .join("")
-              );
-              const numB = Number(
-                b.meta.set.number
-                  .split("")
-                  .filter((x) => !!+x || x === "0")
-                  .join("")
-              );
-              return numA - numB;
-            });
-
-            orderedSetsByNum.push(set);
-          });
-
-          res.render("bulk", {
-            title: "Bulk Inventory",
-            list_sets: orderedSetsByNum,
-            total: bulkTotal,
-            count: totalCount
-          });
-        })
-        .catch((err) => {
-          return next(err);
-        });
-    });
-};
-
-// Handle display bulk rare pokemon on GET
-exports.display_bulk_filter_get = async (req, res, next) => {
-  const bulk_filter = req.url.split("/bulk/")[1];
-  let filter_title;
-  // rare, nonrare, trainer
-  try {
-    const user = await User.findById(req.user._id).populate("bulk").exec();
-
-    if (!user) {
-      const err = new Error("User not found");
-      err.status = 404;
-      return next(err);
-    }
-
-    const filteredCards = user.bulk.filter((card) => {
-      if (bulk_filter === "rare") {
-        filter_title = "Rare Pokémon";
-        return (
-          (card.meta.rarity.grade < 4 && card.meta.supertype === "Pokémon") ||
-          (card.meta.supertype === "Pokémon" && card.meta.rarity.reverseHolo)
-        );
-      } else if (bulk_filter === "nonrare") {
-        filter_title = "Non-Rare Pokémon";
-        return card.meta.rarity.grade > 3 && card.meta.supertype === "Pokémon";
-      } else {
-        filter_title = "Trainer";
-        return (
-          card.meta.supertype === "Trainer" || card.meta.supertype === "Energy"
-        );
-      }
-    });
-
-    let totalCount = 0;
-    let bulkTotal = 0;
-    filteredCards.forEach((card) => {
-      bulkTotal += card.value.market * card.value.count;
-      totalCount += card.value.count;
-    });
-
-    // Find which sets exist in collection
-    let setOrderLength = 0;
-    const setOrder = {};
-    filteredCards.forEach((card) => {
-      const setId = card.meta.set.id;
-
-      if (!(setId in setOrder)) {
-        setOrder[setId] = true;
-        setOrderLength++;
-      }
-    });
-
-    pokemon.set
-      .all()
-      .then((sets) => {
-        let n = 0;
-
-        // Search through all sets and get the order of collection sets
-        sets.forEach((set) => {
-          if (set.id in setOrder) {
-            setOrder[set.id] = n;
-            n++;
-          }
-        });
-
-        // Organize the cards into the sets by date
-        const orderedSets = new Array(setOrderLength);
-
-        filteredCards.forEach((card) => {
-          const setId = card.meta.set.id;
-          if (!orderedSets[setOrder[setId]]) {
-            orderedSets[setOrder[setId]] = [];
-          }
-          orderedSets[setOrder[setId]].push(card);
-        });
-
-        // reverse to most recent first
-        orderedSets.reverse();
-        const orderedSetsByNum = [];
-        orderedSets.forEach((set) => {
-          set.sort((a, b) => {
-            const numA = Number(
-              a.meta.set.number
-                .split("")
-                .filter((x) => !!+x || x === "0")
-                .join("")
-            );
-            const numB = Number(
-              b.meta.set.number
-                .split("")
-                .filter((x) => !!+x || x === "0")
-                .join("")
-            );
-            return numA - numB;
-          });
-
-          orderedSetsByNum.push(set);
-        });
-
-        res.render("bulk-rare", {
-          title: "Bulk Inventory",
-          filter_title,
-          list_sets: orderedSetsByNum,
-          total: bulkTotal,
-          count: totalCount
-        });
-      })
-      .catch((err) => {
-        return next(err);
-      });
-  } catch (err) {
-    return next(err);
-  }
+  return res.render("binder-elite", {
+    title: "Elite Binder",
+    cards: cards,
+    total: total
+  });
 };
 
 // ################# Update/Delete Cards ##################

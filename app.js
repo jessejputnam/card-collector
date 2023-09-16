@@ -10,7 +10,6 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const bodyParser = require("body-parser");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
