@@ -37,6 +37,11 @@ exports.search_results_get = async (req, res, next) => {
   );
   if (searchErr) return next(searchErr);
 
+  // Add reverse holo check to cards
+  for (let i = 0; i < results.data.length; i++) {
+    results.data[i].hasReverseHolo = results.data[i].tcgplayer?.prices?.reverseHolofoil ? true : false;
+  }
+
   const [userErr, user] = await handle(
     User.findById(req.user._id).populate("cards").exec()
   );

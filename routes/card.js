@@ -29,9 +29,6 @@ router.get("/filter", card_controller.display_filter_page_get);
 // GET request for display card detail
 router.get("/:id", card_controller.display_card_get);
 
-// POST request for edit card detail
-router.post("/:id/edit", card_controller.edit_card_post);
-
 // GET request for delete card
 router.get("/:id/delete", card_controller.delete_card_get);
 

@@ -12,7 +12,7 @@
 const handle = (promise) => {
   return promise
     .then((data) => [undefined, data])
-    .catch((err) => Promise.resolve[err, undefined])
+    .catch((err) => Promise.resolve([err, undefined]))
 };
 
 module.exports = handle;

@@ -25,10 +25,11 @@ block content
               else 
                 p.result-in-collection(style="font-size:.7rem") In collection: ✔️
               
-              if !user_reverse_cards.has(card.id)
-                form.add-card-form(method="POST" action="/collection/add-card") 
-                  input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-                  input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="true")
-                  button.btn.btn-secondary(type="submit" style="font-size:.7rem;width:91px") Add Reverse Holo
-              else 
-                p.result-in-collection(style="font-size:.7rem") Reverse Holo: ✔️
+              if card.hasReverseHolo
+                if !user_reverse_cards.has(card.id)
+                  form.add-card-form(method="POST" action="/collection/add-card") 
+                    input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+                    input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="true")
+                    button.btn.btn-secondary(type="submit" style="font-size:.7rem;width:91px") Add Reverse Holo
+                else 
+                  p.result-in-collection(style="font-size:.7rem") Reverse Holo: ✔️

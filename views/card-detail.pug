@@ -40,19 +40,6 @@ block content
                   span(style="font-size:1rem")= ` $${Number(pricePoint[1]).toFixed(2)}`
 
     div.card-edits-container
-      if currentUser.bulk.includes(card._id)
-        form.card-edit-form(method="POST" action=`/collection/${card._id}/edit`)
-          input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-          div.bulk-container 
-            label(for="count") Bulk Count:
-            input#count(type="number" value=(card.value.count) name="count" min="0")
-          button.btn.secondary-btn(type="submit") Update 
-      else 
-        form.add-card-form(method="POST" action="/collection/add-bulk") 
-          input#cardId(type="hidden" name="cardId" required="true" value=card._id)
-          button.btn.btn-secondary(type="submit") Add Bulk
-        
-      
       div.form-separator
         form.card-edit-rarity-form(method="POST" action=`/collection/${card._id}/edit-rarity`)
           input#objId(type="hidden" name="objId" required="true" value=card._id)
