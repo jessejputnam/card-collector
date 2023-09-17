@@ -327,8 +327,40 @@ hr {
     width: 100%;
   }
 
+  .collection-menu {
+    width: 100%;
+    overflow: hidden;
+    height: 0;
+    position: absolute;
+    left: 0;
+    top: 90px;
+    transition: height 0.5s, padding 0.5s;
+    z-index: 100;
+    background-color: #212f3cdf;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.441);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+
+  .collection-menu > ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: start;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .collection-menu > ul > li > a {
+    color: rgba(255, 255, 255, 0.597);
+    font-size: 1.2rem;
+    letter-spacing: .3ch;
+  }
+
   .menu-open {
-    height: 120px;
+    height: 180px;
     padding: 5px 10px 10px;
   }
 }

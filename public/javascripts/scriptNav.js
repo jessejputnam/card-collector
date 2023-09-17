@@ -15,8 +15,5 @@ if (topbar) {
     if (e.target.id !== "collection-menu-btn") {
       collectionMenu.classList.remove("menu-open");
     }
-    if (e.target.id !== "bulk-menu-btn") {
-      bulkMenu.classList.remove("menu-open");
-    }
   });
 }
