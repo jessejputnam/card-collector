@@ -3,18 +3,10 @@
 const topbar = document.querySelector(".topbar");
 const collectionBtn = document.querySelector("#collection-menu-btn");
 const collectionMenu = document.querySelector(".collection-menu");
-const bulkBtn = document.querySelector("#bulk-menu-btn");
-const bulkMenu = document.querySelector(".bulk-menu");
 
 if (collectionBtn) {
   collectionBtn.addEventListener("click", (e) => {
     collectionMenu.classList.toggle("menu-open");
-  });
-}
-
-if (bulkBtn) {
-  bulkBtn.addEventListener("click", (e) => {
-    bulkMenu.classList.toggle("menu-open");
   });
 }
 
