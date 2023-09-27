@@ -51,8 +51,8 @@ exports.bySupertypeAsc = (a, b) => {
   return 0;
 }
 exports.byDateDesc = (a, b) => {
-  const dateA = new Date(a[1]);
-  const dateB = new Date(b[1]);
+  const dateA = new Date(a[1][1]);
+  const dateB = new Date(b[1][1]);
 
   if (dateA < dateB) return 1;
   else if (dateA > dateB) return -1;

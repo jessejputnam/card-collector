@@ -344,8 +344,10 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   // Sort sets by date
   const setArr = [];
   for (const set in setOrder) setArr.push([set, setOrder[set]]);
+  // console.log(setArr)
   setArr.sort(sort.byDateDesc);
   for (let i = 0; i < setArr.length; i++) setOrder[setArr[i][0]] = i;
+
 
   // Create array with unique empty arrays
   const orderedSets = Array.from(Array(setArr.length), () => []);
