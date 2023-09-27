@@ -19,6 +19,6 @@ block content
             span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
           div.set-card-list
             each card in set 
-              li(style=`list-style-type:hiragana;font-size:.6rem;${card.meta.rarity.reverseHolo ? "color:gold" : ""}`)  
+              li(style=`list-style: none`)  
                 a.set-link(href=`/collection/${card._id}` style=`font-size:.9rem;font-weight:normal;color:${card.meta.rarity.grade < 3 ? "#9e2a2b" : "black"}`)= card.pokemon.name + " "
-                  span(style="font-size:.7rem;color:gray")=  card.meta.set.number + "/" + card.meta.set.totalPrint
+                  span(style=`font-size:.7rem;color:gray;${card.meta.rarity.reverseHolo ? "color:tan" : ""}`)=  card.meta.set.number + "/" + card.meta.set.totalPrint

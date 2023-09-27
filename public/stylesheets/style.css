@@ -845,7 +845,7 @@ select#binder {
 /* ########### ## SETS VIEW ############ */
 
 .page-wrapper > .page-nav {
-  max-height: 250px;
+  max-height: 325px;
   padding: 15px;
   margin-left: 20px;
   display: inline-flex;
@@ -883,18 +883,20 @@ select#binder {
   flex-direction: column;
   row-gap: 5px;
   column-gap: 5px;
-  max-height: 850px;
+  max-height: 900px;
 }
-np .set-card-list > p {
-  margin-left: 15px;
+
+.set-card-list > li {
+  max-width: 150px;
 }
 
 .set-link {
   color: rgb(59, 59, 59);
   text-decoration: none;
+  text-wrap: wrap;
 }
 
-@media only screen and (max-width: 1100px) {
+@media only screen and (max-width: 1300px) {
   .page-wrapper > .page-nav {
     overflow-x: auto;
     border-radius: 10px;
@@ -917,7 +919,6 @@ np .set-card-list > p {
 
   .set-container {
     border-radius: 10px;
-    /* width: 110%; */
   }
 
   .set-card-list {
