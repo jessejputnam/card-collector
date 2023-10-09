@@ -9,6 +9,8 @@ const getRarityRating = require("../helpers/getRarityRating");
 const handle = require("../helpers/errorHandler");
 const errs = require("../helpers/errs");
 const sort = require("../helpers/sort");
+const filterPrize = require("../helpers/filterPrize");
+const filterElite = require("../helpers/filterElite")
 
 /* 
 
@@ -62,23 +64,23 @@ exports.display_prize_get = async (req, res, next) => {
 
   const total = cards.reduce((acc, next) => acc + next.value.market, 0);
 
-  const fullArt = cards.filter(card => card.meta.rarity.grade === -3).sort(sort.byValueDesc);
-  const vmax = cards.filter(card => card.meta.rarity.grade === -2).sort(sort.byValueDesc);
-  const vstar = cards.filter(card => card.meta.rarity.grade === -1).sort(sort.byValueDesc);
-  const halfArt = cards.filter(card => card.meta.rarity.grade === 0).sort(sort.byValueDesc);
-  const specialHolo = cards.filter(card => card.meta.rarity.grade === 1).sort(sort.byValueDesc);
-  const holo = cards.filter(card => card.meta.rarity.grade > 1).sort(sort.byValueDesc);
-
-  console.log(fullArt)
+  const trainer = cards.filter(card => card.meta.supertype !== "Pokémon").sort(sort.byValueDesc);
+  const illustrator = cards.filter(card => filterPrize(card, -3)).sort(sort.byValueDesc);
+  const fullArt = cards.filter(card => filterPrize(card, -2)).sort(sort.byValueDesc);
+  const vSpecial = cards.filter(card => filterPrize(card, -1)).sort(sort.byValueDesc);
+  const halfArt = cards.filter(card => filterPrize(card, 0)).sort(sort.byValueDesc);
+  const specialHolo = cards.filter(card => filterPrize(card, 1)).sort(sort.byValueDesc);
+  const holo = cards.filter(card => filterPrize(card, 2)).sort(sort.byValueDesc);
 
   return res.render("binder-prize", {
     title: "Prize Binder",
+    illustrator,
     full_art: fullArt,
-    vmax,
-    vstar,
+    v_special: vSpecial,
     half_art: halfArt,
     special_holo: specialHolo,
     holo,
+    trainer,
     total
   });
 };
@@ -92,12 +94,19 @@ exports.display_elite_get = async (req, res, next) => {
 
   const cards = user.elite;
 
+  const trainer = cards.filter(card => card.meta.supertype !== "Pokémon").sort(sort.byValueDesc);
+  const wotc = cards.filter(card => filterElite(card, true)).sort(sort.byValueDesc)
+  const elite = cards.filter(card => filterElite(card, false)).sort(sort.byValueDesc)
+
+
   const total = cards.reduce((acc, next) => acc + next.value.market, 0);
   cards.sort(sort.byValueDesc);
 
   return res.render("binder-elite", {
     title: "Elite Binder",
-    cards: cards,
+    wotc,
+    elite,
+    trainer,
     total: total
   });
 };

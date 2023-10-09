@@ -8,10 +8,10 @@ block content
     h1= title 
     p(style="font-size:0.8rem;color:gray")= "$" + total.toFixed(2)
 
-    h3 Ultra Rare Cards
+    h3 Illustrator Cards
     hr
     div.binder-container 
-      each card in full_art 
+      each card in illustrator
         a(href=`/collection/${card._id}`)
           div.prize-card-container
             div.prize-img-container(id=card._id)
@@ -21,10 +21,10 @@ block content
               a(href=`/collection/${card._id}`)= card.pokemon.name 
               p= "$" + card.value.market.toFixed(2)
 
-    h3 VMAX
+    h3 Full Art
     hr
     div.binder-container 
-      each card in vmax 
+      each card in full_art
         a(href=`/collection/${card._id}`)
           div.prize-card-container
             div.prize-img-container(id=card._id)
@@ -34,10 +34,10 @@ block content
               a(href=`/collection/${card._id}`)= card.pokemon.name 
               p= "$" + card.value.market.toFixed(2)
 
-    h3 VSTAR
+    h3 VMax, VStar, ex
     hr
     div.binder-container 
-      each card in vstar
+      each card in v_special
         a(href=`/collection/${card._id}`)
           div.prize-card-container
             div.prize-img-container(id=card._id)
@@ -47,7 +47,7 @@ block content
               a(href=`/collection/${card._id}`)= card.pokemon.name 
               p= "$" + card.value.market.toFixed(2)
 
-    h3 Normal Art
+    h3 V
     hr
     div.binder-container 
       each card in half_art
@@ -60,7 +60,7 @@ block content
               a(href=`/collection/${card._id}`)= card.pokemon.name 
               p= "$" + card.value.market.toFixed(2)
 
-    h3 Unique Holofoil
+    h3 Special Holo
     hr
     div.binder-container 
       each card in special_holo
@@ -73,10 +73,23 @@ block content
               a(href=`/collection/${card._id}`)= card.pokemon.name 
               p= "$" + card.value.market.toFixed(2)
 
-    h3 Holofoil
+    h3 Holo
     hr
     div.binder-container 
       each card in holo
+        a(href=`/collection/${card._id}`)
+          div.prize-card-container
+            div.prize-img-container(id=card._id)
+              img(src=card.meta.images.large, alt=card.pokemon.name)
+              div.prize-overlay 
+            div.prize-info-container 
+              a(href=`/collection/${card._id}`)= card.pokemon.name 
+              p= "$" + card.value.market.toFixed(2)
+
+    h3 Trainer
+    hr
+    div.binder-container 
+      each card in trainer
         a(href=`/collection/${card._id}`)
           div.prize-card-container
             div.prize-img-container(id=card._id)
