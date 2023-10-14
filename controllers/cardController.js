@@ -254,6 +254,8 @@ exports.add_card_post = async (req, res, next) => {
     return next(errs.noTcgPrice());
   }
 
+  console.log(tcgCard.rarity)
+
   const card = new Card({
     id: tcgCard.id,
     meta: {
@@ -262,8 +264,8 @@ exports.add_card_post = async (req, res, next) => {
         large: tcgCard.images.large
       },
       rarity: {
-        type: tcgCard.rarity,
-        grade: getRarityRating[tcgCard.rarity],
+        type: tcgCard.rarity || "Unknown",
+        grade: getRarityRating[tcgCard.rarity || "Unknown"],
         reverseHolo: revHolo
       },
       supertype: tcgCard.supertype,

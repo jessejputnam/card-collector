@@ -19,6 +19,7 @@ const getRarityRating = {
   "Rare Holo VSTAR": -1,
   "Rare Holo V": 0,
   V: 0,
+  "Unknown": 0, 
   "Rare Rainbow": 1,
   "Rare Holo EX": 1,
   "Rare Holo LV.X": 1,
