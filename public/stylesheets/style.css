@@ -1092,7 +1092,6 @@ select#binder {
   flex-wrap: wrap;
 
   gap: 5px;
-  max-height: 100px;
 }
 
 .filter-fieldset-supertype {
@@ -1113,7 +1112,6 @@ select#binder {
 }
 
 .filter-fieldset-sets {
-  max-height: 220px;
   row-gap: 10px;
 }
 
@@ -1127,12 +1125,10 @@ select#binder {
   }
 
   .filter-fieldset {
-    max-height: none;
     align-items: center;
   }
 
   .filter-fieldset-sets {
-    max-height: none;
     padding-left: 25px;
   }
 }
