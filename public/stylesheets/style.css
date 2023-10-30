@@ -181,7 +181,6 @@ hr {
   text-align: center;
   background-image: url("../images/pattern-background.jpg");
   background-size: cover;
-  /* height: 94vh; */
   min-height: 94vh;
   max-width: none;
 }
@@ -473,7 +472,6 @@ hr {
 @media only screen and (max-width: 670px) {
   .collection-item {
     justify-content: space-between;
-    /* position: relative; */
   }
 
   .collection-card-set {
