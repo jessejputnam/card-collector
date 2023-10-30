@@ -17,26 +17,17 @@
 
 ## Table of contents
 
-- [Overview](#overview)
-  - [The challenge](#the-challenge)
-  - [Screenshot](#screenshot)
-- [My process](#my-process)
-  - [Built with](#built-with)
-  - [What I learned](#what-i-learned)
-  - [Continued development](#continued-development)
-  - [Useful resources](#useful-resources)
+- [Screenshot](#screenshot)
+- [Environment Variables](#environment-variables)
+- [Built with](#built-with)
+- [Continued development](#continued-development)
 - [Author](#author)
-- [Acknowledgments](#acknowledgments)
-
-## Overview
 
 ### Screenshot
 
 ![](./collage.jpg)
 
-<!-- Env Variables -->
-
-### :key: Environment Variables
+### Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
 
@@ -45,8 +36,6 @@ To run this project, you will need to add the following environment variables to
 `SESSION_SECRET` - Random string for security
 
 `POKE_API_KEY` - API key for the TCG database [PokeAPI](https://pokemontcg.io/)
-
-## My process
 
 ### Built with
 
