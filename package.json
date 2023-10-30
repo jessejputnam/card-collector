@@ -1,6 +1,8 @@
 {
   "name": "card-collector",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "author": "Jesse Putnam <jessejputnam@gmail.com> (https://jessejputnam.com)",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
