@@ -14,7 +14,6 @@
   - You can FILTER through your collection with a variety of options
   - You can view your collection neatly organized by SETS - by year
   - You can add cards to your special cards to a PRIZE binder, and your extremely special cards to the ELITE
-  - Add repeats to your BULK CARDS
 
 ## Table of contents
 
@@ -30,21 +29,6 @@
 - [Acknowledgments](#acknowledgments)
 
 ## Overview
-
-### The challenge
-
-Users should be able to:
-
-- Log in to retain unique card collection data
-- Search the TCGPlayer database for Pokémon cards
-- Add cards to user's personal collection
-- View entirety of card collection
-- Sort card collection by set/year, rarity, price, name
-- Filter personal collection by name, set, price, rarity
-- View individual card information including image, set, price, and rarity
-- Update in realtime market price value from tcgplayer
-- Add cards to separate binders: prize and elite
-- Add cards to bulk collection
 
 ### Screenshot
 
@@ -75,6 +59,13 @@ To run this project, you will need to add the following environment variables to
 - [Passport](https://www.passportjs.org/) - Authorization and session security
 
 ### Continued Development
+
+[ ] Adding a form for showing multiple owned copied of the same card
+[ ] Search for name by "contains" with wildcard capability
+[ ] Price card totals by collection
+[ ] Ability to manually edit card info section for other country prices, PSA grading, etc (Note: manually added fields will not auto update prices, etc. Require manual updates)
+[X] Missing license -- whoops
+[ ] Export to csv
 
 ## Author
 
