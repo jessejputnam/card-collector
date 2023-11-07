@@ -29,32 +29,78 @@ exports.update_cards_new_system = async (req, res, next) => {
   if (!user) return next(errs.userNotFound());
 
   const cards = user.cards;
+  const elite = user.elite;
+  const prize = user.prize;
 
-  console.log(cards[0])
+  if (cards.length) {
+    const [errUserUpdate, userUpdate] = await handle(Card.updateMany({ _id: { $in: cards } }, { userId: user._id, binder: null }));
+    if (errUserUpdate) return next(errUserUpdate);
+    console.log(`UserID add Complete: ${userUpdate.matchedCount} files found, ${userUpdate.modifiedCount} files modified`)
 
-  // if (cards.length) {
-  //   Card.updateMany(cards)
-  // } 
+    const [errEliteUpdate, eliteUpdate] = await handle(Card.updateMany({ _id: { $in: elite } }, { binder: "elite" }));
+    if (errEliteUpdate) return next(errEliteUpdate);
+    console.log(`Elite add Complete: ${eliteUpdate.matchedCount} files found, ${eliteUpdate.modifiedCount} files modified`)
+
+    const [errPrizeUpdate, prizeUpdate] = await handle(Card.updateMany({ _id: { $in: prize } }, { binder: "prize" }));
+    if (errPrizeUpdate) return next(errPrizeUpdate);
+    console.log(`Prize add Complete: ${prizeUpdate.matchedCount} files found, ${prizeUpdate.modifiedCount} files modified`)
+
+    user.elite = null;
+    user.prize = null;
+    user.cards = null;
+
+    const [errUpdate, update] = await handle(user.save());
+    if (errUpdate) return next(errUpdate);
+
+    return res.redirect("/collection/home");
+  } 
 }
 
 // ################# View Cards ##################
 
 // Handle display collection on GET
 exports.display_collection_get = async (req, res, next) => {
-  const [errUser, user] = await handle(User.findById(req.user._id).populate("cards").exec())
+  const userId = req.user._id;
+
+  // Legacy version 0.0 check
+  const [errUser, user] = await handle(User.findById(userId))
   if (errUser) return next(errUser);
   if (!user) return next(errs.userNotFound());
 
-  const need_update = !!user.cards.length;
+  const need_update = !!user.cards;
 
-  const card_list = user.cards.sort(sort.byValueDesc);
-  const total = card_list.reduce((acc, next) => acc + next.value.market, 0);
+  // Get cards for display
+  const sortAsc = req.query.asc;
+  const sortType = req.query.by;
+  const asc = sortAsc === "true" ? true : false;
+  
+  const [errCards, cards] = await handle(Card.find({ userId }).exec());
+  if (errCards) return next(errCards);
+
+  // const card_list = cards.sort(sort.byValueDesc);
+  const total = cards.reduce((acc, next) => acc + next.value.market, 0);
+
+  let card_list;
+
+  if (!sortType || sortType === "value")
+    card_list = !asc ? cards.sort(sort.byValueDesc) : cards.sort(sort.byValueAsc);
+  else if (sortType === "rarity")
+    card_list = !asc ? cards.sort(sort.byRarityDesc) : cards.sort(sort.byRarityAsc);
+  else if (sortType === "name")
+    card_list = !asc ? cards.sort(sort.byNameDesc) : cards.sort(sort.byNameAsc);
+  else if (sortType === "set")
+    card_list = !asc ? cards.sort(sort.bySetDesc) : cards.sort(sort.bySetAsc);
+  else if (sortType === "supertype")
+    card_list = !asc ? cards.sort(sort.bySupertypeDesc) : cards.sort(sort.bySupertypeAsc);
+  else return redirect("/collection/home");
 
   return res.render("home", {
-    title: `My Collection`,
-    need_update,
+    title: "My Collection",
+    need_update, // Legacy check
     card_list,
-    total
+    total,
+    by_field: sortType,
+    asc_field: sortAsc
   });
 };
 
@@ -74,11 +120,9 @@ exports.display_card_get = async (req, res, next) => {
 // Handle display prize binder on GET
 exports.display_prize_get = async (req, res, next) => {
   const userId = req.user._id;
-  const [errUser, user] = await handle(User.findById(userId).populate("prize").exec());
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
 
-  const cards = user.prize;
+  const [errCards, cards] = await handle(Card.find({ userId: userId, binder: "prize" }).exec());
+  if (errCards) return next(errCards);
 
   const total = cards.reduce((acc, next) => acc + next.value.market, 0);
 
@@ -106,11 +150,9 @@ exports.display_prize_get = async (req, res, next) => {
 // Handle display elite binder on GET
 exports.display_elite_get = async (req, res, next) => {
   const userId = req.user._id;
-  const [errUser, user] = await handle(User.findById(userId).populate("elite").exec());
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
 
-  const cards = user.elite;
+  const [errCards, cards] = await handle(Card.find({ userId: userId, binder: "elite" }).exec());
+  if (errCards) return next(errCards);
 
   const trainer = cards.filter(card => card.meta.supertype !== "Pokémon").sort(sort.byValueDesc);
   const wotc = cards.filter(card => filterElite(card, true)).sort(sort.byValueDesc)
@@ -175,44 +217,25 @@ exports.delete_card_get = async (req, res, next) => {
 };
 
 exports.delete_card_post = async (req, res, next) => {
-  const userId = req.user._id;
   const cardId = req.body.cardId;
-
-  const [errUser, user] = await handle(User.findById(userId).exec());
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
-
-  const idx = user.cards.indexOf(cardId);
-  user.cards.splice(idx, 1);
-
-  const delPromise = Card.findByIdAndRemove(cardId).exec();
-  const savePromise = user.save()
-  const [errPromise, _] = await handle(Promise.all([delPromise, savePromise]));
-  if (errPromise) return next(errPromise);
+  const [errDelCard, delCard] = await handle(Card.findByIdAndRemove(cardId).exec());
+  if (errDelCard) return next(errDelCard);
 
   return res.redirect("/collection/home");
 };
 
 // Handle select binder on POST
 exports.select_binder_post = async (req, res, next) => {
-  const userId = req.user._id;
-  const binder = req.body.binder;
+  const newBinder = req.body.binder;
   const cardId = req.body.objId;
 
-  const [errUser, user] = await handle(User.findById(userId).exec());
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
-
-  const prizeIdx = user.prize.indexOf(cardId);
-  const eliteIdx = user.elite.indexOf(cardId);
-
-  if (prizeIdx !== -1) user.prize.splice(prizeIdx, 1);
-  if (eliteIdx !== -1) user.elite.splice(eliteIdx, 1);
-
-  if (binder !== "none") user[binder].push(cardId);
-
-  const [errSave, _] = await handle(user.save());
-  if (errSave) return next(errSave);
+  const [errCard, card] = await handle(
+    Card.findByIdAndUpdate(
+      cardId, 
+      { binder: newBinder == "none" ? null : newBinder }
+    ).exec()
+  );
+  if (errCard) return next(errCard);
 
   return res.redirect(`/collection/${cardId}`);
 };
@@ -223,8 +246,11 @@ exports.edit_card_rarity = async (req, res, next) => {
   const newRarityRating = req.body.rarity;
 
   const [errCard, card] = await handle(
-    Card.findByIdAndUpdate(cardId, { "meta.rarity.grade": newRarityRating }).exec()
+    Card.findByIdAndUpdate(
+      cardId, { "meta.rarity.grade": newRarityRating }
+    ).exec()
   );
+
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
@@ -272,10 +298,10 @@ exports.add_card_post = async (req, res, next) => {
     return next(errs.noTcgPrice());
   }
 
-  console.log(tcgCard.rarity)
-
   const card = new Card({
     id: tcgCard.id,
+    userId,
+    binder: null,
     meta: {
       images: {
         small: tcgCard.images.small,
@@ -321,15 +347,14 @@ exports.add_card_post = async (req, res, next) => {
 // ################# Sort Cards ###################
 // Handle display collection sorted on GET
 exports.display_collection_sorted_get = async (req, res, next) => {
+  const ascStr = req.query.asc;
   const userId = req.user._id;
   const sortBy = req.query.by;
-  const sortAsc = req.query.asc;
-
-  const [errUser, user] = await handle(User.findById(userId).populate("cards").exec());
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
+  const sortAsc = ascStr === "true" ? true : false;
   
-  const cards = user.cards;
+  const [errCards, cards] = await handle(Card.find({ userId: userId }));
+  if (errCards) return next(errCards);
+
   const total = cards.reduce((acc, next) => acc + next.value.market, 0);
   
   let sorted;
@@ -346,10 +371,12 @@ exports.display_collection_sorted_get = async (req, res, next) => {
     sorted = !sortAsc ? cards.sort(sort.bySupertypeDesc) : cards.sort(sort.bySupertypeAsc);
   else return redirect("/collection/home");
 
-  return res.render("home", {
+  return res.render("home-sort", {
     title: "My Collection",
     card_list: sorted,
-    total: total
+    total: total,
+    by_field: sortBy,
+    asc_field: ascStr
   });
 };
 
@@ -358,14 +385,13 @@ exports.display_collection_sorted_get = async (req, res, next) => {
 exports.display_filter_by_set_get = async (req, res, next) => {
   const userId = req.user._id;
 
-  const [errUser, user] = await handle(User.findById(userId).populate("cards").exec());
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
+  const [errCards, cards] = await handle(Card.find({ userId: userId }));
+  if (errCards) return next(errCards);
 
   
   // Find which sets exist in collection
   const setOrder = {};
-  user.cards.forEach(card => {
+  cards.forEach(card => {
     const setId = card.meta.set.id;
     if (!(setId in setOrder)) setOrder[setId] = [card.meta.set.name, card.meta.set.releaseDate];
   })
@@ -373,16 +399,15 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   // Sort sets by date
   const setArr = [];
   for (const set in setOrder) setArr.push([set, setOrder[set]]);
-  // console.log(setArr)
+
   setArr.sort(sort.byDateDesc);
   for (let i = 0; i < setArr.length; i++) setOrder[setArr[i][0]] = i;
-
 
   // Create array with unique empty arrays
   const orderedSets = Array.from(Array(setArr.length), () => []);
 
   // Add cards to sets in array
-  user.cards.forEach(card => {
+  cards.forEach(card => {
     const idx = setArr.findIndex(s => s[0] === card.meta.set.id);
     orderedSets[idx].push(card);
   })
@@ -404,12 +429,12 @@ exports.display_filter_page_get = async (req, res, next) => {
   const userId = req.user._id;
   let results = [];
 
-  const [errUser, user] = await handle(User.findById(userId).populate("cards").exec());
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
+  const [errCards, cards] = await handle(Card.find({ userId: userId }));
+  if (errCards) return next(errCards);
+
 
   // Populate form data
-  const collection = user.cards;
+  const collection = cards;
   const setsSet = new Set();
   const subtypesSet = new Set();
   const raritiesSet = new Set();

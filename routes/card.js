@@ -5,6 +5,10 @@ const router = express.Router();
 
 const card_controller = require("../controllers/cardController");
 
+
+// Update from version 0.0
+router.post("/update-version", card_controller.update_cards_new_system)
+
 // GET request for home
 router.get("/home", card_controller.display_collection_get);
 

@@ -8,20 +8,18 @@ block content
     header.home-header 
       h1= title 
       div.sort-container 
-        form.form-wrapper(method="GET" action="/home/sort") 
+        form.form-wrapper(method="GET" action="/collection/home") 
           fieldset
             legend Sort by...
             select#by(name="by") 
-              option(value="value" default hidden)  
-              option(value="rarity") Rarity 
-              option(value="value") Market Value
-              option(value="name") Name 
-              option(value="set") Set
-              option(value="supertype") Card Type
+              option(value="rarity" selected=(by_field === "rarity")) Rarity 
+              option(value="value" selected=(by_field === "value")) Market Value
+              option(value="name" selected=(by_field === "name")) Name 
+              option(value="set" selected=(by_field === "set")) Set
+              option(value="supertype" selected=(by_field === "supertype")) Card Type
             select#asc(name="asc") 
-              option(value=false default hidden)
-              option(value=false) Descending
-              option(value=true) Ascending 
+              option(value="false" selected=(asc_field === "false")) Descending
+              option(value="true" selected=(asc_field === "true")) Ascending 
             button.btn.btn-secondary(type="submit") Sort
 
     div.collection-container 

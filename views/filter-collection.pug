@@ -86,7 +86,7 @@ block content
         div.collection-container
           each card in results
             a.not-a(href=`/collection/${card._id}`)
-              div.collection-item(id=card._id class=`${currentUser.prize.includes(card._id) ? "prize-binder" : currentUser.elite.includes(card._id) ? "elite-binder" : ""}`) 
+              div.collection-item(id=card._id class=`${card.binder ? card.binder + "-binder" : ""}`) 
                 div.collection-item-img
                   img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)
                 div.collection-item-details

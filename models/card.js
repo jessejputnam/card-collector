@@ -8,7 +8,7 @@ const CardSchema = new Schema(
   {
     id: { type: String, required: true },
 
-    userId: { type: String },
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
 
     binder: {
       type: String, 

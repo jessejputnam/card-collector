@@ -1,8 +1,8 @@
 exports.byValueDesc = (a, b) => b.value.market - a.value.market;
 exports.byValueAsc = (a, b) => a.value.market - b.value.market;
-exports.byRarityDesc = (a, b) => b.meta.rarity.grade - a.meta.rarity.grade;
-exports.byRarityAsc = (a, b) => a.meta.rarity.grade - b.meta.rarity.grade;
-exports.byNameDesc = (a, b) => {
+exports.byRarityAsc = (a, b) => b.meta.rarity.grade - a.meta.rarity.grade;
+exports.byRarityDesc = (a, b) => a.meta.rarity.grade - b.meta.rarity.grade;
+exports.byNameAsc = (a, b) => {
   const nameA = a.pokemon.name.toLowerCase();
   const nameB = b.pokemon.name.toLowerCase();
 
@@ -10,7 +10,7 @@ exports.byNameDesc = (a, b) => {
   if (nameA > nameB) return 1;
   return 0; 
 }
-exports.byNameAsc = (a, b) => {
+exports.byNameDesc = (a, b) => {
   const nameA = a.pokemon.name.toLowerCase();
   const nameB = b.pokemon.name.toLowerCase();
 
@@ -18,7 +18,7 @@ exports.byNameAsc = (a, b) => {
   if (nameA > nameB) return -1;
   return 0;
 }
-exports.bySetDesc = (a, b) => {
+exports.bySetAsc = (a, b) => {
   const nameA = a.meta.set.releaseDate;
   const nameB = b.meta.set.releaseDate;
 
@@ -26,7 +26,7 @@ exports.bySetDesc = (a, b) => {
   if (nameA > nameB) return 1;
   return 0;
 }
-exports.bySetAsc = (a, b) => {
+exports.bySetDesc = (a, b) => {
   const nameA = a.meta.set.releaseDate;
   const nameB = b.meta.set.releaseDate;
 
@@ -34,7 +34,7 @@ exports.bySetAsc = (a, b) => {
   if (nameA > nameB) return -1;
   return 0;
 }
-exports.bySupertypeDesc = (a, b) => {
+exports.bySupertypeAsc = (a, b) => {
   const nameA = a.meta.supertype.toLowerCase();
   const nameB = b.meta.supertype.toLowerCase();
 
@@ -42,7 +42,7 @@ exports.bySupertypeDesc = (a, b) => {
   if (nameA > nameB) return 1;
   return 0;
 }
-exports.bySupertypeAsc = (a, b) => {
+exports.bySupertypeDesc = (a, b) => {
   const nameA = a.meta.supertype.toLowerCase();
   const nameB = b.meta.supertype.toLowerCase();
 
