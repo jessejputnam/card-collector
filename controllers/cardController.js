@@ -24,16 +24,14 @@ const filterElite = require("../helpers/filterElite")
 
 // ############## System Update ################
 exports.update_cards_new_system = async (req, res, next) => {
-  const [errUser, user] = await handle(User.findById(req.user._id));
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
-
-  const cards = user.cards;
-  const elite = user.elite;
-  const prize = user.prize;
+  const userId = req.user._id;
+  const cards = req.user.cards;
 
   if (cards.length) {
-    const [errUserUpdate, userUpdate] = await handle(Card.updateMany({ _id: { $in: cards } }, { userId: user._id, binder: null }));
+    const elite = req.user.elite;
+    const prize = req.user.prize;
+
+    const [errUserUpdate, userUpdate] = await handle(Card.updateMany({ _id: { $in: cards } }, { userId, binder: null }));
     if (errUserUpdate) return next(errUserUpdate);
     console.log(`UserID add Complete: ${userUpdate.matchedCount} files found, ${userUpdate.modifiedCount} files modified`)
 
@@ -45,15 +43,18 @@ exports.update_cards_new_system = async (req, res, next) => {
     if (errPrizeUpdate) return next(errPrizeUpdate);
     console.log(`Prize add Complete: ${prizeUpdate.matchedCount} files found, ${prizeUpdate.modifiedCount} files modified`)
 
-    user.elite = null;
-    user.prize = null;
-    user.cards = null;
+    const update = { 
+      elite: null,
+      prize: null,
+      cards: null,
+      bulk: null
+    }
 
-    const [errUpdate, update] = await handle(user.save());
-    if (errUpdate) return next(errUpdate);
-
-    return res.redirect("/collection/home");
+    const [errUser, user] = await handle(User.findByIdAndUpdate(userId, update));
+    if (errUser) return next(errUser);
   } 
+
+  return res.redirect("/collection/home");
 }
 
 // ################# View Cards ##################
