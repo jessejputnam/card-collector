@@ -4,12 +4,10 @@ block content
   div.page-wrapper
     a(href=`/collection/sets#${card.meta.set.id}`) Back to sets
     h1= title 
-    if currentUser.prize.includes(card._id)
-      em(style='margin-top:-10px') Prize Binder 
-    else if currentUser.elite.includes(card._id) 
-      em(style='margin-top:-10px') Elite Binder
-    else 
+    if (!card.binder)
       em(style='margin-top:-10px;color:transparent') Collection Binder 
+    else 
+      em(style='margin-top:-10px')= `${card.binder[0].toUpperCase() + card.binder.substring(1)} Binder` 
 
     div.card-detail-container 
       div.detail-img-container 
@@ -55,9 +53,9 @@ block content
       form.card-edit-form(method="POST" action=`/collection/${card._id}/select-binder`) 
         input#objId(type="hidden" name="objId" required='true' value=card._id)
         select#binder(type='select' name="binder" required="true") 
-          option(value="none" selected=(!currentUser.prize.includes(card._id) && !currentUser.elite.includes(card._id) ? "selected" : false))
-          option(value="prize" selected=(currentUser.prize.includes(card._id) ? "selected" : false)) Prize Binder
-          option(value="elite" selected=(currentUser.elite.includes(card._id) ? "selected" : false)) Elite Binder
+          option(value="none" selected=(!card.binder))
+          option(value="prize" selected=(card.binder === "prize")) Prize Binder
+          option(value="elite" selected=(card.binder === "elite")) Elite Binder
         button.btn.btn-secondary(type="submit") Select Binder
 
     div.delete-card-container

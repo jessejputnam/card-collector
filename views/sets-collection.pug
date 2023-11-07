@@ -11,14 +11,21 @@ block content
 
     div.set-results-container
       each set in list_sets 
+        - const set_collected = `${(new Set(set.map(card => card.meta.set.number))).size}/${set[0].meta.set.totalPrint}`
+        - const set_total = set.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+
         hr
         div.set-container(id=set[0].meta.set.id)
-          a(href="#top" style="display:inline-block;font-size:.7rem;margin-bottom:10px") Back to Top 
+          a.to-top(href="#top") Back to Top 
           h3= set[0].meta.set.name 
-            span(style="font-size:.8rem;color:gray;font-weight:normal")  #{(new Set(set.map(card => card.meta.set.number))).size}/#{set[0].meta.set.totalPrint}
-            span(style="font-size:.5rem;color:gray;margin-left:15px")= set[0].meta.set.releaseDate.slice(0, 4)
+            span.set-collected= set_collected
+            span.set-date= set[0].meta.set.releaseDate.slice(0, 4)
+            p.set-total= `$${set_total}`
           div.set-card-list
             each card in set 
+              - const link_color = card.meta.rarity.grade < 3 ? "#9e2a2b" : "black"
+              - const set_number_color = card.meta.rarity.reverseHolo ? "tan" : "gray"
+
               li(style=`list-style: none`)  
-                a.set-link(href=`/collection/${card._id}` style=`font-size:.9rem;font-weight:normal;color:${card.meta.rarity.grade < 3 ? "#9e2a2b" : "black"}`)= card.pokemon.name + " "
-                  span(style=`font-size:.7rem;color:gray;${card.meta.rarity.reverseHolo ? "color:tan" : ""}`)=  card.meta.set.number + "/" + card.meta.set.totalPrint
+                a.set-link(href=`/collection/${card._id}` style=`color:${link_color}`)= card.pokemon.name + " "
+                  span.set-number(style=`color:${set_number_color}`)=  card.meta.set.number + "/" + card.meta.set.totalPrint

@@ -862,6 +862,42 @@ select#binder {
   max-width: 200px;
 }
 
+.to-top {
+  display:inline-block;
+  font-size:.7rem;
+  margin-bottom:10px
+}
+
+.set-collected {
+  margin-left: 5px;
+  font-size:.8rem;
+  color:gray;
+  font-weight:normal
+}
+
+.set-date {
+  font-size:.5rem;
+  color:gray;
+  margin-left:15px;
+}
+
+.set-link {
+  font-size:.9rem;
+  font-weight:normal;
+  color: black;
+}
+
+.set-number {
+  font-size:.7rem;
+  color:gray;
+}
+
+.set-total {
+  font-size: .8rem;
+  color: rgb(140, 85, 199);
+  font-style: italic;
+}
+
 .set-results-container {
   margin: 0 25px;
 }
@@ -947,6 +983,12 @@ select#binder {
   padding: 50px 5px 75px;
   border-radius: 25px;
   border: ridge 10px rgba(71, 71, 71, 0.492);
+}
+
+.binder_sub_total {
+  font-size:0.8rem;
+  color:gray;
+  font-weight:normal
 }
 
 .prize-card-container {
