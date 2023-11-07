@@ -8,6 +8,13 @@ const CardSchema = new Schema(
   {
     id: { type: String, required: true },
 
+    userId: { type: String },
+
+    binder: {
+      type: String, 
+      enum: ["prize", "elite"]
+    },
+
     meta: {
       images: {
         small: { type: String, required: true },
@@ -37,6 +44,7 @@ const CardSchema = new Schema(
     },
 
     value: {
+      manualUpdate: Boolean,
       market: { type: Number, required: true },
       priceType: { type: String, required: true },
       // Price History: [Date, Amt]-- i.e. [08/22/2022, 6.39]

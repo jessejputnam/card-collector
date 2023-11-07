@@ -22,6 +22,21 @@ const filterElite = require("../helpers/filterElite")
     - Filter Cards
 */
 
+// ############## System Update ################
+exports.update_cards_new_system = async (req, res, next) => {
+  const [errUser, user] = await handle(User.findById(req.user._id));
+  if (errUser) return next(errUser);
+  if (!user) return next(errs.userNotFound());
+
+  const cards = user.cards;
+
+  console.log(cards[0])
+
+  // if (cards.length) {
+  //   Card.updateMany(cards)
+  // } 
+}
+
 // ################# View Cards ##################
 
 // Handle display collection on GET
@@ -30,11 +45,14 @@ exports.display_collection_get = async (req, res, next) => {
   if (errUser) return next(errUser);
   if (!user) return next(errs.userNotFound());
 
+  const need_update = !!user.cards.length;
+
   const card_list = user.cards.sort(sort.byValueDesc);
   const total = card_list.reduce((acc, next) => acc + next.value.market, 0);
 
   return res.render("home", {
-    title: "My Collection",
+    title: `My Collection`,
+    need_update,
     card_list,
     total
   });

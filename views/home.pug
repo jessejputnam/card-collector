@@ -28,6 +28,12 @@ block content
               option(value=true) Ascending 
             button.btn.btn-secondary(type="submit") Sort
 
+    //- if need_update
+    //-   p(style="color:red") Looks like there is an update. Please click the button to update cards to new version.
+    //-   form(method="GET" action="/update-version") 
+    //-     button(type="submit") Update to New Version
+
+
     div.collection-container 
       if !card_list.length
         p No cards in collection yet
