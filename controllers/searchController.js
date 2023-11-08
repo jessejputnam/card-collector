@@ -25,12 +25,8 @@ exports.search_results_get = async (req, res, next) => {
   const pokeName = req.query.pokeName.trim().toLowerCase();
   const pokeSet = req.query.pokeSet.trim().toLowerCase();
 
-  // If more than one word, search for exact name; else search for name contains
-  const exact = pokeName.split(" ").length > 1;
-  const searchName = exact ? `"${pokeName}"` : pokeName;
-
   // If pokeSet, search only within the set
-  const searchQuery = `name:${searchName}${!pokeSet.length ? "" : " set.id:" + pokeSet}`;
+  const searchQuery = `name:*${pokeName}*${!pokeSet.length ? "" : " set.id:" + pokeSet}`;
 
   const [searchErr, results] = await handle(
     pokemon.card.where({ q: searchQuery, orderBy: "-set.releaseDate" })
