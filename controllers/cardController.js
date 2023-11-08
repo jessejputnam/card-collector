@@ -33,15 +33,12 @@ exports.update_cards_new_system = async (req, res, next) => {
 
     const [errUserUpdate, userUpdate] = await handle(Card.updateMany({ _id: { $in: cards } }, { userId, binder: null }));
     if (errUserUpdate) return next(errUserUpdate);
-    console.log(`UserID add Complete: ${userUpdate.matchedCount} files found, ${userUpdate.modifiedCount} files modified`)
 
     const [errEliteUpdate, eliteUpdate] = await handle(Card.updateMany({ _id: { $in: elite } }, { binder: "elite" }));
     if (errEliteUpdate) return next(errEliteUpdate);
-    console.log(`Elite add Complete: ${eliteUpdate.matchedCount} files found, ${eliteUpdate.modifiedCount} files modified`)
 
     const [errPrizeUpdate, prizeUpdate] = await handle(Card.updateMany({ _id: { $in: prize } }, { binder: "prize" }));
     if (errPrizeUpdate) return next(errPrizeUpdate);
-    console.log(`Prize add Complete: ${prizeUpdate.matchedCount} files found, ${prizeUpdate.modifiedCount} files modified`)
 
     const update = { 
       elite: null,
