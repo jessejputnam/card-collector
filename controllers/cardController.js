@@ -71,7 +71,6 @@ exports.display_collection_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
 
-  // const card_list = cards.sort(sort.byValueDesc);
   const total = cards.reduce((acc, next) => acc + next.value.market, 0);
 
   let card_list;
