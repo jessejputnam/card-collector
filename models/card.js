@@ -12,7 +12,7 @@ const CardSchema = new Schema(
 
     binder: {
       type: String, 
-      enum: ["prize", "elite"]
+      enum: ["prize", "elite", null]
     },
 
     meta: {

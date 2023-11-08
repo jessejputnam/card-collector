@@ -5,7 +5,7 @@ const handle = require("../helpers/errorHandler.js");
 const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
-const User = require("../models/user");
+const Card = require("../models/card.js");
 
 // Display search form on GET
 exports.search_get = async (req, res, next) => {
@@ -42,15 +42,15 @@ exports.search_results_get = async (req, res, next) => {
     results.data[i].hasReverseHolo = results.data[i].tcgplayer?.prices?.reverseHolofoil ? true : false;
   }
 
-  const [userErr, user] = await handle(
-    User.findById(req.user._id).populate("cards").exec()
+  const [errCards, cards] = await handle(
+    Card.find({ userId: req.user._id }).exec()
   );
-  if (userErr) return next(userErr);
+  if (errCards) return next(errCards);
 
   // Save whether user has either regular or reverse holo of card
   const reverseHoloSet = new Set(), cardSet = new Set();
 
-  user.cards.forEach(card => {
+  cards.forEach(card => {
     if (!card.meta.rarity.reverseHolo) cardSet.add(card.id);
     else reverseHoloSet.add(card.id);
   })

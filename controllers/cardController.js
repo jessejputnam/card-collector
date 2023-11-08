@@ -337,11 +337,6 @@ exports.add_card_post = async (req, res, next) => {
   const [errSave, _] = await handle(card.save());
   if (errSave) return next(errSave);
 
-  const [errUpdate, update] = await handle(
-    User.findByIdAndUpdate(userId, { $push: { cards: card._id } }).exec()
-  );
-  if (errUpdate) return next(errUpdate);
-
   return res.redirect(`/collection/sets#${card.meta.set.id}`);
 };
 
