@@ -61,11 +61,7 @@ exports.display_collection_get = async (req, res, next) => {
   const userId = req.user._id;
 
   // Legacy version 0.0 check
-  const [errUser, user] = await handle(User.findById(userId))
-  if (errUser) return next(errUser);
-  if (!user) return next(errs.userNotFound());
-
-  const need_update = !!user.cards;
+  const need_update = !!req.user.cards;
 
   // Get cards for display
   const sortAsc = req.query.asc;
