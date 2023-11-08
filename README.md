@@ -51,7 +51,7 @@ To run this project, you will need to add the following environment variables to
 
 - [ ] Adding a form for showing multiple owned copied of the same card
 - [ ] Search for name by "contains" with wildcard capability
-- [ ] Price card totals by collection
+- [x] Price card totals by collection
 - [ ] Ability to manually edit card info section for other country prices, PSA grading, etc (Note: manually added fields will not auto update prices, etc. Require manual updates)
 - [x] Missing license -- whoops
 - [ ] Export to csv
