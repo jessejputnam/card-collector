@@ -256,6 +256,7 @@ exports.add_card_post = async (req, res, next) => {
   const userId = req.user._id;
   const cardId = req.body.cardId;
   const revHolo = req.body.reverseHoloCheck === "true" ? true : false;
+  const firstEd = req.body.firstEdCheck === "true" ? true : false;
 
   const [errTcgCard, tcgCard] = await handle(pokemon.card.find(cardId));
   if (errTcgCard) return next(errTcgCard);
@@ -266,30 +267,40 @@ exports.add_card_post = async (req, res, next) => {
   const prices = tcgCard?.tcgplayer?.prices;
   if (!prices) return errs.noTcgPrice();
 
-  if (revHolo) {
-    marketVal = prices.reverseHolofoil.market || prices.reverseHolofoil.mid;
-    priceType = "reverseHolofoil";
-  } else if (prices.holofoil) {
-    marketVal = prices.holofoil.market || prices.holofoil.mid;
-    priceType = "holofoil";
-  } else if (prices.normal) {
-    marketVal = prices.normal.market || prices.normal.mid;
-    priceType = "normal";
-  } else if (prices.unlimited) {
-    marketVal = prices.unlimited.market || prices.unlimited.mid;
-    priceType = "unlimited";
-  } else if (prices.unlimitedHolofoil) {
-    marketVal = prices.unlimitedHolofoil.market || prices.unlimitedHolofoil.mid;
-    priceType = "unlimitedHolofoil";
-  } else if (prices["1stEditionHolofoil"]) {
-    marketVal = prices["1stEditionHolofoil"].market || prices["1stEditionHolofoil"].mid;
-    priceType = "1stEditionHolofoil";
-  } else if (prices["1stEdition"]) {
-    marketVal = prices["1stEdition"].market || prices["1stEdition"].mid;
-    priceType = "1stEdition";
-  } else {
-    return next(errs.noTcgPrice());
-  }
+  if (revHolo) priceType = "reverseHolofoil";
+  else if (firstEd) priceType = prices["1stEditionHolofoil"] ? "1stEditionHolofoil" : "1stEdition";
+  else if (prices.holofoil) priceType = "holofoil";
+  else if (prices.normal) priceType = "normal";
+  else if (prices.unlimited) priceType = "unlimited";
+  else if (prices.unlimitedHolofoil) priceType = "unlimitedHolofoil";
+
+  marketVal = prices[priceType].market || prices[priceType].mid;
+
+  //////////////////
+  // if (revHolo) {
+  //   marketVal = prices.reverseHolofoil.market || prices.reverseHolofoil.mid;
+  //   priceType = "reverseHolofoil";
+  // } else if (prices.holofoil) {
+  //   marketVal = prices.holofoil.market || prices.holofoil.mid;
+  //   priceType = "holofoil";
+  // } else if (prices.normal) {
+  //   marketVal = prices.normal.market || prices.normal.mid;
+  //   priceType = "normal";
+  // } else if (prices.unlimited) {
+  //   marketVal = prices.unlimited.market || prices.unlimited.mid;
+  //   priceType = "unlimited";
+  // } else if (prices.unlimitedHolofoil) {
+  //   marketVal = prices.unlimitedHolofoil.market || prices.unlimitedHolofoil.mid;
+  //   priceType = "unlimitedHolofoil";
+  // } else if (prices["1stEditionHolofoil"]) {
+  //   marketVal = prices["1stEditionHolofoil"].market || prices["1stEditionHolofoil"].mid;
+  //   priceType = "1stEditionHolofoil";
+  // } else if (prices["1stEdition"]) {
+  //   marketVal = prices["1stEdition"].market || prices["1stEdition"].mid;
+  //   priceType = "1stEdition";
+  // } else {
+  //   return next(errs.noTcgPrice());
+  // }
 
   const card = new Card({
     id: tcgCard.id,
@@ -320,6 +331,7 @@ exports.add_card_post = async (req, res, next) => {
     },
     pokemon: { name: tcgCard.name },
     value: {
+      manualUpdate: false,
       market: marketVal,
       priceHistory: [[new Date().toLocaleDateString("en-US"), marketVal.toFixed(2)]],
       priceType: priceType,

@@ -17,6 +17,8 @@ block content
           h2 #{card.pokemon.name}
             if card.meta.rarity.reverseHolo 
               em(style="font-size:.7rem;color:silver")  Reverse Holo
+            if card.value.priceType[0] === "1"
+              em(style="font-size:.7rem;color:silver")  1st Edition
           em= card.meta.rarity.type
         div.info-set-container 
           div 

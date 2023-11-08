@@ -23,8 +23,10 @@ block content
             p.set-total= `$${set_total}`
           div.set-card-list
             each card in set 
+              - const reverseHolo = card.meta.rarity.reverseHolo
+              - const firstEd = card.value.priceType[0] === "1"
               - const link_color = card.meta.rarity.grade < 3 ? "#9e2a2b" : "black"
-              - const set_number_color = card.meta.rarity.reverseHolo ? "tan" : "gray"
+              - const set_number_color = referseHolo ? "tan" : firstEd ? "RoyalBlue" : "gray"
 
               li(style=`list-style: none`)  
                 a.set-link(href=`/collection/${card._id}` style=`color:${link_color}`)= card.pokemon.name + " "

@@ -47,8 +47,7 @@ const CardSchema = new Schema(
       manualUpdate: Boolean,
       market: { type: Number, required: true },
       priceType: { type: String, required: true },
-      // Price History: [Date, Amt]-- i.e. [08/22/2022, 6.39]
-      priceHistory: [[String, Number]],
+      priceHistory: [[String, Number]], // Price History: [Date, Amt]-- i.e. [08/22/2022, 6.39]
       count: Number
     }
   },
