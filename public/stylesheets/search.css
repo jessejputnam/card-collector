@@ -1,0 +1,63 @@
+/* ########### ## SEARCH ############ */
+
+.results-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 10px 20px 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.result-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: 10px;
+  width: 275px;
+}
+
+.owned {
+  filter: brightness(0.6) grayscale(100%);
+  position: relative;
+}
+
+.result-img-container {
+  min-width: 143.25px;
+  height: 200px;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.445);
+  transition: transform 0.3s;
+  border-radius: 10px;
+  z-index: 10;
+}
+
+.result-img-container > img {
+  height: 200px;
+}
+
+@media (hover: hover) {
+  .result-img-container:hover {
+    transform: scale(1.5);
+    z-index: 1000;
+    position: relative;
+  }
+}
+
+.result-info-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.result-title {
+  font-size: 1.1rem;
+}
+
+.result-set,
+.result-number {
+  font-size: 0.8rem;
+  color: gray;
+}

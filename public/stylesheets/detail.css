@@ -1,0 +1,211 @@
+/* ########### ## CARD DETAIL ############ */
+
+.card-detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 50px;
+  row-gap: 25px;
+  max-width: 1100px;
+  margin-top: 50px;
+}
+
+.detail-img-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-img-container > img {
+  height: 600px;
+  max-height: 600px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.672);
+  border-radius: 25px;
+  width: 430.08px;
+}
+
+@media only screen and (max-width: 485px) {
+  .detail-img-container > img {
+    height: auto;
+    width: 90%;
+    min-width: 255px;
+  }
+}
+
+.detail-info-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  width: clamp(250px, 90%, 400px);
+}
+  
+.detail-info-container > div {
+  background-color: rgba(255, 255, 255, 0.782);
+  backdrop-filter: blur(4px);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.546);
+}
+  
+.info-set-container > div {
+  display: flex;
+  column-gap: 15px;
+  align-items: flex-end;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.info-set-container > div > div {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
+}
+
+.small-text {
+  font-size: 0.8rem;
+  color: rgb(62, 62, 62);
+}
+
+.current-price-container {
+  display: flex;
+  align-items: flex-end;
+  column-gap: 15px;
+  margin-bottom: 5px;
+}
+
+.current-price-container > h2 {
+  font-family: "Rajdhani", Georgia, "Times New Roman", Times, serif;
+}
+
+.price-history-container {
+  height: 300px;
+  box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.527);
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  padding: 15px;
+  overflow-y: scroll;
+  background: white;
+}
+
+.price-history-container > ul > li {
+  letter-spacing: 0.1ch;
+}
+
+.card-edits-container {
+  max-width: 900px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.card-edits-container > div,
+.card-edits-container > form {
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.709);
+  padding: 10px;
+  border-radius: 10px;
+  height: 90px;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.card-edit-form {
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.reverse-holo-container {
+  display: flex;
+  column-gap: 10px;
+}
+
+.reverse-holo-container > select {
+  padding: 1px;
+}
+
+.form-separator {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.card-edit-rarity-form {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  margin: 0 auto;
+}
+
+.card-edit-rarity-form > input {
+  text-align: center;
+  height: 22px;
+}
+
+.card-edit-rarity-form > input::-webkit-inner-spin-button,
+.card-edit-rarity-form > input::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+.card-edit-rarity-form > #rarity {
+  width: 50px;
+}
+
+select#binder {
+  padding: 2px 0;
+  text-align: center;
+}
+
+.delete-card-container {
+  max-width: 900px;
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-card {
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.617);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background-color: rgba(255, 102, 102, 0.162);
+
+  transition: background-color 0.5s, color 0.5s;
+}
+  
+@media (hover: hover) {
+  .delete-card:hover {
+    background-color: rgba(220, 0, 0, 0.677);
+    color: white;
+  }
+
+  .delete-card:hover a {
+    color: white;
+  }
+}
+  
+@media only screen and (max-width: 1150px) {
+  .card-detail-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media only screen and (max-width: 530px) {
+  .card-edits-container {
+    width: 80%;
+    margin: 0 auto;
+  }
+  .card-edits-container > div,
+  .card-edits-container > form {
+    width: 100%;
+    max-width: none;
+  }
+}

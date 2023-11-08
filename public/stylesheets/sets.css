@@ -1,0 +1,124 @@
+/* ########### ## SETS VIEW ############ */
+
+.page-wrapper > .page-nav {
+    max-height: 325px;
+    padding: 15px;
+    margin-left: 20px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 5px 20px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    list-style-type: "〄";
+    background-color: rgb(250, 245, 245);
+}
+
+.page-wrapper > .page-nav > li {
+  padding-left: 5px;
+  margin-left: 12px;
+  max-width: 200px;
+}
+
+.to-top {
+  display:inline-block;
+  font-size:.7rem;
+  margin-bottom:10px
+}
+
+.set-collected {
+  margin-left: 5px;
+  font-size:.8rem;
+  color:gray;
+  font-weight:normal
+}
+
+.set-date {
+  font-size:.5rem;
+  color:gray;
+  margin-left:15px;
+}
+
+.set-link {
+  font-size:.9rem;
+  font-weight:normal;
+  color: black;
+}
+
+.set-number {
+  font-size:.7rem;
+  color:gray;
+}
+
+.set-total {
+  font-size: .8rem;
+  color: rgb(140, 85, 199);
+  font-style: italic;
+}
+
+.set-results-container {
+  margin: 0 25px;
+}
+
+.set-container {
+  padding: 20px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  box-shadow: -2px -2px 2px 0 rgba(50, 50, 50, 0.384);
+  background-color: whitesmoke;
+}
+
+.set-card-list {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  row-gap: 5px;
+  column-gap: 5px;
+  max-height: 900px;
+}
+
+.set-card-list > li {
+  max-width: 150px;
+}
+
+.set-link {
+  color: rgb(59, 59, 59);
+  text-decoration: none;
+  text-wrap: wrap;
+}
+
+@media only screen and (max-width: 1300px) {
+  .page-wrapper > .page-nav {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 3px solid #faf5f5;
+    margin-left: 0;
+  }
+
+  .page-wrapper > .page-nav > li {
+    width: 260px;
+    max-width: none;
+  }
+
+  .page-wrapper > .page-nav > li > a {
+    font-size: 0.9rem;
+  }
+
+  .set-results-container {
+    margin: 0;
+  }
+
+  .set-container {
+    border-radius: 10px;
+  }
+
+  .set-card-list {
+    max-height: 480px;
+    overflow-x: auto;
+  }
+
+  .set-card-list > li {
+    width: 250px;
+  }
+}

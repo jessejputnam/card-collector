@@ -1,0 +1,100 @@
+/* ##################### ## FILTER VIEW ################## */
+
+.filter-header {
+    border-bottom: solid 1px black;
+    padding: 15px;
+}
+
+.filter-control-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  max-width: 875px;
+}
+
+.filter-fieldsets-container {
+  padding: 5px 10px 10px;
+  font-size: 0.8rem;
+  background-color: rgb(250, 245, 245);
+}
+
+.filter-fieldsets-container > div {
+  display: flex;
+  column-gap: 25px;
+}
+
+.filter-fieldset {
+  padding: 5px 10px;
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 5px;
+}
+
+.filter-fieldset-supertype {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.filter-fieldset-supertype > div {
+  width: 80px;
+}
+
+.filter-fieldset-rarity > div {
+  width: 100px;
+}
+
+.filter-fieldset-subtypes > div {
+  width: 80px;
+}
+
+.filter-fieldset-sets {
+  row-gap: 10px;
+}
+
+@media only screen and (max-width: 800px) {
+  .filter-fieldsets-container > div {
+    flex-wrap: wrap;
+  }
+
+  .filter-fieldsets-container > div > .filter-fieldset {
+    width: 100%;
+  }
+
+  .filter-fieldset {
+    align-items: center;
+  }
+
+  .filter-fieldset-sets {
+    padding-left: 25px;
+  }
+}
+
+.filter-card-name {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-card-value {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-checkbox-container {
+  display: flex;
+  font-size: 0.55rem;
+  align-items: center;
+  column-gap: 3px;
+  width: 95px;
+  height: 15px;
+}
