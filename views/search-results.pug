@@ -12,7 +12,7 @@ block content
     else
       div.results-wrapper
         each card in card_list 
-          - const prices = card.tcgplayer.prices
+          - const prices = card.tcgplayer ? card.tcgplayer.prices : null
           
           div.result-container
             div(class=`result-img-container${user_cards.has(card.id) || user_reverse_cards.has(card.id) ? " owned" : ""}`) 
