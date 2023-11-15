@@ -42,7 +42,7 @@ block content
 
     if (trainer.length)
       h3 Trainer
-        - const trainer_total = elite.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const trainer_total = trainer.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
         span.binder_sub_total= ` - $${trainer_total}`
       hr
       div.binder-container

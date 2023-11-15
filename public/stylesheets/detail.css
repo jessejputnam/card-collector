@@ -76,6 +76,42 @@
   font-family: "Rajdhani", Georgia, "Times New Roman", Times, serif;
 }
 
+.auto-update {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 2px #BA0021 solid;
+  color: #BA0021;
+  cursor: pointer;
+
+  transition: border-color .2s, color .2s, background-color .2s;
+}
+
+.manual {
+  color: #604348;
+  border-color: #604348;
+}
+
+@media (hover:hover) {
+  .auto-update:hover {
+    background-color: rgb(240, 184, 184);
+    color: #422b2f;
+    border-color: #422b2f;
+  }
+
+  .manual:hover {
+    color: #BA0021;
+    border-color: #BA0021;
+    background-color: #6043482d;
+  }
+}
+
+.auto-update-form {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  margin: 0 auto;
+}
+
 .price-history-container {
   height: 300px;
   box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.527);
@@ -208,4 +244,32 @@ select#binder {
     width: 100%;
     max-width: none;
   }
+}
+
+.auto-update-container {
+  display: none;
+  position: absolute;
+  width: 100vw;
+  max-width: 500px;
+  left: calc(50% - 250px);
+  bottom: 45%;
+  padding: 50px;
+  border-radius: 5px;
+  background-color: rgba(237, 229, 229, 0.938);
+  backdrop-filter: blur(2px);
+  box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.167);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+@media only screen and (max-width: 520px) {
+  .auto-update-container {
+    left: 0;
+    bottom: 40%;
+  }
+}
+
+.visible {
+  display: flex;
+  align-items: center;
 }

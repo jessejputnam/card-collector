@@ -3,6 +3,9 @@ extends layout
 block styles  
   link(rel="stylesheet" href="/stylesheets/detail.css")
 
+block scripts 
+  script(type="module" src="/javascripts/scriptDetail.js" defer)
+
 block content 
   div.page-wrapper
     a(href=`/collection/sets#${card.meta.set.id}`) Back to sets
@@ -11,6 +14,12 @@ block content
       em(style='margin-top:-10px;color:transparent') Collection Binder 
     else 
       em(style='margin-top:-10px')= `${card.binder[0].toUpperCase() + card.binder.substring(1)} Binder` 
+    
+    div#auto-update-form-container.form-separator.auto-update-container
+      p= `This will change your price update to ${card.value.maualUpdate ? "manual. While manual, you will need to input the price yourself from outside research" : "auto. While auto, prices updates will fetch the latest US market price from TCG Player."}`
+      form.auto-update-form-form(method="POST" action=`/collection/${card._id}/change-update-value`)
+        input#cardId(type="hidden" name="cardId" required="true" value=card._id)
+        button.btn.btn-primary(type="submit")= `Change to ${card.value.manualUpdate ? "auto" : "manual"}`
 
     div.card-detail-container 
       div.detail-img-container 
@@ -35,6 +44,7 @@ block content
           div.current-price-container
             p Current Market Value: 
             h2 $#{card.value.market.toFixed(2)}
+            div#auto-update-toggle(class=`auto-update${card.value.manualUpdate ? " manual" : ""}`)= `${card.value.manualUpdate ? "manual" : "auto"}`
           h3 Price over time 
           div.price-history-container
             ul 
@@ -50,10 +60,17 @@ block content
           button.btn.btn-primary(type="submit") Edit Rarity 
 
       div.form-separator
-        form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
-          input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-          input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
-          button.btn.secondary-btn(type="submit") Update Price
+        if (card.value.manualUpdate)
+          form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
+            input#cardValue(type="number" name="cardValue" required="true")
+            input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+            input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
+            button.btn.secondary-btn(type="submit") Update Price
+        else 
+          form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
+            input#cardId(type="hidden" name="cardId" required="true" value=card.id)
+            input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
+            button.btn.secondary-btn(type="submit") Update Price
 
       form.card-edit-form(method="POST" action=`/collection/${card._id}/select-binder`) 
         input#objId(type="hidden" name="objId" required='true' value=card._id)

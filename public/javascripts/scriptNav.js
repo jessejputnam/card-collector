@@ -17,7 +17,3 @@ if (topbar) {
     }
   });
 }
-
-function pr(message) {
-  console.log(message)
-}

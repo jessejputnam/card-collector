@@ -107,8 +107,8 @@ block content
 
     if (trainer.length)
       h3 Trainer
-        - const holo_total = holo.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
-        span.binder_sub_total= ` - $${holo_total}`
+        - const trainer_total = trainer.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        span.binder_sub_total= ` - $${trainer_total}`
       hr
       div.binder-container 
         each card in trainer
