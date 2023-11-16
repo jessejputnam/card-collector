@@ -39,6 +39,9 @@ router.get("/:id/delete", card_controller.delete_card_get);
 // POST request for delete card
 router.post("/:id/delete", card_controller.delete_card_post);
 
+// POST request for change price update auto/manual
+router.post("/:id/change-update-value", card_controller.change_update_type);
+
 // POST request for update price history
 router.post("/:id/update-value", card_controller.update_price_history_post);
 

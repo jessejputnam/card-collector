@@ -7,6 +7,20 @@ block scripts
   script(type="module" src="/javascripts/scriptDetail.js" defer)
 
 block content 
+  if msg
+    div#msg.msg-container
+      p= msg
+
+  div#auto-update-form-container.form-separator.auto-update-container
+    div#close-btn.close-btn ❌ 
+      p close
+    h3 Change Price Update Method
+    p= `This will change your price update to ${!card.value.maualUpdate ? "manual. While manual, you will need to input the price yourself to update" : "auto. While auto, price updates will fetch the latest US market price from TCG Player."}`
+    form.auto-update-form-form(method="POST" action=`/collection/${card._id}/change-update-value`)
+      input#cardId(type="hidden" name="cardId" required="true" value=card._id)
+      input#isManual(type="hidden" name="isManual" required="true" value=`${!card.value.manualUpdate}` )
+      button.btn.btn-primary(type="submit")= `Change to ${card.value.manualUpdate ? "auto" : "manual"}`
+
   div.page-wrapper
     a(href=`/collection/sets#${card.meta.set.id}`) Back to sets
     h1= title 
@@ -14,12 +28,6 @@ block content
       em(style='margin-top:-10px;color:transparent') Collection Binder 
     else 
       em(style='margin-top:-10px')= `${card.binder[0].toUpperCase() + card.binder.substring(1)} Binder` 
-    
-    div#auto-update-form-container.form-separator.auto-update-container
-      p= `This will change your price update to ${card.value.maualUpdate ? "manual. While manual, you will need to input the price yourself from outside research" : "auto. While auto, prices updates will fetch the latest US market price from TCG Player."}`
-      form.auto-update-form-form(method="POST" action=`/collection/${card._id}/change-update-value`)
-        input#cardId(type="hidden" name="cardId" required="true" value=card._id)
-        button.btn.btn-primary(type="submit")= `Change to ${card.value.manualUpdate ? "auto" : "manual"}`
 
     div.card-detail-container 
       div.detail-img-container 
@@ -62,7 +70,7 @@ block content
       div.form-separator
         if (card.value.manualUpdate)
           form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
-            input#cardValue(type="number" name="cardValue" required="true")
+            input#cardValue(type="number" step="0.01" min="0.01" name="cardValue" required="true" placeholder=card.value.market)
             input#cardId(type="hidden" name="cardId" required="true" value=card.id)
             input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
             button.btn.secondary-btn(type="submit") Update Price

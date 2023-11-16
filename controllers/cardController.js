@@ -10,7 +10,8 @@ const handle = require("../helpers/errorHandler");
 const errs = require("../helpers/errs");
 const sort = require("../helpers/sort");
 const filterPrize = require("../helpers/filterPrize");
-const filterElite = require("../helpers/filterElite")
+const filterElite = require("../helpers/filterElite");
+const updateMsgs = require("../helpers/updateMsgs")
 
 /* 
 
@@ -100,13 +101,18 @@ exports.display_collection_get = async (req, res, next) => {
 // Handle display card detail on GET
 exports.display_card_get = async (req, res, next) => {
   const cardId = req.params.id;
+  const update = req.query.update;
+
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound())
 
+  const msg = !update ? null : updateMsgs[update];
+
   return res.render("card-detail", {
     title: `Collection: ${card.pokemon.name}`,
-    card
+    card,
+    msg
   });
 };
 
@@ -166,6 +172,20 @@ exports.display_elite_get = async (req, res, next) => {
 
 // ################# Update/Delete Cards ##################
 
+// Handle change price update type
+exports.change_update_type = async (req, res, next) => {
+  const cardId = req.params.id;
+  const isManual = req.body.isManual === "true";
+  const [errCard, card] = await handle(Card.findById(cardId).exec());
+  if (errCard) return next(errCard);
+
+  card.value.manualUpdate = isManual;
+  const [err, _] = await handle(card.save());
+  if (err) return next(err);
+
+  return res.redirect(`/collection/${card._id}?update=${isManual ? "man" : "auto"}`);
+}
+
 // Handle update price history
 exports.update_price_history_post = async (req, res, next) => {
   const cardId = req.params.id;
@@ -176,23 +196,34 @@ exports.update_price_history_post = async (req, res, next) => {
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  const [errTcgCard, tcgCard] = await handle(pokemon.card.find(pokemonId));
-  if (errTcgCard) return next(errTcgCard);
-  if (!tcgCard) return next(errs.cardNotFound());
+  let marketVal;
 
-  const marketVal = tcgCard.tcgplayer.prices[card.value.priceType].market
-  if (!marketVal) return next(errs.priceNotFound);
+  if (card.value.manualUpdate) {
+    marketVal = +req.body.cardValue;
+  } else {
+    const [errTcgCard, tcgCard] = await handle(pokemon.card.find(pokemonId));
+    if (errTcgCard) return next(errTcgCard);
+    if (!tcgCard) return next(errs.cardNotFound());
+  
+    marketVal = tcgCard.tcgplayer.prices[card.value.priceType].market
+    if (!marketVal) return next(errs.priceNotFound);
+  }
 
   card.value.market = marketVal;
 
   const mostRecentDate = card.value.priceHistory[0][0];
-  if (mostRecentDate !== newDate)
+
+  let msg = "pricex";
+
+  if (mostRecentDate !== newDate) {
+    msg = "price";
     card.value.priceHistory.unshift([newDate, marketVal]);
+  }
 
   const [errCardSave, _] = await handle(card.save());
   if (errCardSave) return next(errCardSave);
 
-  return res.redirect(`/collection/${card._id}`);
+  return res.redirect(`/collection/${card._id}?update=${msg}`);
 };
 
 exports.delete_card_get = async (req, res, next) => {
@@ -230,7 +261,7 @@ exports.select_binder_post = async (req, res, next) => {
   );
   if (errCard) return next(errCard);
 
-  return res.redirect(`/collection/${cardId}`);
+  return res.redirect(`/collection/${cardId}?update=${newBinder}`);
 };
 
 // Handle edit rarity on POST
@@ -247,7 +278,7 @@ exports.edit_card_rarity = async (req, res, next) => {
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  return res.redirect(`/collection/${cardId}`)
+  return res.redirect(`/collection/${cardId}?update=rarity`)
 };
 
 // ################## Add Cards ###################
@@ -275,32 +306,6 @@ exports.add_card_post = async (req, res, next) => {
   else if (prices.unlimitedHolofoil) priceType = "unlimitedHolofoil";
 
   marketVal = prices[priceType].market || prices[priceType].mid;
-
-  //////////////////
-  // if (revHolo) {
-  //   marketVal = prices.reverseHolofoil.market || prices.reverseHolofoil.mid;
-  //   priceType = "reverseHolofoil";
-  // } else if (prices.holofoil) {
-  //   marketVal = prices.holofoil.market || prices.holofoil.mid;
-  //   priceType = "holofoil";
-  // } else if (prices.normal) {
-  //   marketVal = prices.normal.market || prices.normal.mid;
-  //   priceType = "normal";
-  // } else if (prices.unlimited) {
-  //   marketVal = prices.unlimited.market || prices.unlimited.mid;
-  //   priceType = "unlimited";
-  // } else if (prices.unlimitedHolofoil) {
-  //   marketVal = prices.unlimitedHolofoil.market || prices.unlimitedHolofoil.mid;
-  //   priceType = "unlimitedHolofoil";
-  // } else if (prices["1stEditionHolofoil"]) {
-  //   marketVal = prices["1stEditionHolofoil"].market || prices["1stEditionHolofoil"].mid;
-  //   priceType = "1stEditionHolofoil";
-  // } else if (prices["1stEdition"]) {
-  //   marketVal = prices["1stEdition"].market || prices["1stEdition"].mid;
-  //   priceType = "1stEdition";
-  // } else {
-  //   return next(errs.noTcgPrice());
-  // }
 
   const card = new Card({
     id: tcgCard.id,

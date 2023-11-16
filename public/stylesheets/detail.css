@@ -1,5 +1,36 @@
 /* ########### ## CARD DETAIL ############ */
 
+.msg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 0;
+  padding-top: 0;
+  text-align: center;
+  z-index: 10000;
+  background-color: rgba(173, 190, 242, 0.838);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 3px 3px 0px rgba(0, 0, 0, 0.315);
+  font-size: 1.1rem;
+  overflow: hidden;
+
+  transition: height .8s, padding-top .8s;
+}
+
+.show {
+  height: 62px;
+  padding-top: 20px;
+}
+
+@media only screen and (max-width: 800px) {
+  .msg-container {
+    top: 90px;
+    font-size: 1rem;
+  }
+}
+
 .card-detail-container {
   display: flex;
   flex-wrap: wrap;
@@ -150,9 +181,17 @@
 
 .card-edit-form {
   max-width: 200px;
+  position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
   row-gap: 10px;
+}
+
+.card-edit-form > input {
+  text-align:center;
+  padding: 5px 10px;
+  width: 50%;
 }
 
 .reverse-holo-container {
@@ -172,14 +211,15 @@
 
 .card-edit-rarity-form {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  column-gap: 10px;
+  gap: 10px;
   margin: 0 auto;
 }
 
 .card-edit-rarity-form > input {
   text-align: center;
-  height: 22px;
+  padding: 5px 10px;
 }
 
 .card-edit-rarity-form > input::-webkit-inner-spin-button,
@@ -192,7 +232,7 @@
 }
 
 select#binder {
-  padding: 2px 0;
+  padding: 5px 10px;
   text-align: center;
 }
 
@@ -255,11 +295,31 @@ select#binder {
   bottom: 45%;
   padding: 50px;
   border-radius: 5px;
-  background-color: rgba(237, 229, 229, 0.938);
+  background-color: rgba(249, 241, 241, 0.938);
   backdrop-filter: blur(2px);
   box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.167);
   -webkit-backdrop-filter: blur(2px);
   z-index: 1000;
+}
+
+.auto-update-container > .close-btn {
+  position: absolute;
+  width: 50px;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.auto-update-container > .close-btn > p {
+  color: transparent;
+  transition: color .5s;
+}
+
+@media(hover:hover) {
+  .auto-update-container > .close-btn:hover > p {
+    color: rgb(96, 96, 96);
+  }
 }
 
 @media only screen and (max-width: 520px) {
