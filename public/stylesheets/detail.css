@@ -31,6 +31,17 @@
   }
 }
 
+.title {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.title > a {
+  margin-bottom: 13px;
+  cursor: default;
+}
+
 .card-detail-container {
   display: flex;
   flex-wrap: wrap;
@@ -220,15 +231,12 @@
 .card-edit-rarity-form > input {
   text-align: center;
   padding: 5px 10px;
+  width: 50%;
 }
 
 .card-edit-rarity-form > input::-webkit-inner-spin-button,
 .card-edit-rarity-form > input::-webkit-outer-spin-button {
   opacity: 1;
-}
-
-.card-edit-rarity-form > #rarity {
-  width: 50px;
 }
 
 select#binder {

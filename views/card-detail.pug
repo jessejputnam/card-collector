@@ -23,7 +23,11 @@ block content
 
   div.page-wrapper
     a(href=`/collection/sets#${card.meta.set.id}`) Back to sets
-    h1= title 
+    div.title 
+      h1= title
+      if (card.custom)
+        a(href=`/collection/${card._id}/edit`) edit
+
     if (!card.binder)
       em(style='margin-top:-10px;color:transparent') Collection Binder 
     else 
@@ -52,7 +56,8 @@ block content
           div.current-price-container
             p Current Market Value: 
             h2 $#{card.value.market.toFixed(2)}
-            div#auto-update-toggle(class=`auto-update${card.value.manualUpdate ? " manual" : ""}`)= `${card.value.manualUpdate ? "manual" : "auto"}`
+            if (!card.custom)
+              div#auto-update-toggle(class=`auto-update${card.value.manualUpdate ? " manual" : ""}`)= `${card.value.manualUpdate ? "manual" : "auto"}`
           h3 Price over time 
           div.price-history-container
             ul 

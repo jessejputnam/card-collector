@@ -49,6 +49,12 @@ h4 {
   font-family: "Bad Script", Georgia, "Times New Roman", Times, serif;
 }
 
+@media only screen and (max-width: 485px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+}
+
 a,
 p {
   font-family: "Rajdhani", Arial, Helvetica, sans-serif;

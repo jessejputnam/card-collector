@@ -27,6 +27,12 @@ router.get("/sets", card_controller.display_filter_by_set_get);
 // POST request for add card
 router.post("/add-card", card_controller.add_card_post);
 
+// GET request for add custom card form
+router.get("/add-custom-card", card_controller.add_custom_card_get);
+
+// POST request for add custom card
+router.post("/add-custom-card", card_controller.add_custom_card_post);
+
 // GET request for filter page
 router.get("/filter", card_controller.display_filter_page_get);
 

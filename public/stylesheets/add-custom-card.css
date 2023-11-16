@@ -1,0 +1,13 @@
+.outer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.inner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

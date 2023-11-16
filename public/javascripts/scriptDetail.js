@@ -11,5 +11,8 @@ close_btn.addEventListener("click", () => {
   auto_update_cont.classList.remove("visible");
 })
 
-setTimeout(() => msg_container.classList.add("show"), 10);
-setTimeout(() => msg_container.classList.remove("show"), 3000);
+if (msg_container) {
+  setTimeout(() => msg_container.classList.add("show"), 10);
+  setTimeout(() => msg_container.classList.remove("show"), 3000);
+
+}

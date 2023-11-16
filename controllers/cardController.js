@@ -5,13 +5,15 @@ pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
 const Card = require("../models/card");
 const User = require("../models/user");
-const getRarityRating = require("../helpers/getRarityRating");
 const handle = require("../helpers/errorHandler");
 const errs = require("../helpers/errs");
 const sort = require("../helpers/sort");
 const filterPrize = require("../helpers/filterPrize");
 const filterElite = require("../helpers/filterElite");
-const updateMsgs = require("../helpers/updateMsgs")
+const updateMsgs = require("../helpers/updateMsgs");
+const buildCard = require("../helpers/buildCard");
+const getPriceType = require("../helpers/getPriceType");
+const getRarityRating = require("../helpers/getRarityRating");
 
 /* 
 
@@ -41,7 +43,7 @@ exports.update_cards_new_system = async (req, res, next) => {
     const [errPrizeUpdate, prizeUpdate] = await handle(Card.updateMany({ _id: { $in: prize } }, { binder: "prize" }));
     if (errPrizeUpdate) return next(errPrizeUpdate);
 
-    const update = { 
+    const update = {
       elite: null,
       prize: null,
       cards: null,
@@ -50,7 +52,7 @@ exports.update_cards_new_system = async (req, res, next) => {
 
     const [errUser, user] = await handle(User.findByIdAndUpdate(userId, update));
     if (errUser) return next(errUser);
-  } 
+  }
 
   return res.redirect("/collection/home");
 }
@@ -68,7 +70,7 @@ exports.display_collection_get = async (req, res, next) => {
   const sortAsc = req.query.asc;
   const sortType = req.query.by;
   const asc = sortAsc === "true" ? true : false;
-  
+
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
 
@@ -110,7 +112,7 @@ exports.display_card_get = async (req, res, next) => {
   const msg = !update ? null : updateMsgs[update];
 
   return res.render("card-detail", {
-    title: `Collection: ${card.pokemon.name}`,
+    title: `${card.pokemon.name}`,
     card,
     msg
   });
@@ -204,7 +206,7 @@ exports.update_price_history_post = async (req, res, next) => {
     const [errTcgCard, tcgCard] = await handle(pokemon.card.find(pokemonId));
     if (errTcgCard) return next(errTcgCard);
     if (!tcgCard) return next(errs.cardNotFound());
-  
+
     marketVal = tcgCard.tcgplayer.prices[card.value.priceType].market
     if (!marketVal) return next(errs.priceNotFound);
   }
@@ -255,7 +257,7 @@ exports.select_binder_post = async (req, res, next) => {
 
   const [errCard, card] = await handle(
     Card.findByIdAndUpdate(
-      cardId, 
+      cardId,
       { binder: newBinder == "none" ? null : newBinder }
     ).exec()
   );
@@ -293,61 +295,61 @@ exports.add_card_post = async (req, res, next) => {
   if (errTcgCard) return next(errTcgCard);
   if (!tcgCard) return next(errs.cardNotFound());
 
-  let marketVal, priceType;
-
   const prices = tcgCard?.tcgplayer?.prices;
   if (!prices) return errs.noTcgPrice();
+  const priceType = getPriceType(revHolo, firstEd, prices);
+  const marketVal = prices[priceType].market || prices[priceType].mid;
 
-  if (revHolo) priceType = "reverseHolofoil";
-  else if (firstEd) priceType = prices["1stEditionHolofoil"] ? "1stEditionHolofoil" : "1stEdition";
-  else if (prices.holofoil) priceType = "holofoil";
-  else if (prices.normal) priceType = "normal";
-  else if (prices.unlimited) priceType = "unlimited";
-  else if (prices.unlimitedHolofoil) priceType = "unlimitedHolofoil";
-
-  marketVal = prices[priceType].market || prices[priceType].mid;
-
-  const card = new Card({
-    id: tcgCard.id,
-    userId,
-    binder: null,
-    meta: {
-      images: {
-        small: tcgCard.images.small,
-        large: tcgCard.images.large
-      },
-      rarity: {
-        type: tcgCard.rarity || "Unknown",
-        grade: getRarityRating[tcgCard.rarity || "Unknown"],
-        reverseHolo: revHolo
-      },
-      supertype: tcgCard.supertype,
-      subtypes: tcgCard.subtypes,
-      set: {
-        symbol: tcgCard.set.images.symbol,
-        logo: tcgCard.set.images.logo,
-        name: tcgCard.set.name,
-        id: tcgCard.set.id,
-        series: tcgCard.set.series,
-        number: tcgCard.number,
-        totalPrint: tcgCard.set.printedTotal,
-        releaseDate: tcgCard.set.releaseDate
-      }
-    },
-    pokemon: { name: tcgCard.name },
-    value: {
-      manualUpdate: false,
-      market: marketVal,
-      priceHistory: [[new Date().toLocaleDateString("en-US"), marketVal.toFixed(2)]],
-      priceType: priceType,
-    }
-  });
+  const card = buildCard.searched(
+    tcgCard, userId, revHolo, marketVal, priceType
+  );
 
   const [errSave, _] = await handle(card.save());
   if (errSave) return next(errSave);
 
   return res.redirect(`/collection/sets#${card.meta.set.id}`);
 };
+
+// Handle display add custom card form on GET
+exports.add_custom_card_get = (req, res, next) => {
+  const rarities = Object.keys(getRarityRating);
+
+  return res.render("add-custom-card", {
+    title: "Add New Card",
+    rarities
+  });
+}
+
+// Handle add custom card on POST
+exports.add_custom_card_post = async (req, res, next) => {
+  const q = req.body;
+  const userId = req.user._id;
+
+  const info = {
+    id: `${q.set_id}-${q.set_number}`,
+    name: q.name,
+    supertype: q.supertype,
+    market: +q.market,
+    priceType: q.priceType,
+    revHolo: q.priceType === "reverseHolofoil",
+    img: q.img,
+    rarity: q.rarity,
+    set_name: q.set_name,
+    set_symbol: q.set_symbol,
+    set_series: q.set_series,
+    set_id: q.set_id,
+    set_releaseDate: q.set_releaseDate,
+    set_number: q.set_number,
+    set_printedTotal: q.set_printedTotal
+  };
+
+  const card = buildCard.custom(info, userId);
+
+  const [err, _] = await handle(card.save());
+  if (err) return next(err);
+
+  return res.redirect(`/collection/${card._id}`)
+}
 
 // ################# Sort Cards ###################
 // Handle display collection sorted on GET
@@ -356,12 +358,12 @@ exports.display_collection_sorted_get = async (req, res, next) => {
   const userId = req.user._id;
   const sortBy = req.query.by;
   const sortAsc = ascStr === "true" ? true : false;
-  
+
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
   if (errCards) return next(errCards);
 
   const total = cards.reduce((acc, next) => acc + next.value.market, 0);
-  
+
   let sorted;
 
   if (sortBy === "value")
@@ -393,7 +395,7 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
   if (errCards) return next(errCards);
 
-  
+
   // Find which sets exist in collection
   const setOrder = {};
   cards.forEach(card => {
@@ -416,7 +418,7 @@ exports.display_filter_by_set_get = async (req, res, next) => {
     const idx = setArr.findIndex(s => s[0] === card.meta.set.id);
     orderedSets[idx].push(card);
   })
-  
+
   // Sort cards within sets
   for (const s of orderedSets) {
     s.sort(sort.byCardNumber);
@@ -488,7 +490,7 @@ exports.display_filter_page_get = async (req, res, next) => {
       : collection.filter((card) => card.meta.rarity.reverseHolo);
 
     const byVal = byReverse.filter((card) => {
-      if (savedQuery.compareValue === ">=") 
+      if (savedQuery.compareValue === ">=")
         return card.value.market >= Number(savedQuery.value);
       else return card.value.market <= Number(savedQuery.value);
     });
@@ -502,39 +504,39 @@ exports.display_filter_page_get = async (req, res, next) => {
     const byRare = !savedQuery.rarities
       ? byName
       : byName.filter((card) => {
-          if (!Array.isArray(savedQuery.rarities))
-            savedQuery.rarities = [savedQuery.rarities];
-          return savedQuery.rarities.includes(card.meta.rarity.type);
-        });
+        if (!Array.isArray(savedQuery.rarities))
+          savedQuery.rarities = [savedQuery.rarities];
+        return savedQuery.rarities.includes(card.meta.rarity.type);
+      });
 
     const bySupertypes = !savedQuery.supertypes
       ? byRare
       : byRare.filter((card) => {
-          if (!Array.isArray(savedQuery.supertypes))
-            savedQuery.supertypes = [savedQuery.supertypes];
-          return savedQuery.supertypes.includes(card.meta.supertype);
-        });
+        if (!Array.isArray(savedQuery.supertypes))
+          savedQuery.supertypes = [savedQuery.supertypes];
+        return savedQuery.supertypes.includes(card.meta.supertype);
+      });
 
     const bySubtypes = !savedQuery.subtypes
       ? bySupertypes
       : bySupertypes.filter((card) => {
-          let check = 0;
-          if (!Array.isArray(savedQuery.subtypes))
-            savedQuery.subtypes = [savedQuery.subtypes];
+        let check = 0;
+        if (!Array.isArray(savedQuery.subtypes))
+          savedQuery.subtypes = [savedQuery.subtypes];
 
-          card.meta.subtypes.forEach((subtype) => {
-            if (savedQuery.subtypes.includes(subtype)) check++;
-          });
-          return check > 0;
+        card.meta.subtypes.forEach((subtype) => {
+          if (savedQuery.subtypes.includes(subtype)) check++;
         });
+        return check > 0;
+      });
 
     const bySets = !savedQuery.sets
       ? bySubtypes
       : bySubtypes.filter((card) => {
-          if (!Array.isArray(savedQuery.sets))
-            savedQuery.sets = [savedQuery.sets];
-          return savedQuery.sets.includes(card.meta.set.id);
-        });
+        if (!Array.isArray(savedQuery.sets))
+          savedQuery.sets = [savedQuery.sets];
+        return savedQuery.sets.includes(card.meta.set.id);
+      });
 
     const sortBy = savedQuery.sortby;
     const sortAsc = savedQuery.asc;
@@ -550,7 +552,7 @@ exports.display_filter_page_get = async (req, res, next) => {
     else if (sortBy === "set")
       cards = !sortAsc ? bySets.sort(sort.bySetDesc) : cards = bySets.sort(sort.bySetAsc);
     else if (sortBy === "supertype")
-      cards = !sortAsc ? bySets.sort(sort.bySupertypeDesc): cards = bySets.sort(sort.bySupertypeAsc);
+      cards = !sortAsc ? bySets.sort(sort.bySupertypeDesc) : cards = bySets.sort(sort.bySupertypeAsc);
     results = cards;
   }
 
