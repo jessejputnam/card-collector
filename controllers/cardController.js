@@ -344,7 +344,6 @@ exports.add_custom_card_post = async (req, res, next) => {
   const userId = req.user._id;
 
   const info = buildCard.info(req);
-  console.log(info);
   const card = buildCard.custom(info, userId);
 
   const [err, _] = await handle(card.save());

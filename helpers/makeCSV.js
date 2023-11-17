@@ -1,27 +1,26 @@
-function getRelevantData(cards) {
-  const data = {
-    Name: [],
-    Num: [],
-    Set: [],
-    Value: [],
-    Count: [],
-    Total: []
-  };
+function makeCSV(cards) {
+  const arr = [];
 
-  for (let card in cards) {
-    data.Name.push(card.pokemon.name);
-    data.Num.push(card.pokemon.name);
-    data.Set.push(card.pokemon.name);
-    data.Value.push(card.pokemon.name);
-    data.Count.push(card.pokemon.name);
-    data.Total.push(card.pokemon.name);
+  const header = ["Name", "Num", "Set", "Value", "Count", "Total"];
+  arr.push(header);
+
+  for (let card of cards) {
+    const row = [
+      `"${card.pokemon.name}"`,
+      card.set.number,
+      card.set.name,
+      card.value.market,
+      (card.value.count || 1),
+      ((card.value.count || 1) * card.value.market)
+    ];
+
+    arr.push(row.join(","));
   }
 
-  return data;
+  const csv = arr.join("\n");
+
+  console.log(csv);
+  return csv;
 }
 
-function makeCSV(cards) {
-  const data = getRelevantData(cards);
-
-
-}
+module.exports = makeCSV;
