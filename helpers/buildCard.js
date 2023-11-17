@@ -3,11 +3,11 @@ const getRarityRating = require("../helpers/getRarityRating");
 
 /**
  * Build TCG card from search
- * @param {object} tcgCard 
- * @param {string} userId 
- * @param {boolean} revHolo 
- * @param {number} marketVal 
- * @param {string} priceType 
+ * @param {object} tcgCard
+ * @param {string} userId
+ * @param {boolean} revHolo
+ * @param {number} marketVal
+ * @param {string} priceType
  * @returns {Card}
  */
 exports.searched = (tcgCard, userId, revHolo, marketVal, priceType) => {
@@ -43,16 +43,18 @@ exports.searched = (tcgCard, userId, revHolo, marketVal, priceType) => {
     value: {
       manualUpdate: false,
       market: marketVal,
-      priceHistory: [[new Date().toLocaleDateString("en-US"), marketVal.toFixed(2)]],
-      priceType: priceType,
+      priceHistory: [
+        [new Date().toLocaleDateString("en-US"), marketVal.toFixed(2)]
+      ],
+      priceType: priceType
     }
-  })
-}
+  });
+};
 
 /**
  * Return necessary info for custom card from req body
- * @param {*} body 
- * @returns 
+ * @param {*} body
+ * @returns
  */
 exports.info = (req) => {
   const q = req.body;
@@ -73,12 +75,12 @@ exports.info = (req) => {
     set_releaseDate: q.set_releaseDate,
     set_number: q.set_number,
     set_printedTotal: q.set_printedTotal
-  }
-}
+  };
+};
 
 /**
  * Build a card from custom info
- * @param {*} card 
+ * @param {*} card
  * @returns Card
  */
 exports.custom = (card, userId) => {
@@ -113,11 +115,13 @@ exports.custom = (card, userId) => {
     value: {
       manualUpdate: true,
       market: card.market,
-      priceHistory: [[new Date().toLocaleDateString("en-US"), card.market.toFixed(2)]],
+      priceHistory: [
+        [new Date().toLocaleDateString("en-US"), card.market.toFixed(2)]
+      ],
       priceType: card.priceType
     }
   });
-}
+};
 
 exports.edit = (card, req) => {
   const q = req.body;
@@ -138,4 +142,4 @@ exports.edit = (card, req) => {
   card.meta.set.releaseDate = q.set_releaseDate;
   card.meta.set.number = q.set_number;
   card.meta.set.totalPrint = q.set_printedTotal;
-}
+};

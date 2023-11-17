@@ -10,8 +10,8 @@ function makeCSV(cards) {
       card.set.number,
       card.set.name,
       card.value.market,
-      (card.value.count || 1),
-      ((card.value.count || 1) * card.value.market)
+      card.value.count || 1,
+      (card.value.count || 1) * card.value.market
     ];
 
     arr.push(row.join(","));
