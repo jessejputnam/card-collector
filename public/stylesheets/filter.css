@@ -98,3 +98,18 @@
   width: 95px;
   height: 15px;
 }
+
+.filter-results-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.collection-container {
+  padding-top: 0;
+}
+
+.btn-csv {
+  width: 100%;
+  margin-bottom: 15px;
+}

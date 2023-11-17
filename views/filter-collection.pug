@@ -2,9 +2,11 @@ extends layout
 
 block styles
   link(rel="stylesheet", href="/stylesheets/filter.css")
+  link(rel="stylesheet", href="/stylesheets/home.css")
 
 block scripts 
-  script(type="module" src="/javascripts/scriptHome.js" defer)
+  script(src="/javascripts/csv.js" defer)
+  
 
 block content 
   div.page-wrapper
@@ -87,6 +89,7 @@ block content
 
       else  
         div.collection-container
+          button.btn.btn-csv(type="button" data-csv=csv) Download CSV
           each card in results
             a.not-a(href=`/collection/${card._id}`)
               div.collection-item(id=card._id class=`${card.binder ? card.binder + "-binder" : ""}`) 

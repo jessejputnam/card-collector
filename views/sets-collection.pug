@@ -3,33 +3,41 @@ extends layout
 block styles 
   link(rel="stylesheet", href="/stylesheets/sets.css")
 
+block scripts 
+  script(src="/javascripts/csv.js" defer)
+
 block content 
   div.page-wrapper.sets-page
     h1#top Set Collection
 
     ul.page-nav
-      each set in list_sets 
+      each obj in list_sets 
+        - const set = obj.cards;
         li 
           a(href=`#${set[0].meta.set.id}`)= set[0].meta.set.name
 
     div.set-results-container
-      each set in list_sets 
+      each obj in list_sets 
+        - const set = obj.cards;
         - const set_collected = `${(new Set(set.map(card => card.meta.set.number))).size}/${set[0].meta.set.totalPrint}`
         - const set_total = set.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
 
         hr
         div.set-container(id=set[0].meta.set.id)
-          a.to-top(href="#top") Back to Top 
+          div.set-links 
+            a.to-top(href="#top") Back to Top 
+            button.btn.btn-csv(type="button" data-csv=obj.csv) Download CSV
           h3= set[0].meta.set.name 
             span.set-collected= set_collected
             span.set-date= set[0].meta.set.releaseDate.slice(0, 4)
             p.set-total= `$${set_total}`
+
           div.set-card-list
             each card in set 
               - const reverseHolo = card.meta.rarity.reverseHolo
               - const firstEd = card.value.priceType[0] === "1"
               - const link_color = card.meta.rarity.grade < 3 ? "#9e2a2b" : "black"
-              - const set_number_color = referseHolo ? "tan" : firstEd ? "RoyalBlue" : "gray"
+              - const set_number_color = reverseHolo ? "tan" : firstEd ? "RoyalBlue" : "gray"
 
               li(style=`list-style: none`)  
                 a.set-link(href=`/collection/${card._id}` style=`color:${link_color}`)= card.pokemon.name + " "

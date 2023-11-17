@@ -114,6 +114,11 @@ a {
   }
 }
 
+.btn-csv {
+  width: 100px;
+  font-size: .9rem;
+}
+
 ul {
   list-style: none;
 }

@@ -1,7 +1,7 @@
 function makeCSV(cards) {
   const arr = [];
 
-  const header = ["Name", "Num", "Set", "Value", "Count", "Total"];
+  const header = ["Name", "Num", "Set", "Type", "Value", "Count", "Total"];
   arr.push(header);
 
   for (let card of cards) {
@@ -9,6 +9,7 @@ function makeCSV(cards) {
       `"${card.pokemon.name}"`,
       card.meta.set.number,
       card.meta.set.name,
+      card.value.priceType,
       card.value.market,
       card.value.count || 1,
       (card.value.count || 1) * card.value.market

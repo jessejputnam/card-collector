@@ -32,11 +32,6 @@
   gap: 10px;
 }
 
-.title-info-container .btn {
-  width: 100px;
-  font-size: .9rem;
-}
-
 .sort-container {
   display: flex;
   align-items: center;

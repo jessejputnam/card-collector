@@ -513,14 +513,24 @@ exports.display_filter_by_set_get = async (req, res, next) => {
     orderedSets[idx].push(card);
   });
 
+  // Object holding both sets and CSV data
+  const list_sets = [];
+
   // Sort cards within sets
   for (const s of orderedSets) {
     s.sort(sort.byCardNumber);
+    const csv = makeCSV(s);
+    const set = {
+      csv: csv,
+      cards: s
+    };
+
+    list_sets.push(set);
   }
 
   return res.render("sets-collection", {
     title: "Set Collection",
-    list_sets: orderedSets
+    list_sets
   });
 };
 
@@ -658,13 +668,16 @@ exports.display_filter_page_get = async (req, res, next) => {
     results = cards;
   }
 
+  const csv = makeCSV(results);
+
   const page_data = {
     title: "Filter Collection",
     sets,
     subtypes,
     rarities,
     savedQuery,
-    results
+    results,
+    csv
   };
 
   return res.render("filter-collection", page_data);

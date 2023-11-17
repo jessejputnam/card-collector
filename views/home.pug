@@ -3,6 +3,9 @@ extends layout
 block styles 
   link(rel="stylesheet", href="/stylesheets/home.css")
 
+block scripts 
+  script(src="/javascripts/csv.js" defer)
+
 block content 
   div.page-wrapper
     header.home-header 
@@ -13,7 +16,7 @@ block content
             p(style="margin-top:5px;font-size:.8rem;color:gray")= '$' + total.toFixed(2)
             p(style="font-size:.8rem;color:gray")= card_list.length + " cards"
           div
-            button.btn Download CSV
+            button.btn.btn-csv(type="button" data-csv=csv) Download CSV
       div.sort-container 
         form(method="GET" action="/collection/home") 
           fieldset
