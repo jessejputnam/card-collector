@@ -8,6 +8,7 @@
 .filter-control-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   row-gap: 5px;
 }
 
@@ -15,6 +16,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 10px;
+  width: 100%;
   max-width: 875px;
 }
 
