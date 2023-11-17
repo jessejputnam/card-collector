@@ -10,7 +10,7 @@ block content
 
     if (wotc.length)
       h3 Wizards of the Coast
-        - const wotc_total = wotc.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const wotc_total = wotc.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${wotc_total}`
       hr
       div.binder-container
@@ -26,7 +26,7 @@ block content
 
     if (elite.length)
       h3 Pokémon Company
-        - const elite_total = elite.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const elite_total = elite.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${elite_total}`
       hr
       div.binder-container
@@ -42,7 +42,7 @@ block content
 
     if (trainer.length)
       h3 Trainer
-        - const trainer_total = trainer.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const trainer_total = trainer.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${trainer_total}`
       hr
       div.binder-container

@@ -74,7 +74,9 @@ exports.display_collection_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
 
-  const total = cards.reduce((acc, next) => acc + next.value.market, 0);
+  // const total = cards.reduce((acc, next) => acc + next.value.market, 0);
+
+  const total = cards.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0);
 
   let card_list;
 
@@ -125,7 +127,7 @@ exports.display_prize_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId: userId, binder: "prize" }).exec());
   if (errCards) return next(errCards);
 
-  const total = cards.reduce((acc, next) => acc + next.value.market, 0);
+  const total = cards.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0);
 
   const trainer = cards.filter(card => card.meta.supertype !== "Pokémon").sort(sort.byValueDesc);
   const illustrator = cards.filter(card => filterPrize(card, -3)).sort(sort.byValueDesc);
@@ -160,7 +162,7 @@ exports.display_elite_get = async (req, res, next) => {
   const elite = cards.filter(card => filterElite(card, false)).sort(sort.byValueDesc)
 
 
-  const total = cards.reduce((acc, next) => acc + next.value.market, 0);
+  const total = cards.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0);
   cards.sort(sort.byValueDesc);
 
   return res.render("binder-elite", {
@@ -283,6 +285,23 @@ exports.edit_card_rarity = async (req, res, next) => {
   return res.redirect(`/collection/${cardId}?update=rarity`)
 };
 
+// Handle edit count on POST
+exports.edit_card_count = async (req, res, next) => {
+  const cardId = req.body.cardId;
+  const newCount = req.body.count;
+
+  const [errCard, card] = await handle(
+    Card.findByIdAndUpdate(
+      cardId, { "value.count": +newCount }
+    ).exec()
+  );
+
+  if (errCard) return next(errCard);
+  if (!card) return next(errs.cardNotFound());
+
+  return res.redirect(`/collection/${cardId}?update=count`)
+}
+
 // ################## Add Cards ###################
 
 exports.add_card_post = async (req, res, next) => {
@@ -322,27 +341,10 @@ exports.add_custom_card_get = (req, res, next) => {
 
 // Handle add custom card on POST
 exports.add_custom_card_post = async (req, res, next) => {
-  const q = req.body;
   const userId = req.user._id;
 
-  const info = {
-    id: `${q.set_id}-${q.set_number}`,
-    name: q.name,
-    supertype: q.supertype,
-    market: +q.market,
-    priceType: q.priceType,
-    revHolo: q.priceType === "reverseHolofoil",
-    img: q.img,
-    rarity: q.rarity,
-    set_name: q.set_name,
-    set_symbol: q.set_symbol,
-    set_series: q.set_series,
-    set_id: q.set_id,
-    set_releaseDate: q.set_releaseDate,
-    set_number: q.set_number,
-    set_printedTotal: q.set_printedTotal
-  };
-
+  const info = buildCard.info(req);
+  console.log(info);
   const card = buildCard.custom(info, userId);
 
   const [err, _] = await handle(card.save());
@@ -350,6 +352,40 @@ exports.add_custom_card_post = async (req, res, next) => {
 
   return res.redirect(`/collection/${card._id}`)
 }
+
+// Handle display edit custom card form on GET
+exports.edit_custom_card_get = async (req, res, next) => {
+  const cardId = req.params.id;
+  const rarities = Object.keys(getRarityRating);
+
+  const [err, card] = await handle(Card.findById(cardId).exec());
+  if (err) return next(err);
+
+  if (!card.custom) return next(new Error("Cannot edit non-custom cards"))
+
+  return res.render("edit-custom-card", {
+    title: `Edit ${card.pokemon.name}`,
+    card,
+    rarities
+  });
+}
+
+// Handle edit custom card on POST
+exports.edit_custom_card_post = async (req, res, next) => {
+  const cardId = req.params.id;
+
+  const [errCard, card] = await handle(Card.findById(cardId).exec());
+  if (errCard) return next(errCard);
+
+  buildCard.edit(card, req);
+
+  const [err, _] = await handle(card.save());
+  if (err) return next(err);
+
+  return res.redirect(`/collection/${card._id}`)
+}
+
+
 
 // ################# Sort Cards ###################
 // Handle display collection sorted on GET

@@ -17,8 +17,8 @@ block content
     h3 Change Price Update Method
     p= `This will change your price update to ${!card.value.maualUpdate ? "manual. While manual, you will need to input the price yourself to update" : "auto. While auto, price updates will fetch the latest US market price from TCG Player."}`
     form.auto-update-form-form(method="POST" action=`/collection/${card._id}/change-update-value`)
-      input#cardId(type="hidden" name="cardId" required="true" value=card._id)
-      input#isManual(type="hidden" name="isManual" required="true" value=`${!card.value.manualUpdate}` )
+      input(type="hidden" name="cardId" required="true" value=card._id)
+      input(type="hidden" name="isManual" required="true" value=`${!card.value.manualUpdate}` )
       button.btn.btn-primary(type="submit")= `Change to ${card.value.manualUpdate ? "auto" : "manual"}`
 
   div.page-wrapper
@@ -35,7 +35,7 @@ block content
 
     div.card-detail-container 
       div.detail-img-container 
-        img(src=card.meta.images.large, alt=card.pokemon.name)
+        img#cardImg(src=card.meta.images.large alt=card.pokemon.name onerror="/images/missingno.png")
       div.detail-info-container
         div.info-card-container
           h2 #{card.pokemon.name}
@@ -46,7 +46,7 @@ block content
           em= card.meta.rarity.type
         div.info-set-container 
           div 
-            img(src=card.meta.set.symbol, alt=card.meta.set.name height="40px")
+            img#symbolImg(src=card.meta.set.symbol, alt=card.meta.set.name height="40px")
             div
               p #{card.meta.set.name} 
               p.small-text= card.meta.set.series
@@ -68,25 +68,31 @@ block content
     div.card-edits-container
       div.form-separator
         form.card-edit-rarity-form(method="POST" action=`/collection/${card._id}/edit-rarity`)
-          input#objId(type="hidden" name="objId" required="true" value=card._id)
-          input#rarity(type="number" name="rarity" required="true" value=card.meta.rarity.grade)
+          input(type="hidden" name="objId" required="true" value=card._id)
+          input(type="number" name="rarity" required="true" value=card.meta.rarity.grade)
           button.btn.btn-primary(type="submit") Edit Rarity 
+
+      div.form-separator
+        form.card-edit-rarity-form(method="POST" action=`/collection/${card._id}/update-count`)
+          input(type="hidden" name="cardId" required="true" value=card._id)
+          input(type="number" name="count" required="true" value=(card.value.count || 1) min="1")
+          button.btn.btn-primary(type="submit") Edit Count 
 
       div.form-separator
         if (card.value.manualUpdate)
           form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
-            input#cardValue(type="number" step="0.01" min="0.01" name="cardValue" required="true" placeholder=card.value.market)
-            input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-            input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
+            input(type="number" step="0.01" min="0.01" name="cardValue" required="true" placeholder=card.value.market)
+            input(type="hidden" name="cardId" required="true" value=card.id)
+            input(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
             button.btn.secondary-btn(type="submit") Update Price
         else 
           form.card-edit-form(method="POST" action=`/collection/${card._id}/update-value`)
-            input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-            input#cardValueType(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
+            input(type="hidden" name="cardId" required="true" value=card.id)
+            input(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
             button.btn.secondary-btn(type="submit") Update Price
 
       form.card-edit-form(method="POST" action=`/collection/${card._id}/select-binder`) 
-        input#objId(type="hidden" name="objId" required='true' value=card._id)
+        input(type="hidden" name="objId" required='true' value=card._id)
         select#binder(type='select' name="binder" required="true") 
           option(value="none" selected=(!card.binder))
           option(value="prize" selected=(card.binder === "prize")) Prize Binder

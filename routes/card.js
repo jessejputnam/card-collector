@@ -33,6 +33,12 @@ router.get("/add-custom-card", card_controller.add_custom_card_get);
 // POST request for add custom card
 router.post("/add-custom-card", card_controller.add_custom_card_post);
 
+// GET request for edit custom card form
+router.get("/:id/edit", card_controller.edit_custom_card_get);
+
+// POST request for edit custom card
+router.post("/:id/edit", card_controller.edit_custom_card_post);
+
 // GET request for filter page
 router.get("/filter", card_controller.display_filter_page_get);
 
@@ -56,5 +62,8 @@ router.post("/:id/select-binder", card_controller.select_binder_post);
 
 // POST request for edit rarity
 router.post("/:id/edit-rarity", card_controller.edit_card_rarity);
+
+// POST request for edit count
+router.post("/:id/update-count", card_controller.edit_card_count)
 
 module.exports = router;

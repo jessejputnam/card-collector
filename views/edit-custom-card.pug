@@ -1,0 +1,93 @@
+extends layout 
+
+block styles 
+  link(rel="stylesheet", href="/stylesheets/add-custom-card.css")
+
+block content 
+  h1= title 
+
+  div.page-wrapper
+
+    form.form-wrapper(method="POST" action=`/collection/${card._id}/edit`)
+      div.outer
+        div.inner
+          h2 Card
+          //- Pokemon Name
+          div.form-control 
+            label(for="name") Name:
+            input#name(type="text" name="name" value=card.pokemon.name required)
+
+          //- Supertype
+          div.form-control 
+            label(for="supertype") Supertype: 
+            select#supertype(name="supertype" required) 
+              option(value="Pokémon" selected=(card.supertype === "Pokémon")) Pokémon
+              option(value="Trainer" selected=(card.supertype === "Trainer")) Trainer
+              option(value="Energy" selected=(card.supertype === "Energy")) Energy
+
+          //- Price Type
+          div.form-control 
+            label(for="priceType") Price Type: 
+            select#priceType(name="priceType" required) 
+              option(value="normal" selected=(card.value.priceType === "normal")) Normal
+              option(value="reverseHolofoil" selected=(card.value.priceType === "reverseHolofoil")) Reverse Holo
+              option(value="holofoil" selected=(card.value.priceType === "holofoil")) Holo
+              option(value="1stEdition" selected=(card.value.priceType === "1stEdition")) 1st Edition
+              option(value="1stEditionHolofoil" selected=(card.value.priceType === "1stEditionHolofoil")) 1st Edition Holo
+
+          //- Image link
+          div.form-control 
+            label(for="img") Image URL: 
+            input#img(type="text" name="img" pattern="(http)s?(://).+" value=card.meta.images.large)
+          
+          //- Rarity
+          div.form-control 
+            label(for="rarity") Card Rarity: 
+            select#rarity(name="rarity" required) 
+              each item in rarities
+                option(value=item selected=(card.meta.rarity.type === item))= item
+        
+        div.inner
+          h2 Set
+          //- Set Name
+          div.form-control 
+            label(for="set_name") Set Name: 
+            input#set_name(type="text" name="set_name" value=card.meta.set.name)
+
+          //- Set Symbol
+          div.form-control 
+            label(for="set_symbol") Set Symbol: 
+            input#set_symbol(type="text" name="set_symbol" pattern="(http)s?(://).+" value=card.meta.set.symbol)         
+          
+          //- Set Series
+          div.form-control 
+            label(for="set_series") Set Series: 
+            input#set_series(type="text" name="set_series" value=card.meta.set.series)
+
+          //- Set ID
+          div.form-control 
+            label(for="set_id") Set ID: 
+            input#set_id(type="text" name="set_id" value=card.meta.set.id required)
+          
+          //- Set Release
+          div.form-control 
+            label(for="set_releaseDate") Set Release Date (YYYY/MM/DD): 
+            input#set_releaseDate(type="text" name="set_releaseDate" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2}" value=card.meta.set.releaseDate)
+          
+          //- Set Number
+          div.form-control 
+            label(for="set_number") Card Number in Set: 
+            input#set_number(type="text" name="set_number" value=card.meta.set.number required)
+
+          //- Set Total Cards
+          div.form-control 
+            label(for="set_printedTotal") Total Cards in Set: 
+            input#set_printedTotal(type="text" name="set_printedTotal" value=card.meta.set.totalPrint)
+
+      button.btn(type="submit" style="padding:8px") Save Changes
+
+
+
+
+    
+

@@ -11,7 +11,7 @@ block content
 
     if (illustrator.length)
       h3 Illustrator Cards
-        - const illustrator_total = illustrator.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const illustrator_total = illustrator.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${illustrator_total}`
       hr
       div.binder-container 
@@ -27,7 +27,7 @@ block content
 
     if (full_art.length)
       h3 Full Art
-        - const full_art_total = full_art.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const full_art_total = full_art.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${full_art_total}`
       hr
       div.binder-container 
@@ -43,7 +43,7 @@ block content
 
     if (v_special.length)
       h3 VMax, VStar, ex
-        - const v_special_total = v_special.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const v_special_total = v_special.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${v_special_total}`
       hr
       div.binder-container 
@@ -59,7 +59,7 @@ block content
 
     if (half_art.length)
       h3 V
-        - const half_art_total = half_art.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const half_art_total = half_art.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${half_art_total}`
       hr
       div.binder-container 
@@ -75,7 +75,7 @@ block content
 
     if (special_holo.length)
       h3 Special Holo
-        - const special_holo_total = special_holo.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const special_holo_total = special_holo.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${special_holo_total}`
       hr
       div.binder-container 
@@ -91,7 +91,7 @@ block content
 
     if (holo.length)
       h3 Holo
-        - const holo_total = holo.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const holo_total = holo.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${holo_total}`
       hr
       div.binder-container 
@@ -107,7 +107,7 @@ block content
 
     if (trainer.length)
       h3 Trainer
-        - const trainer_total = trainer.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const trainer_total = trainer.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0).toFixed(2)
         span.binder_sub_total= ` - $${trainer_total}`
       hr
       div.binder-container 
