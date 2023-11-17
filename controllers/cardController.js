@@ -34,13 +34,19 @@ exports.update_cards_new_system = async (req, res, next) => {
     const elite = req.user.elite;
     const prize = req.user.prize;
 
-    const [errUserUpdate, userUpdate] = await handle(Card.updateMany({ _id: { $in: cards } }, { userId, binder: null }));
+    const [errUserUpdate, userUpdate] = await handle(
+      Card.updateMany({ _id: { $in: cards } }, { userId, binder: null })
+    );
     if (errUserUpdate) return next(errUserUpdate);
 
-    const [errEliteUpdate, eliteUpdate] = await handle(Card.updateMany({ _id: { $in: elite } }, { binder: "elite" }));
+    const [errEliteUpdate, eliteUpdate] = await handle(
+      Card.updateMany({ _id: { $in: elite } }, { binder: "elite" })
+    );
     if (errEliteUpdate) return next(errEliteUpdate);
 
-    const [errPrizeUpdate, prizeUpdate] = await handle(Card.updateMany({ _id: { $in: prize } }, { binder: "prize" }));
+    const [errPrizeUpdate, prizeUpdate] = await handle(
+      Card.updateMany({ _id: { $in: prize } }, { binder: "prize" })
+    );
     if (errPrizeUpdate) return next(errPrizeUpdate);
 
     const update = {
@@ -48,14 +54,16 @@ exports.update_cards_new_system = async (req, res, next) => {
       prize: null,
       cards: null,
       bulk: null
-    }
+    };
 
-    const [errUser, user] = await handle(User.findByIdAndUpdate(userId, update));
+    const [errUser, user] = await handle(
+      User.findByIdAndUpdate(userId, update)
+    );
     if (errUser) return next(errUser);
   }
 
   return res.redirect("/collection/home");
-}
+};
 
 // ################# View Cards ##################
 
@@ -74,22 +82,29 @@ exports.display_collection_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
 
-  // const total = cards.reduce((acc, next) => acc + next.value.market, 0);
-
-  const total = cards.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0);
+  const total = cards.reduce(
+    (acc, next) => acc + next.value.market * (next.value.count || 1),
+    0
+  );
 
   let card_list;
 
   if (!sortType || sortType === "value")
-    card_list = !asc ? cards.sort(sort.byValueDesc) : cards.sort(sort.byValueAsc);
+    card_list = !asc
+      ? cards.sort(sort.byValueDesc)
+      : cards.sort(sort.byValueAsc);
   else if (sortType === "rarity")
-    card_list = !asc ? cards.sort(sort.byRarityDesc) : cards.sort(sort.byRarityAsc);
+    card_list = !asc
+      ? cards.sort(sort.byRarityDesc)
+      : cards.sort(sort.byRarityAsc);
   else if (sortType === "name")
     card_list = !asc ? cards.sort(sort.byNameDesc) : cards.sort(sort.byNameAsc);
   else if (sortType === "set")
     card_list = !asc ? cards.sort(sort.bySetDesc) : cards.sort(sort.bySetAsc);
   else if (sortType === "supertype")
-    card_list = !asc ? cards.sort(sort.bySupertypeDesc) : cards.sort(sort.bySupertypeAsc);
+    card_list = !asc
+      ? cards.sort(sort.bySupertypeDesc)
+      : cards.sort(sort.bySupertypeAsc);
   else return redirect("/collection/home");
 
   return res.render("home", {
@@ -109,7 +124,7 @@ exports.display_card_get = async (req, res, next) => {
 
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return next(errCard);
-  if (!card) return next(errs.cardNotFound())
+  if (!card) return next(errs.cardNotFound());
 
   const msg = !update ? null : updateMsgs[update];
 
@@ -124,18 +139,37 @@ exports.display_card_get = async (req, res, next) => {
 exports.display_prize_get = async (req, res, next) => {
   const userId = req.user._id;
 
-  const [errCards, cards] = await handle(Card.find({ userId: userId, binder: "prize" }).exec());
+  const [errCards, cards] = await handle(
+    Card.find({ userId: userId, binder: "prize" }).exec()
+  );
   if (errCards) return next(errCards);
 
-  const total = cards.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0);
+  const total = cards.reduce(
+    (acc, next) => acc + next.value.market * (next.value.count || 1),
+    0
+  );
 
-  const trainer = cards.filter(card => card.meta.supertype !== "Pokémon").sort(sort.byValueDesc);
-  const illustrator = cards.filter(card => filterPrize(card, -3)).sort(sort.byValueDesc);
-  const fullArt = cards.filter(card => filterPrize(card, -2)).sort(sort.byValueDesc);
-  const vSpecial = cards.filter(card => filterPrize(card, -1)).sort(sort.byValueDesc);
-  const halfArt = cards.filter(card => filterPrize(card, 0)).sort(sort.byValueDesc);
-  const specialHolo = cards.filter(card => filterPrize(card, 1)).sort(sort.byValueDesc);
-  const holo = cards.filter(card => filterPrize(card, 2)).sort(sort.byValueDesc);
+  const trainer = cards
+    .filter((card) => card.meta.supertype !== "Pokémon")
+    .sort(sort.byValueDesc);
+  const illustrator = cards
+    .filter((card) => filterPrize(card, -3))
+    .sort(sort.byValueDesc);
+  const fullArt = cards
+    .filter((card) => filterPrize(card, -2))
+    .sort(sort.byValueDesc);
+  const vSpecial = cards
+    .filter((card) => filterPrize(card, -1))
+    .sort(sort.byValueDesc);
+  const halfArt = cards
+    .filter((card) => filterPrize(card, 0))
+    .sort(sort.byValueDesc);
+  const specialHolo = cards
+    .filter((card) => filterPrize(card, 1))
+    .sort(sort.byValueDesc);
+  const holo = cards
+    .filter((card) => filterPrize(card, 2))
+    .sort(sort.byValueDesc);
 
   return res.render("binder-prize", {
     title: "Prize Binder",
@@ -154,15 +188,25 @@ exports.display_prize_get = async (req, res, next) => {
 exports.display_elite_get = async (req, res, next) => {
   const userId = req.user._id;
 
-  const [errCards, cards] = await handle(Card.find({ userId: userId, binder: "elite" }).exec());
+  const [errCards, cards] = await handle(
+    Card.find({ userId: userId, binder: "elite" }).exec()
+  );
   if (errCards) return next(errCards);
 
-  const trainer = cards.filter(card => card.meta.supertype !== "Pokémon").sort(sort.byValueDesc);
-  const wotc = cards.filter(card => filterElite(card, true)).sort(sort.byValueDesc)
-  const elite = cards.filter(card => filterElite(card, false)).sort(sort.byValueDesc)
+  const trainer = cards
+    .filter((card) => card.meta.supertype !== "Pokémon")
+    .sort(sort.byValueDesc);
+  const wotc = cards
+    .filter((card) => filterElite(card, true))
+    .sort(sort.byValueDesc);
+  const elite = cards
+    .filter((card) => filterElite(card, false))
+    .sort(sort.byValueDesc);
 
-
-  const total = cards.reduce((acc, next) => acc + (next.value.market * (next.value.count || 1)), 0);
+  const total = cards.reduce(
+    (acc, next) => acc + next.value.market * (next.value.count || 1),
+    0
+  );
   cards.sort(sort.byValueDesc);
 
   return res.render("binder-elite", {
@@ -187,8 +231,10 @@ exports.change_update_type = async (req, res, next) => {
   const [err, _] = await handle(card.save());
   if (err) return next(err);
 
-  return res.redirect(`/collection/${card._id}?update=${isManual ? "man" : "auto"}`);
-}
+  return res.redirect(
+    `/collection/${card._id}?update=${isManual ? "man" : "auto"}`
+  );
+};
 
 // Handle update price history
 exports.update_price_history_post = async (req, res, next) => {
@@ -209,7 +255,7 @@ exports.update_price_history_post = async (req, res, next) => {
     if (errTcgCard) return next(errTcgCard);
     if (!tcgCard) return next(errs.cardNotFound());
 
-    marketVal = tcgCard.tcgplayer.prices[card.value.priceType].market
+    marketVal = tcgCard.tcgplayer.prices[card.value.priceType].market;
     if (!marketVal) return next(errs.priceNotFound);
   }
 
@@ -246,7 +292,9 @@ exports.delete_card_get = async (req, res, next) => {
 
 exports.delete_card_post = async (req, res, next) => {
   const cardId = req.body.cardId;
-  const [errDelCard, delCard] = await handle(Card.findByIdAndRemove(cardId).exec());
+  const [errDelCard, delCard] = await handle(
+    Card.findByIdAndRemove(cardId).exec()
+  );
   if (errDelCard) return next(errDelCard);
 
   return res.redirect("/collection/home");
@@ -258,10 +306,9 @@ exports.select_binder_post = async (req, res, next) => {
   const cardId = req.body.objId;
 
   const [errCard, card] = await handle(
-    Card.findByIdAndUpdate(
-      cardId,
-      { binder: newBinder == "none" ? null : newBinder }
-    ).exec()
+    Card.findByIdAndUpdate(cardId, {
+      binder: newBinder == "none" ? null : newBinder
+    }).exec()
   );
   if (errCard) return next(errCard);
 
@@ -274,15 +321,15 @@ exports.edit_card_rarity = async (req, res, next) => {
   const newRarityRating = req.body.rarity;
 
   const [errCard, card] = await handle(
-    Card.findByIdAndUpdate(
-      cardId, { "meta.rarity.grade": newRarityRating }
-    ).exec()
+    Card.findByIdAndUpdate(cardId, {
+      "meta.rarity.grade": newRarityRating
+    }).exec()
   );
 
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  return res.redirect(`/collection/${cardId}?update=rarity`)
+  return res.redirect(`/collection/${cardId}?update=rarity`);
 };
 
 // Handle edit count on POST
@@ -291,16 +338,14 @@ exports.edit_card_count = async (req, res, next) => {
   const newCount = req.body.count;
 
   const [errCard, card] = await handle(
-    Card.findByIdAndUpdate(
-      cardId, { "value.count": +newCount }
-    ).exec()
+    Card.findByIdAndUpdate(cardId, { "value.count": +newCount }).exec()
   );
 
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  return res.redirect(`/collection/${cardId}?update=count`)
-}
+  return res.redirect(`/collection/${cardId}?update=count`);
+};
 
 // ################## Add Cards ###################
 
@@ -320,7 +365,11 @@ exports.add_card_post = async (req, res, next) => {
   const marketVal = prices[priceType].market || prices[priceType].mid;
 
   const card = buildCard.searched(
-    tcgCard, userId, revHolo, marketVal, priceType
+    tcgCard,
+    userId,
+    revHolo,
+    marketVal,
+    priceType
   );
 
   const [errSave, _] = await handle(card.save());
@@ -337,7 +386,7 @@ exports.add_custom_card_get = (req, res, next) => {
     title: "Add New Card",
     rarities
   });
-}
+};
 
 // Handle add custom card on POST
 exports.add_custom_card_post = async (req, res, next) => {
@@ -349,8 +398,8 @@ exports.add_custom_card_post = async (req, res, next) => {
   const [err, _] = await handle(card.save());
   if (err) return next(err);
 
-  return res.redirect(`/collection/${card._id}`)
-}
+  return res.redirect(`/collection/${card._id}`);
+};
 
 // Handle display edit custom card form on GET
 exports.edit_custom_card_get = async (req, res, next) => {
@@ -360,14 +409,14 @@ exports.edit_custom_card_get = async (req, res, next) => {
   const [err, card] = await handle(Card.findById(cardId).exec());
   if (err) return next(err);
 
-  if (!card.custom) return next(new Error("Cannot edit non-custom cards"))
+  if (!card.custom) return next(new Error("Cannot edit non-custom cards"));
 
   return res.render("edit-custom-card", {
     title: `Edit ${card.pokemon.name}`,
     card,
     rarities
   });
-}
+};
 
 // Handle edit custom card on POST
 exports.edit_custom_card_post = async (req, res, next) => {
@@ -381,10 +430,8 @@ exports.edit_custom_card_post = async (req, res, next) => {
   const [err, _] = await handle(card.save());
   if (err) return next(err);
 
-  return res.redirect(`/collection/${card._id}`)
-}
-
-
+  return res.redirect(`/collection/${card._id}`);
+};
 
 // ################# Sort Cards ###################
 // Handle display collection sorted on GET
@@ -402,15 +449,23 @@ exports.display_collection_sorted_get = async (req, res, next) => {
   let sorted;
 
   if (sortBy === "value")
-    sorted = !sortAsc ? cards.sort(sort.byValueDesc) : cards.sort(sort.byValueAsc);
+    sorted = !sortAsc
+      ? cards.sort(sort.byValueDesc)
+      : cards.sort(sort.byValueAsc);
   else if (sortBy === "rarity")
-    sorted = !sortAsc ? cards.sort(sort.byRarityDesc) : cards.sort(sort.byRarityAsc);
+    sorted = !sortAsc
+      ? cards.sort(sort.byRarityDesc)
+      : cards.sort(sort.byRarityAsc);
   else if (sortBy === "name")
-    sorted = !sortAsc ? cards.sort(sort.byNameDesc) : cards.sort(sort.byNameAsc);
+    sorted = !sortAsc
+      ? cards.sort(sort.byNameDesc)
+      : cards.sort(sort.byNameAsc);
   else if (sortBy === "set")
     sorted = !sortAsc ? cards.sort(sort.bySetDesc) : cards.sort(sort.bySetAsc);
   else if (sortBy === "supertype")
-    sorted = !sortAsc ? cards.sort(sort.bySupertypeDesc) : cards.sort(sort.bySupertypeAsc);
+    sorted = !sortAsc
+      ? cards.sort(sort.bySupertypeDesc)
+      : cards.sort(sort.bySupertypeAsc);
   else return redirect("/collection/home");
 
   return res.render("home-sort", {
@@ -430,13 +485,13 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
   if (errCards) return next(errCards);
 
-
   // Find which sets exist in collection
   const setOrder = {};
-  cards.forEach(card => {
+  cards.forEach((card) => {
     const setId = card.meta.set.id;
-    if (!(setId in setOrder)) setOrder[setId] = [card.meta.set.name, card.meta.set.releaseDate];
-  })
+    if (!(setId in setOrder))
+      setOrder[setId] = [card.meta.set.name, card.meta.set.releaseDate];
+  });
 
   // Sort sets by date
   const setArr = [];
@@ -449,10 +504,10 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   const orderedSets = Array.from(Array(setArr.length), () => []);
 
   // Add cards to sets in array
-  cards.forEach(card => {
-    const idx = setArr.findIndex(s => s[0] === card.meta.set.id);
+  cards.forEach((card) => {
+    const idx = setArr.findIndex((s) => s[0] === card.meta.set.id);
     orderedSets[idx].push(card);
-  })
+  });
 
   // Sort cards within sets
   for (const s of orderedSets) {
@@ -465,7 +520,6 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   });
 };
 
-
 // Handle get filter page
 exports.display_filter_page_get = async (req, res, next) => {
   const userId = req.user._id;
@@ -473,7 +527,6 @@ exports.display_filter_page_get = async (req, res, next) => {
 
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
   if (errCards) return next(errCards);
-
 
   // Populate form data
   const collection = cards;
@@ -539,39 +592,39 @@ exports.display_filter_page_get = async (req, res, next) => {
     const byRare = !savedQuery.rarities
       ? byName
       : byName.filter((card) => {
-        if (!Array.isArray(savedQuery.rarities))
-          savedQuery.rarities = [savedQuery.rarities];
-        return savedQuery.rarities.includes(card.meta.rarity.type);
-      });
+          if (!Array.isArray(savedQuery.rarities))
+            savedQuery.rarities = [savedQuery.rarities];
+          return savedQuery.rarities.includes(card.meta.rarity.type);
+        });
 
     const bySupertypes = !savedQuery.supertypes
       ? byRare
       : byRare.filter((card) => {
-        if (!Array.isArray(savedQuery.supertypes))
-          savedQuery.supertypes = [savedQuery.supertypes];
-        return savedQuery.supertypes.includes(card.meta.supertype);
-      });
+          if (!Array.isArray(savedQuery.supertypes))
+            savedQuery.supertypes = [savedQuery.supertypes];
+          return savedQuery.supertypes.includes(card.meta.supertype);
+        });
 
     const bySubtypes = !savedQuery.subtypes
       ? bySupertypes
       : bySupertypes.filter((card) => {
-        let check = 0;
-        if (!Array.isArray(savedQuery.subtypes))
-          savedQuery.subtypes = [savedQuery.subtypes];
+          let check = 0;
+          if (!Array.isArray(savedQuery.subtypes))
+            savedQuery.subtypes = [savedQuery.subtypes];
 
-        card.meta.subtypes.forEach((subtype) => {
-          if (savedQuery.subtypes.includes(subtype)) check++;
+          card.meta.subtypes.forEach((subtype) => {
+            if (savedQuery.subtypes.includes(subtype)) check++;
+          });
+          return check > 0;
         });
-        return check > 0;
-      });
 
     const bySets = !savedQuery.sets
       ? bySubtypes
       : bySubtypes.filter((card) => {
-        if (!Array.isArray(savedQuery.sets))
-          savedQuery.sets = [savedQuery.sets];
-        return savedQuery.sets.includes(card.meta.set.id);
-      });
+          if (!Array.isArray(savedQuery.sets))
+            savedQuery.sets = [savedQuery.sets];
+          return savedQuery.sets.includes(card.meta.set.id);
+        });
 
     const sortBy = savedQuery.sortby;
     const sortAsc = savedQuery.asc;
@@ -579,15 +632,25 @@ exports.display_filter_page_get = async (req, res, next) => {
     let cards;
 
     if (sortBy === "value")
-      cards = !sortAsc ? bySets.sort(sort.byValueDesc) : cards = bySets.sort(sort.byValueAsc);
+      cards = !sortAsc
+        ? bySets.sort(sort.byValueDesc)
+        : (cards = bySets.sort(sort.byValueAsc));
     else if (sortBy === "rarity")
-      cards = !sortAsc ? bySets.sort(sort.byRarityDesc) : cards = bySets.sort(sort.byRarityAsc);
+      cards = !sortAsc
+        ? bySets.sort(sort.byRarityDesc)
+        : (cards = bySets.sort(sort.byRarityAsc));
     else if (sortBy === "name")
-      cards = !sortAsc ? bySets.sort(sort.byNameDesc) : bySets.sort(sort.byNameAsc);
+      cards = !sortAsc
+        ? bySets.sort(sort.byNameDesc)
+        : bySets.sort(sort.byNameAsc);
     else if (sortBy === "set")
-      cards = !sortAsc ? bySets.sort(sort.bySetDesc) : cards = bySets.sort(sort.bySetAsc);
+      cards = !sortAsc
+        ? bySets.sort(sort.bySetDesc)
+        : (cards = bySets.sort(sort.bySetAsc));
     else if (sortBy === "supertype")
-      cards = !sortAsc ? bySets.sort(sort.bySupertypeDesc) : cards = bySets.sort(sort.bySupertypeAsc);
+      cards = !sortAsc
+        ? bySets.sort(sort.bySupertypeDesc)
+        : (cards = bySets.sort(sort.bySupertypeAsc));
     results = cards;
   }
 
