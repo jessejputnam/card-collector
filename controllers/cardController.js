@@ -14,6 +14,7 @@ const updateMsgs = require("../helpers/updateMsgs");
 const buildCard = require("../helpers/buildCard");
 const getPriceType = require("../helpers/getPriceType");
 const getRarityRating = require("../helpers/getRarityRating");
+const makeCSV = require("../helpers/makeCSV");
 
 /* 
 
@@ -107,10 +108,13 @@ exports.display_collection_get = async (req, res, next) => {
       : cards.sort(sort.bySupertypeAsc);
   else return redirect("/collection/home");
 
+  const csv = makeCSV(card_list);
+
   return res.render("home", {
     title: "My Collection",
     need_update, // Legacy check
     card_list,
+    csv,
     total,
     by_field: sortType,
     asc_field: sortAsc

@@ -7,8 +7,8 @@ function makeCSV(cards) {
   for (let card of cards) {
     const row = [
       `"${card.pokemon.name}"`,
-      card.set.number,
-      card.set.name,
+      card.meta.set.number,
+      card.meta.set.name,
       card.value.market,
       card.value.count || 1,
       (card.value.count || 1) * card.value.market

@@ -1,0 +1,64 @@
+/* #################### # LANDING PAGE ################ */
+.landing-page {
+  text-align: center;
+  background-image: url("../images/pattern-background.jpg");
+  background-size: cover;
+  min-height: 94vh;
+  max-width: none;
+}
+
+.landing-page > .intro {
+  background: rgba(255, 255, 255, 0.424);
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.319);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.slideshow {
+  margin: 0 auto;
+  position: relative;
+  background: rgba(255, 255, 255, 0.273);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.319);
+  height: clamp(192px, 37vw, 370px);
+  width: clamp(330px, 60vw, 600px);
+  margin-top: 100px;
+  border-radius: 10px;
+}
+
+.slide {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 10%);
+  opacity: 0;
+  transition: opacity 3s;
+}
+
+.first-slide {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 8%);
+  transition: opacity 2.5s;
+}
+
+.slide > img,
+.first-slide > img {
+  height: clamp(165px, 30vw, 300px);
+  width: clamp(280px, 50vw, 500px);
+  border-radius: 10px;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.567);
+}
+
+.slide.active {
+  opacity: 100%;
+}
+.first-slide.inactive {
+  opacity: 0;
+}
+
+.slide-wrapper {
+  width: calc(400px * 4);
+}

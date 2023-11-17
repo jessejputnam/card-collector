@@ -1,13 +1,19 @@
 extends layout 
 
+block styles 
+  link(rel="stylesheet", href="/stylesheets/home.css")
+
 block content 
   div.page-wrapper
     header.home-header 
       div.title-container 
         h1= title + " " 
-        div 
-          p(style="margin-top:5px;font-size:.8rem;color:gray")= '$' + total.toFixed(2)
-          p(style="font-size:.8rem;color:gray")= card_list.length + " cards"
+        div.title-info-container
+          div
+            p(style="margin-top:5px;font-size:.8rem;color:gray")= '$' + total.toFixed(2)
+            p(style="font-size:.8rem;color:gray")= card_list.length + " cards"
+          div
+            button.btn Download CSV
       div.sort-container 
         form(method="GET" action="/collection/home") 
           fieldset
