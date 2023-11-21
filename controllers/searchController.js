@@ -30,7 +30,6 @@ exports.search_results_get = async (req, res, next) => {
   const searchQuery = `name:"*${pokeName}*"${
     !pokeSet.length ? "" : " set.id:" + pokeSet
   }`;
-  console.log("########## searchquery " + searchQuery);
 
   const [searchErr, results] = await handle(
     pokemon.card.where({ q: searchQuery, orderBy: "-set.releaseDate" })
