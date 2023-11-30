@@ -20,7 +20,6 @@ function makeCSV(cards) {
 
   const csv = arr.join("\n");
 
-  console.log(csv);
   return csv;
 }
 
