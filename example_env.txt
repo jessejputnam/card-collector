@@ -1,0 +1,7 @@
+# Example ENV file with fake values
+
+MONGODB_URI=mongodb+srv://username:password@clusterName.aaaaaa.mongodb.net/?retryWrites=true&w=majority
+
+SESSION_SECRET=d0ntW0rrYF4k3da7a
+
+POKE_API_KEY=12345-6789-45d60-b7e1-08632g2h
