@@ -76,7 +76,11 @@ passport.serializeUser(function (user, done) {
 });
 passport.deserializeUser(function (id, done) {
   User.findById(id, function (err, user) {
-    done(err, user);
+    const data = {
+      _id: user._id,
+      binders: user.binders
+    };
+    done(err, data);
   });
 });
 

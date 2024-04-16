@@ -3,6 +3,8 @@
 const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
+const escape = require("../middlewares/escape");
+
 const Card = require("../models/card");
 const User = require("../models/user");
 const handle = require("../helpers/errorHandler");
@@ -26,54 +28,18 @@ const makeCSV = require("../helpers/makeCSV");
     - Filter Cards
 */
 
-// ############## System Update ################
-exports.update_cards_new_system = async (req, res, next) => {
-  const userId = req.user._id;
-  const cards = req.user.cards;
-
-  if (cards.length) {
-    const elite = req.user.elite;
-    const prize = req.user.prize;
-
-    const [errUserUpdate, userUpdate] = await handle(
-      Card.updateMany({ _id: { $in: cards } }, { userId, binder: null })
-    );
-    if (errUserUpdate) return next(errUserUpdate);
-
-    const [errEliteUpdate, eliteUpdate] = await handle(
-      Card.updateMany({ _id: { $in: elite } }, { binder: "elite" })
-    );
-    if (errEliteUpdate) return next(errEliteUpdate);
-
-    const [errPrizeUpdate, prizeUpdate] = await handle(
-      Card.updateMany({ _id: { $in: prize } }, { binder: "prize" })
-    );
-    if (errPrizeUpdate) return next(errPrizeUpdate);
-
-    const update = {
-      elite: null,
-      prize: null,
-      cards: null,
-      bulk: null
-    };
-
-    const [errUser, user] = await handle(
-      User.findByIdAndUpdate(userId, update)
-    );
-    if (errUser) return next(errUser);
-  }
-
-  return res.redirect("/collection/home");
-};
-
 // ################# View Cards ##################
 
 // Handle display collection on GET
 exports.display_collection_get = async (req, res, next) => {
   const userId = req.user._id;
-
-  // Legacy version 0.0 check
-  const need_update = !!req.user.cards;
+  if (!req.user.binders) {
+    const newBinders = ["elite", "prize"];
+    const [errUser, user] = await handle(
+      User.findByIdAndUpdate(userId, { binders: newBinders })
+    );
+    if (errUser) return next(errUser);
+  }
 
   // Get cards for display
   const sortAsc = req.query.asc;
@@ -112,7 +78,6 @@ exports.display_collection_get = async (req, res, next) => {
 
   return res.render("home", {
     title: "My Collection",
-    need_update, // Legacy check
     card_list,
     csv,
     total,
@@ -136,6 +101,55 @@ exports.display_card_get = async (req, res, next) => {
     title: `${card.pokemon.name}`,
     card,
     msg
+  });
+};
+
+// Handle display binders on GET
+exports.display_binders_get = async (req, res, next) => {
+  const binders = req.user.binders;
+
+  return res.render("binders", {
+    title: "Binders",
+    binders
+  });
+};
+
+// Handle add binders on POST
+exports.add_binders_post = [
+  escape.add_binder,
+  async (req, res, next) => {
+    const userId = req.user._id;
+    const newBinder = req.body.newBinder;
+
+    const [errUser, user] = await handle(User.findById(userId));
+    if (errUser) return next(errUser);
+
+    user.binders.push(newBinder);
+    const [errSave, save] = await handle(user.save());
+    if (errSave) return next(errSave);
+    return res.redirect("/collection/binders");
+  }
+];
+
+// Display binder on GET
+exports.display_binder_get = async (req, res, next) => {
+  const userId = req.user._id;
+  const binder = req.params.id;
+  console.log(req);
+
+  const [errCards, cards] = await handle(
+    Card.find({ userId: userId, binder: binder }).exec()
+  );
+  if (errCards) return next(errCards);
+  const total = cards.reduce(
+    (acc, next) => acc + next.value.market * (next.value.count || 1),
+    0
+  );
+
+  return res.render("binder", {
+    title: binder,
+    cards,
+    total
   });
 };
 
@@ -438,6 +452,7 @@ exports.edit_custom_card_post = async (req, res, next) => {
 };
 
 // ################# Sort Cards ###################
+
 // Handle display collection sorted on GET
 exports.display_collection_sorted_get = async (req, res, next) => {
   const ascStr = req.query.asc;

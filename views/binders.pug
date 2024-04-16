@@ -1,0 +1,29 @@
+extends layout 
+
+block styles 
+  link(rel="stylesheet", href="/stylesheets/binders.css")
+
+block scripts 
+  script(type="module", src="/javascripts/binders.js")  
+
+block content 
+  div.page-wrapper
+    div.title-box
+      h1= title 
+      div.add-binder-form 
+        button#showAddBinder.add-binder-btn(type="button") ➕
+        p Add Binder
+      form.add-binder-form.hidden(method="POST", action="/collection/binders/add")
+        button#submitBinder.add-binder-btn(type="submit") ➕
+        input(type="text", name="newBinder", placeholder="Enter binder name")
+        button#closeNewBinder.close-new-binder(type="button") 🅇
+
+    div.binders 
+      each binder in binders
+        div.binder
+          a(href=`/collection/binders/display/${binder}`)
+            img(src="/images/binder.png", alt="card binder")
+            p!= binder
+            
+
+      

@@ -13,8 +13,7 @@ const CardSchema = new Schema(
     custom: Boolean,
 
     binder: {
-      type: String, 
-      enum: ["prize", "elite", null]
+      type: String
     },
 
     meta: {

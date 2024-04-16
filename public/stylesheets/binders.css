@@ -1,0 +1,70 @@
+.title-box {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+.add-binder-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+
+    input {
+        padding: 5px 10px;
+    }
+}
+
+.binders {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 25px;
+    width: 100%;
+}
+
+.binder {
+    width: 250px;
+
+    a {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        img {
+            width: 150px;
+        }
+
+        p {
+            width: 100px;
+            font-size: 25px;
+            text-align: center;
+        }
+    }
+}
+
+.add-binder-btn {
+    border-radius: 50%;
+    border: none;
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.close-new-binder {
+    position: absolute;
+    right: 0;
+    font-size: 1.8rem;
+    color: rgba(150, 53, 36, 0.571);
+    border: none;
+    background: none;
+}
+
+.close-new-binder:hover {
+    color: red;
+}
