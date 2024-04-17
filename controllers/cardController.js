@@ -139,6 +139,11 @@ exports.delete_binder_post = async (req, res, next) => {
   );
   if (errUser) return next(errUser);
 
+  const [errCards, cards] = await handle(
+    Card.updateMany({ userId, binder }, { binder: null })
+  );
+  if (errCards) return next(errCards);
+
   return res.redirect("/collection/binders");
 };
 
