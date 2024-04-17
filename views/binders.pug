@@ -20,10 +20,11 @@ block content
 
     div.binders 
       each binder in binders
+        - const b = binder.replace("&#x27;", "'")
         div.binder
           a(href=`/collection/binders/display/${binder}`)
             img(src="/images/binder.png", alt="card binder")
-            p!= binder
+            p= binder
             
 
       

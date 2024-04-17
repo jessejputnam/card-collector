@@ -100,6 +100,7 @@ exports.display_card_get = async (req, res, next) => {
   return res.render("card-detail", {
     title: `${card.pokemon.name}`,
     card,
+    binders: req.user.binders,
     msg
   });
 };
@@ -115,27 +116,36 @@ exports.display_binders_get = async (req, res, next) => {
 };
 
 // Handle add binders on POST
-exports.add_binders_post = [
-  escape.add_binder,
-  async (req, res, next) => {
-    const userId = req.user._id;
-    const newBinder = req.body.newBinder;
+exports.add_binders_post = async (req, res, next) => {
+  const userId = req.user._id;
+  const newBinder = req.body.newBinder;
 
-    const [errUser, user] = await handle(User.findById(userId));
-    if (errUser) return next(errUser);
+  const [errUser, user] = await handle(User.findById(userId));
+  if (errUser) return next(errUser);
 
-    user.binders.push(newBinder);
-    const [errSave, save] = await handle(user.save());
-    if (errSave) return next(errSave);
-    return res.redirect("/collection/binders");
-  }
-];
+  user.binders.push(newBinder);
+  const [errSave, save] = await handle(user.save());
+  if (errSave) return next(errSave);
+  return res.redirect("/collection/binders");
+};
+
+// Handle delete binder
+exports.delete_binder_post = async (req, res, next) => {
+  const userId = req.user._id;
+  const binder = req.body.binder;
+  const binders = req.user.binders.filter((b) => b !== binder);
+  const [errUser, user] = await handle(
+    User.findByIdAndUpdate(userId, { binders })
+  );
+  if (errUser) return next(errUser);
+
+  return res.redirect("/collection/binders");
+};
 
 // Display binder on GET
 exports.display_binder_get = async (req, res, next) => {
   const userId = req.user._id;
   const binder = req.params.id;
-  console.log(req);
 
   const [errCards, cards] = await handle(
     Card.find({ userId: userId, binder: binder }).exec()
@@ -146,61 +156,64 @@ exports.display_binder_get = async (req, res, next) => {
     0
   );
 
+  const cardsSorted = cards.sort(sort.byValueDesc);
+
   return res.render("binder", {
     title: binder,
-    cards,
+    binder,
+    cards: cardsSorted,
     total
   });
 };
 
 // Handle display prize binder on GET
-exports.display_prize_get = async (req, res, next) => {
-  const userId = req.user._id;
+// exports.display_prize_get = async (req, res, next) => {
+//   const userId = req.user._id;
 
-  const [errCards, cards] = await handle(
-    Card.find({ userId: userId, binder: "prize" }).exec()
-  );
-  if (errCards) return next(errCards);
+//   const [errCards, cards] = await handle(
+//     Card.find({ userId: userId, binder: "prize" }).exec()
+//   );
+//   if (errCards) return next(errCards);
 
-  const total = cards.reduce(
-    (acc, next) => acc + next.value.market * (next.value.count || 1),
-    0
-  );
+//   const total = cards.reduce(
+//     (acc, next) => acc + next.value.market * (next.value.count || 1),
+//     0
+//   );
 
-  const trainer = cards
-    .filter((card) => card.meta.supertype !== "Pokémon")
-    .sort(sort.byValueDesc);
-  const illustrator = cards
-    .filter((card) => filterPrize(card, -3))
-    .sort(sort.byValueDesc);
-  const fullArt = cards
-    .filter((card) => filterPrize(card, -2))
-    .sort(sort.byValueDesc);
-  const vSpecial = cards
-    .filter((card) => filterPrize(card, -1))
-    .sort(sort.byValueDesc);
-  const halfArt = cards
-    .filter((card) => filterPrize(card, 0))
-    .sort(sort.byValueDesc);
-  const specialHolo = cards
-    .filter((card) => filterPrize(card, 1))
-    .sort(sort.byValueDesc);
-  const holo = cards
-    .filter((card) => filterPrize(card, 2))
-    .sort(sort.byValueDesc);
+//   const trainer = cards
+//     .filter((card) => card.meta.supertype !== "Pokémon")
+//     .sort(sort.byValueDesc);
+//   const illustrator = cards
+//     .filter((card) => filterPrize(card, -3))
+//     .sort(sort.byValueDesc);
+//   const fullArt = cards
+//     .filter((card) => filterPrize(card, -2))
+//     .sort(sort.byValueDesc);
+//   const vSpecial = cards
+//     .filter((card) => filterPrize(card, -1))
+//     .sort(sort.byValueDesc);
+//   const halfArt = cards
+//     .filter((card) => filterPrize(card, 0))
+//     .sort(sort.byValueDesc);
+//   const specialHolo = cards
+//     .filter((card) => filterPrize(card, 1))
+//     .sort(sort.byValueDesc);
+//   const holo = cards
+//     .filter((card) => filterPrize(card, 2))
+//     .sort(sort.byValueDesc);
 
-  return res.render("binder-prize", {
-    title: "Prize Binder",
-    illustrator,
-    full_art: fullArt,
-    v_special: vSpecial,
-    half_art: halfArt,
-    special_holo: specialHolo,
-    holo,
-    trainer,
-    total
-  });
-};
+//   return res.render("binder-prize", {
+//     title: "Prize Binder",
+//     illustrator,
+//     full_art: fullArt,
+//     v_special: vSpecial,
+//     half_art: halfArt,
+//     special_holo: specialHolo,
+//     holo,
+//     trainer,
+//     total
+//   });
+// };
 
 // Handle display elite binder on GET
 exports.display_elite_get = async (req, res, next) => {

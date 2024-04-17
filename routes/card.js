@@ -17,10 +17,10 @@ router.get("/home/sort", card_controller.display_collection_sorted_get);
 // ################# BINDERS ####################
 
 // GET request for prize binder
-router.get("/prize", card_controller.display_prize_get);
+// router.get("/prize", card_controller.display_prize_get);
 
 // GET request for elite binder
-router.get("/elite", card_controller.display_elite_get);
+// router.get("/elite", card_controller.display_elite_get);
 
 // GET request for Binders view
 router.get("/binders", card_controller.display_binders_get);
@@ -32,6 +32,7 @@ router.post("/binders/add", card_controller.add_binders_post);
 router.get("/binders/display/:id", card_controller.display_binder_get);
 
 // GET request for deleting binder
+router.post("/binders/remove", card_controller.delete_binder_post);
 
 // POST request for deleting binder
 

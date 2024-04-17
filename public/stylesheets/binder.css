@@ -1,7 +1,53 @@
 /* ##################### ## BINDER VIEW ################## */
 
+#removeBinderBtn {
+  background: none;
+  border: none;
+  padding-bottom: 5px;
+}
+
+#removeBinderBtn:hover {
+  border-bottom: solid 2px rgba(230, 2, 2, 0.776);
+  color: rgba(230, 2, 2, 0.776);
+  margin-bottom: -2px;
+}
+
 .page-wrapper hr {
   margin: 10px 0;
+}
+
+.title-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+#formContainer {
+  background: white;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.493);
+  padding: 20px 5px 10px 15px;
+  position: relative;
+  width: 140px;
+}
+
+#closeDelForm {
+  /* background-color: none; */
+  border: none;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+
+  transition: background-color .3s;
+}
+
+#closeDelForm:hover {
+  background-color: rgba(0, 0, 0, 0.264);
+}
+
+#delBtn {
+  padding: 2px;
 }
 
 .binder-container {
@@ -127,4 +173,8 @@
   .prize-info-container > p {
     font-size: 0.6rem;
   }
+}
+
+.hidden {
+  display: none;
 }
