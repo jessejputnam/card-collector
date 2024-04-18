@@ -3,20 +3,18 @@
 const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
-const escape = require("../middlewares/escape");
-
 const Card = require("../models/card");
 const User = require("../models/user");
 const handle = require("../helpers/errorHandler");
 const errs = require("../helpers/errs");
 const sort = require("../helpers/sort");
-const filterPrize = require("../helpers/filterPrize");
 const filterElite = require("../helpers/filterElite");
 const updateMsgs = require("../helpers/updateMsgs");
 const buildCard = require("../helpers/buildCard");
 const getPriceType = require("../helpers/getPriceType");
 const getRarityRating = require("../helpers/getRarityRating");
 const makeCSV = require("../helpers/makeCSV");
+const getConversionRate = require("../helpers/getConversionRate");
 
 /* 
 
@@ -28,11 +26,27 @@ const makeCSV = require("../helpers/makeCSV");
     - Filter Cards
 */
 
+exports.change_curr_post = async (req, res, next) => {
+  const userId = req.user._id;
+  const newCurr = req.body.curr;
+
+  const [errUser, user] = await handle(
+    User.findByIdAndUpdate(userId, { curr: newCurr })
+  );
+  if (errUser) return next(errUser);
+
+  const referrer = req.headers.referer || "/";
+
+  return res.redirect(referrer);
+};
+
 // ################# View Cards ##################
 
 // Handle display collection on GET
 exports.display_collection_get = async (req, res, next) => {
   const userId = req.user._id;
+  const curr = req.user.curr;
+
   if (!req.user.binders) {
     const newBinders = ["elite", "prize"];
     const [errUser, user] = await handle(
@@ -49,10 +63,13 @@ exports.display_collection_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
 
-  const total = cards.reduce(
-    (acc, next) => acc + next.value.market * (next.value.count || 1),
-    0
-  );
+  const currConvert = await getConversionRate(curr);
+
+  const total =
+    cards.reduce(
+      (acc, next) => acc + next.value.market * (next.value.count || 1),
+      0
+    ) * currConvert;
 
   let card_list;
 
@@ -81,6 +98,8 @@ exports.display_collection_get = async (req, res, next) => {
     card_list,
     csv,
     total,
+    curr_convert: currConvert,
+    curr,
     by_field: sortType,
     asc_field: sortAsc
   });
@@ -90,16 +109,20 @@ exports.display_collection_get = async (req, res, next) => {
 exports.display_card_get = async (req, res, next) => {
   const cardId = req.params.id;
   const update = req.query.update;
+  const curr = req.user.curr;
 
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
+  const currConvert = await getConversionRate(curr);
   const msg = !update ? null : updateMsgs[update];
 
   return res.render("card-detail", {
     title: `${card.pokemon.name}`,
     card,
+    curr_convert: currConvert,
+    curr,
     binders: req.user.binders,
     msg
   });
@@ -108,10 +131,12 @@ exports.display_card_get = async (req, res, next) => {
 // Handle display binders on GET
 exports.display_binders_get = async (req, res, next) => {
   const binders = req.user.binders;
+  const curr = req.user.curr;
 
   return res.render("binders", {
     title: "Binders",
-    binders
+    binders,
+    curr
   });
 };
 
@@ -151,106 +176,30 @@ exports.delete_binder_post = async (req, res, next) => {
 exports.display_binder_get = async (req, res, next) => {
   const userId = req.user._id;
   const binder = req.params.id;
+  const curr = req.user.curr;
 
   const [errCards, cards] = await handle(
     Card.find({ userId: userId, binder: binder }).exec()
   );
   if (errCards) return next(errCards);
-  const total = cards.reduce(
-    (acc, next) => acc + next.value.market * (next.value.count || 1),
-    0
-  );
+
+  const currConvert = await getConversionRate(curr);
+
+  const total =
+    cards.reduce(
+      (acc, next) => acc + next.value.market * (next.value.count || 1),
+      0
+    ) * currConvert;
 
   const cardsSorted = cards.sort(sort.byValueDesc);
 
   return res.render("binder", {
     title: binder,
     binder,
+    curr_convert: currConvert,
+    curr,
     cards: cardsSorted,
     total
-  });
-};
-
-// Handle display prize binder on GET
-// exports.display_prize_get = async (req, res, next) => {
-//   const userId = req.user._id;
-
-//   const [errCards, cards] = await handle(
-//     Card.find({ userId: userId, binder: "prize" }).exec()
-//   );
-//   if (errCards) return next(errCards);
-
-//   const total = cards.reduce(
-//     (acc, next) => acc + next.value.market * (next.value.count || 1),
-//     0
-//   );
-
-//   const trainer = cards
-//     .filter((card) => card.meta.supertype !== "Pokémon")
-//     .sort(sort.byValueDesc);
-//   const illustrator = cards
-//     .filter((card) => filterPrize(card, -3))
-//     .sort(sort.byValueDesc);
-//   const fullArt = cards
-//     .filter((card) => filterPrize(card, -2))
-//     .sort(sort.byValueDesc);
-//   const vSpecial = cards
-//     .filter((card) => filterPrize(card, -1))
-//     .sort(sort.byValueDesc);
-//   const halfArt = cards
-//     .filter((card) => filterPrize(card, 0))
-//     .sort(sort.byValueDesc);
-//   const specialHolo = cards
-//     .filter((card) => filterPrize(card, 1))
-//     .sort(sort.byValueDesc);
-//   const holo = cards
-//     .filter((card) => filterPrize(card, 2))
-//     .sort(sort.byValueDesc);
-
-//   return res.render("binder-prize", {
-//     title: "Prize Binder",
-//     illustrator,
-//     full_art: fullArt,
-//     v_special: vSpecial,
-//     half_art: halfArt,
-//     special_holo: specialHolo,
-//     holo,
-//     trainer,
-//     total
-//   });
-// };
-
-// Handle display elite binder on GET
-exports.display_elite_get = async (req, res, next) => {
-  const userId = req.user._id;
-
-  const [errCards, cards] = await handle(
-    Card.find({ userId: userId, binder: "elite" }).exec()
-  );
-  if (errCards) return next(errCards);
-
-  const trainer = cards
-    .filter((card) => card.meta.supertype !== "Pokémon")
-    .sort(sort.byValueDesc);
-  const wotc = cards
-    .filter((card) => filterElite(card, true))
-    .sort(sort.byValueDesc);
-  const elite = cards
-    .filter((card) => filterElite(card, false))
-    .sort(sort.byValueDesc);
-
-  const total = cards.reduce(
-    (acc, next) => acc + next.value.market * (next.value.count || 1),
-    0
-  );
-  cards.sort(sort.byValueDesc);
-
-  return res.render("binder-elite", {
-    title: "Elite Binder",
-    wotc,
-    elite,
-    trainer,
-    total: total
   });
 };
 
@@ -314,6 +263,7 @@ exports.update_price_history_post = async (req, res, next) => {
 
 exports.delete_card_get = async (req, res, next) => {
   const cardId = req.params.id;
+  const curr = req.user.curr;
 
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return next(errCard);
@@ -322,6 +272,7 @@ exports.delete_card_get = async (req, res, next) => {
   return res.render("card-delete", {
     title: `Delete ${card.pokemon.name}`,
     cardId: card._id,
+    curr,
     cardName: card.pokemon.name
   });
 };
@@ -417,10 +368,12 @@ exports.add_card_post = async (req, res, next) => {
 // Handle display add custom card form on GET
 exports.add_custom_card_get = (req, res, next) => {
   const rarities = Object.keys(getRarityRating);
+  const curr = req.user.curr;
 
   return res.render("add-custom-card", {
     title: "Add New Card",
-    rarities
+    rarities,
+    curr
   });
 };
 
@@ -441,6 +394,7 @@ exports.add_custom_card_post = async (req, res, next) => {
 exports.edit_custom_card_get = async (req, res, next) => {
   const cardId = req.params.id;
   const rarities = Object.keys(getRarityRating);
+  const curr = req.user.curr;
 
   const [err, card] = await handle(Card.findById(cardId).exec());
   if (err) return next(err);
@@ -450,7 +404,8 @@ exports.edit_custom_card_get = async (req, res, next) => {
   return res.render("edit-custom-card", {
     title: `Edit ${card.pokemon.name}`,
     card,
-    rarities
+    rarities,
+    curr
   });
 };
 
@@ -475,13 +430,17 @@ exports.edit_custom_card_post = async (req, res, next) => {
 exports.display_collection_sorted_get = async (req, res, next) => {
   const ascStr = req.query.asc;
   const userId = req.user._id;
+  const curr = req.user.curr;
   const sortBy = req.query.by;
   const sortAsc = ascStr === "true" ? true : false;
 
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
   if (errCards) return next(errCards);
 
-  const total = cards.reduce((acc, next) => acc + next.value.market, 0);
+  const currConvert = await getConversionRate(curr);
+
+  const total =
+    cards.reduce((acc, next) => acc + next.value.market, 0) * currConvert;
 
   let sorted;
 
@@ -510,7 +469,9 @@ exports.display_collection_sorted_get = async (req, res, next) => {
     card_list: sorted,
     total: total,
     by_field: sortBy,
-    asc_field: ascStr
+    asc_field: ascStr,
+    curr_convert: currConvert,
+    curr
   });
 };
 
@@ -518,6 +479,7 @@ exports.display_collection_sorted_get = async (req, res, next) => {
 // Handle display cards by set on GET
 exports.display_filter_by_set_get = async (req, res, next) => {
   const userId = req.user._id;
+  const curr = req.user.curr;
 
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
   if (errCards) return next(errCards);
@@ -561,15 +523,20 @@ exports.display_filter_by_set_get = async (req, res, next) => {
     list_sets.push(set);
   }
 
+  const currConvert = await getConversionRate(curr);
+
   return res.render("sets-collection", {
     title: "Set Collection",
-    list_sets
+    list_sets,
+    curr_convert: currConvert,
+    curr
   });
 };
 
 // Handle get filter page
 exports.display_filter_page_get = async (req, res, next) => {
   const userId = req.user._id;
+  const curr = req.user.curr;
   let results = [];
 
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
@@ -703,6 +670,8 @@ exports.display_filter_page_get = async (req, res, next) => {
 
   const csv = makeCSV(results);
 
+  const currConvert = await getConversionRate(curr);
+
   const page_data = {
     title: "Filter Collection",
     sets,
@@ -710,6 +679,8 @@ exports.display_filter_page_get = async (req, res, next) => {
     rarities,
     savedQuery,
     results,
+    curr_convert: currConvert,
+    curr,
     csv
   };
 

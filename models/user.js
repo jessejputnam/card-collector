@@ -13,7 +13,8 @@ const UserSchema = new Schema(
       match: [/\S+@\S+\.\S+/, "Must be valid email"]
     },
     password: { type: String, required: true },
-    binders: { type: [String], default: undefined }
+    binders: { type: [String], default: undefined },
+    curr: { type: String, default: "usd" }
   },
   { timestamps: true }
 );

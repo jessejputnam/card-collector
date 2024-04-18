@@ -78,7 +78,8 @@ passport.deserializeUser(function (id, done) {
   User.findById(id, function (err, user) {
     const data = {
       _id: user._id,
-      binders: user.binders
+      binders: user.binders,
+      curr: user.curr
     };
     done(err, data);
   });

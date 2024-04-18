@@ -54,6 +54,14 @@ html(lang='en')
 
               li(style="margin-top:50px")
                 a(href="/logout") Logout
+
+              li(style="margin-top:50px")
+                form(action=`/collection/change_curr`, method='POST')
+                  select(name="curr", onchange="this.form.submit()") 
+                    option(value="usd", selected=(curr === "usd")) $USD 
+                    option(value="eur", selected=(curr === "eur")) €EUR 
+                    option(value="cad", selected=(curr === "cad")) $CAD 
+                    option(value="aud", selected=(curr === "aud")) $AUD
         
         div.topbar
           img.nav-img(src="/images/pokeball.png", alt="Pokeball")
@@ -66,9 +74,7 @@ html(lang='en')
                   li 
                     a(href="/collection/home") Collection 
                   li 
-                    a(href="/collection/elite") Elite Binder
-                  li 
-                    a(href="/collection/prize") Prize Binder
+                    a(href="/collection/binders") Binders
                   li 
                     a(href="/collection/filter") Filter
                   li 

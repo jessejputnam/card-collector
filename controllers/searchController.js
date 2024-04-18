@@ -6,9 +6,12 @@ const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
 const Card = require("../models/card.js");
+const getConversionRate = require("../helpers/getConversionRate.js");
 
 // Display search form on GET
 exports.search_get = async (req, res, next) => {
+  const curr = req.user.curr;
+
   const [err, reversedSets] = await handle(
     pokemon.set.all({ orderBy: "-releaseDate" })
   );
@@ -16,13 +19,15 @@ exports.search_get = async (req, res, next) => {
 
   return res.render("search-form", {
     title: "Search for a Card",
-    sets: reversedSets
+    sets: reversedSets,
+    curr
   });
 };
 
 // Display results on GET
 exports.search_results_get = async (req, res, next) => {
   const userId = req.user._id;
+  const curr = req.user.curr;
   const pokeName = req.query.pokeName.trim().toLowerCase();
   const pokeSet = req.query.pokeSet.trim().toLowerCase();
 
@@ -63,15 +68,17 @@ exports.search_results_get = async (req, res, next) => {
     if (firstEdCheck) firstEdSet.add(card.id);
     else if (card.meta.rarity.reverseHolo) reverseHoloSet.add(card.id);
     else cardSet.add(card.id);
-    // if (!card.meta.rarity.reverseHolo) cardSet.add(card.id);
-    // else reverseHoloSet.add(card.id);
   });
+
+  const currConvert = await getConversionRate(curr);
 
   return res.render("search-results", {
     title: "Results",
     card_list: results.data,
     user_cards: cardSet,
     user_reverse_cards: reverseHoloSet,
-    user_1sted_cards: firstEdSet
+    user_1sted_cards: firstEdSet,
+    curr_convert: currConvert,
+    curr
   });
 };
