@@ -105,5 +105,5 @@ block content
                   p= card.meta.set.name
                   p=` (${card.meta.set.number}/${card.meta.set.totalPrint})`
                 div.collection-item-value 
-                  p= `$${card.value.market.toFixed(2)}` 
+                  p= `${curr === "eur" ? "€" : "$"}${(card.value.market * curr_convert).toFixed(2)}` 
 

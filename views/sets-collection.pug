@@ -20,7 +20,7 @@ block content
       each obj in list_sets 
         - const set = obj.cards;
         - const set_collected = `${(new Set(set.map(card => card.meta.set.number))).size}/${set[0].meta.set.totalPrint}`
-        - const set_total = set.reduce((acc, next) => acc + next.value.market, 0).toFixed(2)
+        - const set_total = (set.reduce((acc, next) => acc + next.value.market, 0) * curr_convert).toFixed(2)
 
         hr
         div.set-container(id=set[0].meta.set.id)
@@ -30,7 +30,7 @@ block content
           h3= set[0].meta.set.name 
             span.set-collected= set_collected
             span.set-date= set[0].meta.set.releaseDate.slice(0, 4)
-            p.set-total= `$${set_total}`
+            p.set-total= `${curr === "eur" ? "€" : "$"}${set_total}`
 
           div.set-card-list
             each card in set 

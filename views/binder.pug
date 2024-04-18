@@ -11,7 +11,7 @@ block content
     div.title-wrapper
       h1= title 
         nbsp 
-        span(style="font-size:0.8rem;color:gray")= "$" + total.toFixed(2)
+        span(style="font-size:0.8rem;color:gray")= `${curr === "eur" ? "€" : "$"}${total.toFixed(2)}`
       button#removeBinderBtn(type="button") Delete Binder
       div#formContainer.remove-binder-form-container.hidden
         button#closeDelForm(type="button") ❌
@@ -29,5 +29,5 @@ block content
               div.prize-overlay 
             div.prize-info-container 
               a(href=`/collection/${card._id}`)= card.pokemon.name 
-              p= "$" + card.value.market.toFixed(2)
+              p= `${curr === "eur" ? "€" : "$"}` + (card.value.market * curr_convert).toFixed(2)
   

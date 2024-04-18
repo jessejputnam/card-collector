@@ -55,7 +55,7 @@ block content
         div.info-market-container
           div.current-price-container
             p Current Market Value: 
-            h2 $#{card.value.market.toFixed(2)}
+            h2= `${curr === "eur" ? "€" : "$"}${(card.value.market * curr_convert).toFixed(2)}`
             if (!card.custom)
               div#auto-update-toggle(class=`auto-update${card.value.manualUpdate ? " manual" : ""}`)= `${card.value.manualUpdate ? "manual" : "auto"}`
           h3 Price over time 
@@ -63,7 +63,7 @@ block content
             ul 
               each pricePoint in card.value.priceHistory 
                 li.small-text= `${pricePoint[0]}: ` 
-                  span(style="font-size:1rem")= ` $${Number(pricePoint[1]).toFixed(2)}`
+                  span(style="font-size:1rem")= ` ${curr === "eur" ? "€" : "$"}${(Number(pricePoint[1]) * curr_convert).toFixed(2)}`
 
     div.card-edits-container
       div.form-separator

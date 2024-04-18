@@ -57,7 +57,7 @@ html(lang='en')
 
               li(style="margin-top:50px")
                 form(action=`/collection/change_curr`, method='POST')
-                  select(name="curr", onchange="this.form.submit()") 
+                  select.select(name="curr", onchange="this.form.submit()") 
                     option(value="usd", selected=(curr === "usd")) $USD 
                     option(value="eur", selected=(curr === "eur")) €EUR 
                     option(value="cad", selected=(curr === "cad")) $CAD 
@@ -79,11 +79,18 @@ html(lang='en')
                     a(href="/collection/filter") Filter
                   li 
                     a(href="/collection/sets") Sets
-
             div 
               a(href="/search") Add Cards 
             div 
               a(href="/logout") Logout
+
+            form(action=`/collection/change_curr`, method='POST')
+              select.select(name="curr", onchange="this.form.submit()") 
+                option(value="usd", selected=(curr === "usd")) $USD 
+                option(value="eur", selected=(curr === "eur")) €EUR 
+                option(value="cad", selected=(curr === "cad")) $CAD 
+                option(value="aud", selected=(curr === "aud")) $AUD
+
             
 
         main.main-wrapper
