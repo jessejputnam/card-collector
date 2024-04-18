@@ -3,8 +3,8 @@
  * @param {string} curr
  * @returns
  */
-const getConversionRate = async (curr, next) => {
-  if (curr === "usd") return 1;
+const getConversionRate = async (curr) => {
+  if (curr === "usd") return [null, 1];
 
   let currConvert = 1;
   const api_url =
