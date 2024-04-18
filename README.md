@@ -13,14 +13,13 @@
   - you can view the individual card's information by clicking on it
   - You can FILTER through your collection with a variety of options
   - You can view your collection neatly organized by SETS - by year
-  - You can add cards to your special cards to a PRIZE binder, and your extremely special cards to the ELITE
+  - Just like in real life, you can organize your cards into custom bindersnode
 
 ## Table of contents
 
 - [Screenshot](#screenshot)
 - [Environment Variables](#environment-variables)
 - [Built with](#built-with)
-- [Continued development](#continued-development)
 - [Author](#author)
 
 ### Screenshot
@@ -41,20 +40,11 @@ To run this project, you will need to add the following environment variables to
 
 - Flexbox
 - [JavaScript](https://www.javascript.com/) - Frontend scripting language
-- [Node.js](https://nodejs.dev/en/) - Backend JavaScript runtime environment
+- [Node.js](https://nodejs.dev/en/) - Backend JavaScript runtime environment [Prefer 20.12.1, fetch is used]
 - [Express](https://expressjs.com/) - Web framework for Node.js
 - [MongoDB](https://www.mongodb.com/) - NoSQL cloud database
 - [Mongoose](https://mongoosejs.com/) - MongoDB object modeling for Node.js
 - [Passport](https://www.passportjs.org/) - Authorization and session security
-
-### Continued Development
-
-- [x] Adding a form for showing multiple owned copied of the same card
-- [x] Search for name by "contains" with wildcard capability
-- [x] Price card totals by collection
-- [ ] Ability to manually edit card info section for other country prices, PSA grading, etc (Note: manually added fields will not auto update prices, etc. Require manual updates)
-- [x] Missing license -- whoops
-- [x] Export to csv
 
 ## Author
 
