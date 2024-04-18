@@ -70,7 +70,8 @@ exports.search_results_get = async (req, res, next) => {
     else cardSet.add(card.id);
   });
 
-  const currConvert = await getConversionRate(curr);
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
 
   return res.render("search-results", {
     title: "Results",

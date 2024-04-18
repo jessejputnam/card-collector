@@ -3,7 +3,7 @@
  * @param {string} curr
  * @returns
  */
-const getConversionRate = async (curr) => {
+const getConversionRate = async (curr, next) => {
   if (curr === "usd") return 1;
 
   let currConvert = 1;
@@ -15,10 +15,10 @@ const getConversionRate = async (curr) => {
     const exchange = await response.json();
     currConvert = exchange.usd[curr];
   } catch {
-    return next(new Error("Currency exchange API issue"));
+    return [new Error("Currency exchange API issue"), null];
   }
 
-  return currConvert;
+  return [null, currConvert];
 };
 
 module.exports = getConversionRate;

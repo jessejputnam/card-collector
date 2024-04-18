@@ -63,7 +63,8 @@ exports.display_collection_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
 
-  const currConvert = await getConversionRate(curr);
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
 
   const total =
     cards.reduce(
@@ -115,7 +116,8 @@ exports.display_card_get = async (req, res, next) => {
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  const currConvert = await getConversionRate(curr);
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
   const msg = !update ? null : updateMsgs[update];
 
   return res.render("card-detail", {
@@ -183,7 +185,8 @@ exports.display_binder_get = async (req, res, next) => {
   );
   if (errCards) return next(errCards);
 
-  const currConvert = await getConversionRate(curr);
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
 
   const total =
     cards.reduce(
@@ -437,7 +440,8 @@ exports.display_collection_sorted_get = async (req, res, next) => {
   const [errCards, cards] = await handle(Card.find({ userId: userId }));
   if (errCards) return next(errCards);
 
-  const currConvert = await getConversionRate(curr);
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
 
   const total =
     cards.reduce((acc, next) => acc + next.value.market, 0) * currConvert;
@@ -523,7 +527,8 @@ exports.display_filter_by_set_get = async (req, res, next) => {
     list_sets.push(set);
   }
 
-  const currConvert = await getConversionRate(curr);
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
 
   return res.render("sets-collection", {
     title: "Set Collection",
@@ -670,7 +675,8 @@ exports.display_filter_page_get = async (req, res, next) => {
 
   const csv = makeCSV(results);
 
-  const currConvert = await getConversionRate(curr);
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
 
   const page_data = {
     title: "Filter Collection",
