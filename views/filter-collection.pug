@@ -20,13 +20,13 @@ block content
               fieldset.filter-fieldset
                 legend Sort
 
-                select#sort-by(name="sortby")  
+                select.select#sort-by(name="sortby")  
                   option(value="value" selected) Market Value
                   option(value="rarity") Rarity 
                   option(value="name") Name 
                   option(value="set") Set
                   option(value="supertype") Card Type
-                select#sort-asc(name="asc") 
+                select.select#sort-asc(name="asc") 
                   option(value='false' selected='selected') Descending
                   option(value='true') Ascending 
 
@@ -42,7 +42,7 @@ block content
                 legend Card Value
                 div.filter-card-value
                   input#value(type="number" name="value" min="0" step="0.01" value=(savedQuery.value === undefined ? 0 : savedQuery.value) required="true")
-                  select#compareValue(name="compareValue")
+                  select.select#compareValue(name="compareValue")
                     option(value=">=" selected) and above 
                     option(value="<=") and below 
 

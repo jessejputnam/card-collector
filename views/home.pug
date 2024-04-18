@@ -21,13 +21,13 @@ block content
         form(method="GET" action="/collection/home") 
           fieldset
             legend Sort by...
-            select#by(name="by") 
+            select.select#by(name="by") 
               option(value="rarity" selected=(by_field === "rarity")) Rarity 
               option(value="value" selected=(!by_field || by_field === "value")) Market Value
               option(value="name" selected=(by_field === "name")) Name 
               option(value="set" selected=(by_field === "set")) Set
               option(value="supertype" selected=(by_field === "supertype")) Card Type
-            select#asc(name="asc") 
+            select.select#asc(name="asc") 
               option(value="false" selected=(!asc_field || asc_field === "false")) Descending
               option(value="true" selected=(asc_field === "true")) Ascending 
             button.btn.btn-secondary(type="submit") Sort

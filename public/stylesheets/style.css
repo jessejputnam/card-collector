@@ -331,15 +331,11 @@ select {
 
 .select {
   width: 100%;
-  max-width: 80px;
   border: 1px solid var(--select-border);
   border-radius: 0.25em;
   padding: 0.25em 0.5em;
-  font-size: 1.1rem;
   cursor: pointer;
   line-height: 1.1;
-  background-color: var(--side-bar);
-  color: var(--side-bar-text);
   display: grid;
   grid-template-areas: "select";
   align-items: center;
@@ -360,6 +356,13 @@ select,
 
 .select:after {
   justify-self: end;
+}
+
+.curr {
+  background-color: var(--side-bar);
+  color: var(--side-bar-text);
+  max-width: 80px;
+  font-size: 1.1rem;
 }
 
 /* ##################### # MAIN ####################### */

@@ -93,7 +93,7 @@ block content
 
       form.card-edit-form(method="POST" action=`/collection/${card._id}/select-binder`) 
         input(type="hidden" name="objId" required='true' value=card._id)
-        select#binder(type='select' name="binder" required="true") 
+        select.select#binder(type='select' name="binder" required="true") 
           option(value="none" selected=(!card.binder))
           each binder in binders 
             option(value=binder selected=(card.binder === binder))= binder

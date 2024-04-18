@@ -13,7 +13,7 @@ block content
       input#pokeName(type="text" name="pokeName" autofocus required)
     div.form-control 
       label(for="pokeSet") Set: 
-      select#pokeSet(name="pokeSet") 
+      select.select#pokeSet(name="pokeSet") 
         option(value="" default) 
         each set in sets 
           option(value=set.id)= set.name

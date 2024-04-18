@@ -20,7 +20,7 @@ block content
           //- Supertype
           div.form-control 
             label(for="supertype") Supertype: 
-            select#supertype(name="supertype" required) 
+            select.select#supertype(name="supertype" required) 
               option(value="Pokémon" selected=(card.supertype === "Pokémon")) Pokémon
               option(value="Trainer" selected=(card.supertype === "Trainer")) Trainer
               option(value="Energy" selected=(card.supertype === "Energy")) Energy
@@ -43,7 +43,7 @@ block content
           //- Rarity
           div.form-control 
             label(for="rarity") Card Rarity: 
-            select#rarity(name="rarity" required) 
+            select.select#rarity(name="rarity" required) 
               each item in rarities
                 option(value=item selected=(card.meta.rarity.type === item))= item
         
