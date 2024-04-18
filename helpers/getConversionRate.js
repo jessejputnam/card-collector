@@ -14,8 +14,8 @@ const getConversionRate = async (curr) => {
     const response = await fetch(api_url);
     const exchange = await response.json();
     currConvert = exchange.usd[curr];
-  } catch {
-    return [new Error("Currency exchange API issue"), null];
+  } catch (err) {
+    return [err, null];
   }
 
   return [null, currConvert];
