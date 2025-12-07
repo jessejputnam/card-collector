@@ -91,7 +91,7 @@ block content
         div.collection-container
           button.btn.btn-csv(type="button" data-csv=csv) Download CSV
           each card in results
-            a.not-a(href=`/collection/${card._id}`)
+            a.not-a(href=`/collection/cards/${card._id}`)
               div.collection-item(id=card._id class=`${card.binder ? card.binder + "-binder" : ""}`) 
                 div.collection-item-img
                   img(src=card.meta.images.small, alt=`${card.pokemon.name} card`)

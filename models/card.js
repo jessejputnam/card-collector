@@ -7,6 +7,8 @@ const Schema = mongoose.Schema;
 const CardSchema = new Schema(
   {
     id: { type: String, required: true },
+    apiId: { type: String }, // id field from external API
+    tcgPlayerId: { type: String }, // id field from TCGPlayer API
 
     userId: { type: Schema.Types.ObjectId, ref: "User" },
 
@@ -28,7 +30,10 @@ const CardSchema = new Schema(
       },
       supertype: { type: String, required: true },
       subtypes: [{ type: String }],
+      setId: { type: String }, // set id from external API,
+      setNumber: { type: String },
       set: {
+        // DEPRECATED FIELDS
         symbol: String,
         logo: String,
         name: { type: String, required: true },

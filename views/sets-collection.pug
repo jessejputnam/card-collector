@@ -40,5 +40,5 @@ block content
               - const set_number_color = reverseHolo ? "tan" : firstEd ? "RoyalBlue" : "gray"
 
               li(style=`list-style: none`)  
-                a.set-link(href=`/collection/${card._id}` style=`color:${link_color}`)= card.pokemon.name + " "
+                a.set-link(href=`/collection/cards/${card._id}` style=`color:${link_color}`)= card.pokemon.name + " "
                   span.set-number(style=`color:${set_number_color}`)=  card.meta.set.number + "/" + card.meta.set.totalPrint

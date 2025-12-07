@@ -16,7 +16,7 @@ block content
       select.select#pokeSet(name="pokeSet") 
         option(value="" default) 
         each set in sets 
-          option(value=set.id)= set.name
+          option(value=set.tcgPlayerId)= set.name
     button.btn.btn-primary(type="submit" style="padding:15px;margin-top:15px") Search
 
-    a(href="/collection/add-custom-card" style="margin-top:10px") Add Card manually
+    a(href="/collection/cards/add-custom-card" style="margin-top:10px") Add Card manually

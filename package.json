@@ -10,29 +10,29 @@
     "serverstart": "DEBUG=card-collector:* npm run devstart"
   },
   "dependencies": {
-    "@babel/node": "^7.19.1",
-    "body-parser": "^1.20.1",
+    "@babel/node": "^7.28.0",
+    "body-parser": "^1.20.4",
     "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^3.1.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
-    "dotenv": "^16.0.3",
-    "express": "~4.16.1",
-    "express-session": "^1.17.3",
-    "express-validator": "^6.14.2",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "express-validator": "^6.15.0",
     "http-errors": "~1.6.3",
-    "mongoose": "^6.6.5",
-    "morgan": "~1.9.1",
+    "mongoose": "^6.13.8",
+    "morgan": "^1.10.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pokemontcgsdk": "^2.0.0",
-    "pug": "^3.0.2",
-    "serve-favicon": "^2.5.0"
+    "pug": "^3.0.3",
+    "serve-favicon": "^2.5.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.19.3",
-    "@babel/core": "^7.19.6",
-    "@babel/preset-env": "^7.19.4",
-    "nodemon": "^2.0.20"
+    "@babel/cli": "^7.28.3",
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "nodemon": "^3.1.11"
   }
 }

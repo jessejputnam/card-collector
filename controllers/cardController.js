@@ -226,11 +226,13 @@ exports.change_update_type = async (req, res, next) => {
 
 // Handle update price history
 exports.update_price_history_post = async (req, res, next) => {
+  console.log("Updating price history...");
   const cardId = req.params.id;
   const pokemonId = req.body.cardId;
   const newDate = new Date().toLocaleDateString("en-US");
 
   const [errCard, card] = await handle(Card.findById(cardId).exec());
+  console.log(`Card found in Mongo: ${card}`);
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
@@ -239,10 +241,12 @@ exports.update_price_history_post = async (req, res, next) => {
   if (card.value.manualUpdate) {
     marketVal = +req.body.cardValue;
   } else {
+    console.log(`Fetching card from TCGPlayer: ${pokemonId}`);
     const [errTcgCard, tcgCard] = await handle(pokemon.card.find(pokemonId));
     if (errTcgCard) return next(errTcgCard);
     if (!tcgCard) return next(errs.cardNotFound());
 
+    console.log(`TCGPlayer card found: ${tcgCard}`);
     marketVal = tcgCard.tcgplayer.prices[card.value.priceType].market;
     if (!marketVal) return next(errs.priceNotFound);
   }
@@ -257,8 +261,10 @@ exports.update_price_history_post = async (req, res, next) => {
     msg = "price";
     card.value.priceHistory.unshift([newDate, marketVal]);
   }
-
+  console.log(`Updated market value: ${marketVal}`);
+  console.log("Saving card to mongo...");
   const [errCardSave, _] = await handle(card.save());
+  console.log("Card saved.");
   if (errCardSave) return next(errCardSave);
 
   return res.redirect(`/collection/${card._id}?update=${msg}`);

@@ -143,3 +143,41 @@ exports.edit = (card, req) => {
   card.meta.set.number = q.set_number;
   card.meta.set.totalPrint = q.set_printedTotal;
 };
+
+exports.convertApiSearch = (card) => {
+  const newCard = {
+    apiId: card.id,
+    tcgPlayerId: card.tcgPlayerId,
+
+    meta: {
+      images: {
+        small: card.imageUrl,
+        large: card.imageUrl
+      },
+      rarity: {
+        type: card.rarity,
+        reverseHolo: false
+      },
+      supertype: card.cardType
+    },
+
+    pokemon: {
+      name: card.name
+    },
+
+    set: {
+      name: card.setName,
+      id: card.setId,
+      number: card.cardNumber,
+      totalPrint: card.totalSetNumber
+      // releaseDate: { type: String, required: true }
+    },
+
+    value: {
+      market: card.prices.market,
+      priceType: card.primaryPrinting
+    }
+  };
+
+  return newCard;
+};

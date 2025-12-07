@@ -9,7 +9,8 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const flash = require("connect-flash");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+// const LocalStrategy = require("passport-local");
+const auth = require("./middlewares/auth.js");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -28,7 +29,10 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 const indexRouter = require("./routes/index");
-const cardRouter = require("./routes/card");
+const cardRouter = require("./routes/cards.js");
+const collectionRouter = require("./routes/collections.js");
+const binderRouter = require("./routes/binders.js");
+const setRouter = require("./routes/sets.js");
 const searchRouter = require("./routes/search");
 
 const User = require("./models/user");
@@ -55,35 +59,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// -------------- Start Passport ------------------ //
-passport.use(
-  new LocalStrategy((username, password, done) => {
-    User.findOne({ username: username }, (err, user) => {
-      if (err) return done(err);
-
-      // Username not found
-      if (!user) return done(null, false, { message: "Incorrect username" });
-
-      if (user.comparePassword(password)) return done(null, user);
-      else return done(null, false, { message: "Incorrect password" });
-    });
-  })
-);
-
-// User object is serialized and added to req.session.passport object
-passport.serializeUser(function (user, done) {
-  done(null, user.id);
-});
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    const data = {
-      _id: user._id,
-      binders: user.binders,
-      curr: user.curr
-    };
-    done(err, data);
-  });
-});
+auth.passportSetup(passport);
 
 app.use(
   session({
@@ -115,7 +91,10 @@ app.use(function (req, res, next) {
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter);
-app.use("/collection", authCheckFalse, cardRouter);
+app.use("/collection", authCheckFalse, collectionRouter);
+app.use("/collection/cards", authCheckFalse, cardRouter);
+app.use("/collection/binders", authCheckFalse, binderRouter);
+app.use("/collection/sets", authCheckFalse, setRouter);
 app.use("/search", authCheckFalse, searchRouter);
 
 // catch 404 and forward to error handler

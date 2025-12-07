@@ -23,7 +23,7 @@ block content
               p.result-number= card.number + "/" + card.set.printedTotal
               p $#{!card.tcgplayer ? " not available" : !prices ? "  not available" : prices.holofoil && prices.holofoil.market ? prices.holofoil.market.toFixed(2) : prices.holofoil && prices.holofoil.mid ? prices.holofoil.mid.toFixed(2) : prices.normal && prices.normal.market ? prices.normal.market.toFixed(2) : prices.normal && prices.normal.mid ? prices.normal.mid.toFixed(2) : prices.unlimitedHolofoil ? prices.unlimitedHolofoil.market.toFixed(2) : prices.unlimited ? prices.unlimited.market.toFixed(2) : prices["1stEdition"] ? prices["1stEdition"].market.toFixed(2) : prices["1stEditionHolofoil"] ? prices["1stEditionHolofoil"].market.toFixed(2) : prices.reverseHolofoil ?  card.tcgplayer.prices.reverseHolofoil.mid.toFixed(2) : "No price available"}
               if !user_cards.has(card.id)
-                form.add-card-form(method="POST" action="/collection/add-card") 
+                form.add-card-form(method="POST" action="/collection/cards/add-card") 
                   input#cardId(type="hidden" name="cardId" required="true" value=card.id)
                   input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="false")
                   input#firstEdCheck(type="hidden" name="firstEdCheck", value="false")
@@ -33,7 +33,7 @@ block content
               
               if card.hasReverseHolo
                 if !user_reverse_cards.has(card.id)
-                  form.add-card-form(method="POST" action="/collection/add-card") 
+                  form.add-card-form(method="POST" action="/collection/cards/add-card") 
                     input#cardId(type="hidden" name="cardId" required="true" value=card.id)
                     input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="true")
                     input#firstEdCheck(type="hidden" name="firstEdCheck", value="false")
@@ -43,7 +43,7 @@ block content
               
               if card.has1stEdition 
                 if !user_1sted_cards.has(card.id)
-                  form.add-card-form(method="POST" action="/collection/add-card") 
+                  form.add-card-form(method="POST" action="/collection/cards/add-card") 
                     input#cardId(type="hidden" name="cardId" required="true" value=card.id)
                     input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="false")
                     input#firstEdCheck(type="hidden" name="firstEdCheck", value="true")

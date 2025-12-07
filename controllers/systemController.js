@@ -1,5 +1,9 @@
 const Card = require("../models/card");
 const User = require("../models/user");
+const Set = require("../models/set");
+const handle = require("../helpers/errorHandler");
+const apiCall = require("../api/pokePriceApi");
+const { stack } = require("../routes/cards");
 
 // ############## System Update ################
 exports.update_cards_new_system = async (req, res, next) => {
@@ -39,4 +43,20 @@ exports.update_cards_new_system = async (req, res, next) => {
   }
 
   return res.redirect("/collection/home");
+};
+
+exports.update_sets = async (req, res, next) => {
+  const [setErr, setResponse] = await handle(apiCall.getSets());
+  if (setErr) return next(setErr);
+  const data = setResponse.data;
+  const [delErr, delResponse] = await handle(Set.deleteMany({}));
+  if (delErr) return next(delErr);
+  const [insertErr, insertResponse] = await handle(
+    Set.insertMany(data, { ordered: false })
+  );
+  if (insertErr) return next(insertErr);
+  return res.render("error", {
+    message: "Successfully updated sets!",
+    error: { status: "", stack: "" }
+  });
 };

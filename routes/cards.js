@@ -4,36 +4,6 @@ const express = require("express");
 const router = express.Router();
 
 const card_controller = require("../controllers/cardController");
-const system_controller = require("../controllers/systemController");
-
-router.post("/change_curr", card_controller.change_curr_post);
-
-// ################# Home Collection ####################
-
-// GET request for home
-router.get("/home", card_controller.display_collection_get);
-
-// GET request for home sorted
-router.get("/home/sort", card_controller.display_collection_sorted_get);
-
-// ################# BINDERS ####################
-
-// GET request for Binders view
-router.get("/binders", card_controller.display_binders_get);
-
-// POST request for adding new Binder
-router.post("/binders/add", card_controller.add_binders_post);
-
-// GET request for displaying binder
-router.get("/binders/display/:id", card_controller.display_binder_get);
-
-// POST request for deleting binder
-router.post("/binders/remove", card_controller.delete_binder_post);
-
-// ################# SETS ####################
-
-// GET request for collection by set
-router.get("/sets", card_controller.display_filter_by_set_get);
 
 // ################# ADDING CARDS ####################
 
@@ -53,11 +23,6 @@ router.get("/:id/edit", card_controller.edit_custom_card_get);
 
 // POST request for edit custom card
 router.post("/:id/edit", card_controller.edit_custom_card_post);
-
-// ################# FILTER VIEW ####################
-
-// GET request for filter page
-router.get("/filter", card_controller.display_filter_page_get);
 
 // ################# CARD DETAIL VIEW ####################
 
