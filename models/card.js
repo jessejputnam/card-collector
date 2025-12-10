@@ -6,9 +6,9 @@ const Schema = mongoose.Schema;
 // USER MODEL
 const CardSchema = new Schema(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true }, // id field from TCGPlayer API
     apiId: { type: String }, // id field from external API
-    tcgPlayerId: { type: String }, // id field from TCGPlayer API
+    oldId: { type: String }, // old, deprecated id field from external API
 
     userId: { type: Schema.Types.ObjectId, ref: "User" },
 
