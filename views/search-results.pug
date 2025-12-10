@@ -16,12 +16,15 @@ block content
           
           div.result-container
             div(class=`result-img-container${user_cards.has(card.id) || user_reverse_cards.has(card.id) ? " owned" : ""}`) 
-              img(src=card.images.small, alt=card.name)
+              img(src=card.meta.images.small, alt=card.name)
             div.result-info-container 
               p.result-title= card.name 
               p.result-set= card.set.name 
-              p.result-number= card.number + "/" + card.set.printedTotal
-              p $#{!card.tcgplayer ? " not available" : !prices ? "  not available" : prices.holofoil && prices.holofoil.market ? prices.holofoil.market.toFixed(2) : prices.holofoil && prices.holofoil.mid ? prices.holofoil.mid.toFixed(2) : prices.normal && prices.normal.market ? prices.normal.market.toFixed(2) : prices.normal && prices.normal.mid ? prices.normal.mid.toFixed(2) : prices.unlimitedHolofoil ? prices.unlimitedHolofoil.market.toFixed(2) : prices.unlimited ? prices.unlimited.market.toFixed(2) : prices["1stEdition"] ? prices["1stEdition"].market.toFixed(2) : prices["1stEditionHolofoil"] ? prices["1stEditionHolofoil"].market.toFixed(2) : prices.reverseHolofoil ?  card.tcgplayer.prices.reverseHolofoil.mid.toFixed(2) : "No price available"}
+              if card.set.totalPrint
+                p.result-number= card.set.number + card.set.totalPrint
+              else 
+                p.result-number= card.set.number
+              p $#{!card.value.market ? " not available" : card.value.market.toFixed(2)}
               if !user_cards.has(card.id)
                 form.add-card-form(method="POST" action="/collection/cards/add-card") 
                   input#cardId(type="hidden" name="cardId" required="true" value=card.id)

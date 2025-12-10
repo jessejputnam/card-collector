@@ -144,7 +144,30 @@ exports.edit = (card, req) => {
   card.meta.set.totalPrint = q.set_printedTotal;
 };
 
-exports.convertApiSearch = (card) => {
+/*
+
+prices.market
+prices.variants["Holofoil"]
+prices.variants["Normal"]
+prices.variants["Unlimited Holofoil"]
+prices.variants["Unlimited"]
+prices.variants["1st Edition"]
+prices.variants["1st Edition Holofoil"]
+prices.variants["Reverse Holofoil"]
+
+
+
+- holofoil
+- normal
+- unlimitedHolofoil
+- unlimited
+- 1stEdition
+- 1stEditionHolofoil
+- reverseHolofoil
+
+ */
+
+exports.convertApiSearch = (card, setReleases) => {
   const newCard = {
     apiId: card.id,
     tcgPlayerId: card.tcgPlayerId,
@@ -157,8 +180,7 @@ exports.convertApiSearch = (card) => {
       rarity: {
         type: card.rarity,
         reverseHolo: false
-      },
-      supertype: card.cardType
+      }
     },
 
     pokemon: {
@@ -169,14 +191,23 @@ exports.convertApiSearch = (card) => {
       name: card.setName,
       id: card.setId,
       number: card.cardNumber,
-      totalPrint: card.totalSetNumber
-      // releaseDate: { type: String, required: true }
+      totalPrint: card.totalSetNumber,
+      releaseDate: setReleases ? setReleases[card.setId] : null
     },
 
     value: {
       market: card.prices.market,
       priceType: card.primaryPrinting
-    }
+    },
+
+    hasReverseHolo: card.prices?.variants?.["Reverse Holofoil"] ? true : false,
+    has1stEdition:
+      card.prices?.variants?.["1st Edition Holofoil"] ||
+      card.prices?.variants?.["1st Edition"]
+        ? true
+        : false,
+
+    priceVariants: card.prices?.variants
   };
 
   return newCard;

@@ -19,8 +19,11 @@ exports.getCardsBySearch = async (query, setId = null) => {
     ? `search=${query}&setId=${setId}`
     : `search=${query}`;
 
-  const res = await fetch(`${BASE_URL}/cards?${queryParams}&limit=1`, options);
-  if (!res.ok) throw new Error("Failed to fetch cards");
+  const res = await fetch(`${BASE_URL}/cards?${queryParams}&limit=3`, options);
+  if (!res.ok)
+    throw new Error(
+      `Failed to fetch cards: [STATUS ${res.status}] ${res.statusText}`
+    );
   return res.json();
 };
 
