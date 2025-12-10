@@ -34,34 +34,25 @@ exports.search_get = async (req, res, next) => {
 // Display results on GET
 exports.search_results_get = async (req, res, next) => {
   const userId = req.user._id;
-  const curr = req.user.curr;
+  const curr = req.user.curr; // currency
   const pokeName = req.query.pokeName.trim().toLowerCase();
   const pokeSet = req.query.pokeSet.trim().toLowerCase() || null;
 
-  // If pokeSet, search only within the set
-  // const searchQuery = `name:"*${pokeName}*"${
-  //   !pokeSet.length ? "" : " set.id:" + pokeSet
-  // }`;
-
-  // const [searchErr, results] = await handle(
-  //   pokemon.card.where({ q: searchQuery, orderBy: "-set.releaseDate" })
-  // );
-  // if (searchErr) return next(searchErr);
-
-  // ----------------------------------
-
+  // API prices search
   const [searchErr, results] = await handle(
     apiCall.getCardsBySearch(pokeName, pokeSet)
   );
   if (searchErr) return next(searchErr);
 
   const data = results.data || [];
-  console.log(JSON.stringify(data, null, 2));
+
+  // Get card sets from DB
   const [setsErr, sets] = await handle(
     CardSet.find({}, "name id releaseDate").exec()
   );
   if (setsErr) return next(setsErr);
 
+  // Map set release dates for sorting
   const setReleases = {};
   sets.forEach((set) => (setReleases[set.id] = set.releaseDate));
 
@@ -75,23 +66,7 @@ exports.search_results_get = async (req, res, next) => {
     return dateB - dateA;
   });
 
-  // ----------------------------------
-
-  // console.log(results);
-  // console.log(results.data[0].prices);
-  // return res.redirect("/search");
-  // // Add reverse holo && 1st edition check to cards
-  // for (let i = 0; i < results.data.length; i++) {
-  //   console.log(results.data[i].tcgplayer.prices);
-  //   const prices = results.data[i].tcgplayer?.prices;
-  //   results.data[i].hasReverseHolo =
-  //     prices && prices.reverseHolofoil ? true : false;
-  //   results.data[i].has1stEdition =
-  //     prices && (prices["1stEditionHolo"] || prices["1stEdition"])
-  //       ? true
-  //       : false;
-  // }
-
+  // Get user's existing cards
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
 

@@ -3,11 +3,11 @@
 const express = require("express");
 const router = express.Router();
 
-const card_controller = require("../controllers/cardController");
+const set_controller = require("../controllers/setController");
 
 // ################# SETS ####################
 
 // GET request for collection by set
-router.get("/", card_controller.display_filter_by_set_get);
+router.get("/", set_controller.display_filter_by_set_get);
 
 module.exports = router;
