@@ -96,6 +96,7 @@ app.use("/collection/cards", authCheckFalse, cardRouter);
 app.use("/collection/binders", authCheckFalse, binderRouter);
 app.use("/collection/sets", authCheckFalse, setRouter);
 app.use("/search", authCheckFalse, searchRouter);
+app.use("/sets", authCheckFalse, setRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

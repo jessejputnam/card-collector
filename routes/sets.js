@@ -8,6 +8,6 @@ const set_controller = require("../controllers/setController");
 // ################# SETS ####################
 
 // GET request for collection by set
-router.get("/", set_controller.display_filter_by_set_get);
+router.get("/", set_controller.display_sets_get);
 
 module.exports = router;
