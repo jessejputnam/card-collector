@@ -1,0 +1,25 @@
+extends layout 
+
+block content 
+  h1= title 
+
+  div 
+    each set in sets 
+        p= `${set.name} (${set.id}) - Released on ${set.releaseDate.toDateString()}` 
+        form.form-wrapper(method="POST" action=`/collection/cards/${card._id}/update-card-set`) 
+          input#setId(type="hidden" name="setId" required="true" value=set.id)
+          button.btn.btn-secondary(type="submit" style="margin-bottom:15px") Update to this Set
+
+//-   form.form-wrapper(method="GET" action="/search/results") 
+    //- div.form-control 
+    //-   label(for="pokeName") Name:
+    //-   input#pokeName(type="text" name="pokeName" autofocus required)
+    //- div.form-control 
+    //-   label(for="pokeSet") Set: 
+    //-   select.select#pokeSet(name="pokeSet") 
+    //-     option(value="" default) 
+    //-     each set in sets 
+    //-       option(value=set.tcgPlayerId)= set.name
+    //- button.btn.btn-primary(type="submit" style="padding:15px;margin-top:15px") Search
+
+    //- a(href="/collection/cards/add-custom-card" style="margin-top:10px") Add Card manually

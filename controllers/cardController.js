@@ -100,6 +100,7 @@ exports.update_price_history_post = async (req, res, next) => {
   return res.redirect(`/collection/${card._id}?update=${msg}`);
 };
 
+// Handle delete card on GET
 exports.delete_card_get = async (req, res, next) => {
   const cardId = req.params.id;
   const curr = req.user.curr;
@@ -116,6 +117,7 @@ exports.delete_card_get = async (req, res, next) => {
   });
 };
 
+// Handle delete card on POST
 exports.delete_card_post = async (req, res, next) => {
   const cardId = req.body.cardId;
   const [errDelCard, delCard] = await handle(
@@ -171,6 +173,43 @@ exports.edit_card_count = async (req, res, next) => {
   if (!card) return next(errs.cardNotFound());
 
   return res.redirect(`/collection/${cardId}?update=count`);
+};
+
+// Handle update card set on GET
+exports.update_card_set_get = async (req, res, next) => {
+  const cardId = req.params.id;
+  const curr = req.user.curr;
+
+  const [setsErr, sets] = await handle(
+    CardSet.find({}, "name id releaseDate").sort({ releaseDate: -1 }).exec()
+  );
+  if (setsErr) return next(setsErr);
+
+  const [errCard, card] = await handle(Card.findById(cardId).exec());
+  if (errCard) return next(errCard);
+  if (!card) return next(errs.cardNotFound());
+
+  return res.render("update-card-set", {
+    title: `Update Card Set for ${card.pokemon.name}`,
+    card,
+    curr
+  });
+};
+
+// Handle update card ID on GET
+exports.update_card_id_get = async (req, res, next) => {
+  const cardId = req.params.id;
+  const curr = req.user.curr;
+
+  const [errCard, card] = await handle(Card.findById(cardId).exec());
+  if (errCard) return next(errCard);
+  if (!card) return next(errs.cardNotFound());
+
+  return res.render("update-card-id", {
+    title: `Update Card ID for ${card.pokemon.name}`,
+    card,
+    curr
+  });
 };
 
 // ################## Add Cards ###################

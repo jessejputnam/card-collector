@@ -6,6 +6,8 @@ const handle = require("../helpers/errorHandler");
 const sort = require("../helpers/sort");
 const makeCSV = require("../helpers/makeCSV");
 const getConversionRate = require("../helpers/getConversionRate");
+const filterQueries = require("../helpers/filterQueries");
+const { sortCardQuery } = require("../helpers/sort");
 
 exports.change_curr_post = async (req, res, next) => {
   const userId = req.user._id;
@@ -28,18 +30,10 @@ exports.display_collection_get = async (req, res, next) => {
   const userId = req.user._id;
   const curr = req.user.curr;
 
-  if (!req.user.binders) {
-    const newBinders = ["elite", "prize"];
-    const [errUser, user] = await handle(
-      User.findByIdAndUpdate(userId, { binders: newBinders })
-    );
-    if (errUser) return next(errUser);
-  }
-
   // Get cards for display
   const sortAsc = req.query.asc;
   const sortType = req.query.by;
-  const asc = sortAsc === "true" ? true : false;
+  const isAsc = sortAsc === "true" ? true : false;
 
   const [errCards, cards] = await handle(Card.find({ userId }).exec());
   if (errCards) return next(errCards);
@@ -53,87 +47,19 @@ exports.display_collection_get = async (req, res, next) => {
       0
     ) * currConvert;
 
-  let card_list;
+  sortCardQuery(cards, sortType, isAsc);
 
-  if (!sortType || sortType === "value")
-    card_list = !asc
-      ? cards.sort(sort.byValueDesc)
-      : cards.sort(sort.byValueAsc);
-  else if (sortType === "rarity")
-    card_list = !asc
-      ? cards.sort(sort.byRarityDesc)
-      : cards.sort(sort.byRarityAsc);
-  else if (sortType === "name")
-    card_list = !asc ? cards.sort(sort.byNameDesc) : cards.sort(sort.byNameAsc);
-  else if (sortType === "set")
-    card_list = !asc ? cards.sort(sort.bySetDesc) : cards.sort(sort.bySetAsc);
-  else if (sortType === "supertype")
-    card_list = !asc
-      ? cards.sort(sort.bySupertypeDesc)
-      : cards.sort(sort.bySupertypeAsc);
-  else return redirect("/collection/home");
-
-  const csv = makeCSV(card_list);
+  const csv = makeCSV(cards);
 
   return res.render("home", {
     title: "My Collection",
-    card_list,
+    card_list: cards,
     csv,
     total,
     curr_convert: currConvert,
     curr,
     by_field: sortType,
     asc_field: sortAsc
-  });
-};
-
-// Handle display collection sorted on GET
-exports.display_collection_sorted_get = async (req, res, next) => {
-  const ascStr = req.query.asc;
-  const userId = req.user._id;
-  const curr = req.user.curr;
-  const sortBy = req.query.by;
-  const sortAsc = ascStr === "true" ? true : false;
-
-  const [errCards, cards] = await handle(Card.find({ userId: userId }));
-  if (errCards) return next(errCards);
-
-  const [errConvert, currConvert] = await getConversionRate(curr);
-  if (errConvert) return next(errConvert);
-
-  const total =
-    cards.reduce((acc, next) => acc + next.value.market, 0) * currConvert;
-
-  let sorted;
-
-  if (sortBy === "value")
-    sorted = !sortAsc
-      ? cards.sort(sort.byValueDesc)
-      : cards.sort(sort.byValueAsc);
-  else if (sortBy === "rarity")
-    sorted = !sortAsc
-      ? cards.sort(sort.byRarityDesc)
-      : cards.sort(sort.byRarityAsc);
-  else if (sortBy === "name")
-    sorted = !sortAsc
-      ? cards.sort(sort.byNameDesc)
-      : cards.sort(sort.byNameAsc);
-  else if (sortBy === "set")
-    sorted = !sortAsc ? cards.sort(sort.bySetDesc) : cards.sort(sort.bySetAsc);
-  else if (sortBy === "supertype")
-    sorted = !sortAsc
-      ? cards.sort(sort.bySupertypeDesc)
-      : cards.sort(sort.bySupertypeAsc);
-  else return redirect("/collection/home");
-
-  return res.render("home-sort", {
-    title: "My Collection",
-    card_list: sorted,
-    total: total,
-    by_field: sortBy,
-    asc_field: ascStr,
-    curr_convert: currConvert,
-    curr
   });
 };
 
@@ -157,9 +83,7 @@ exports.display_filter_page_get = async (req, res, next) => {
     setsSet.add(
       `${card.meta.set.releaseDate}||${card.meta.set.id}||${card.meta.set.name}`
     );
-
     card.meta.subtypes.forEach((subtype) => subtypesSet.add(subtype));
-
     raritiesSet.add(card.meta.rarity.type);
   });
 
@@ -192,85 +116,14 @@ exports.display_filter_page_get = async (req, res, next) => {
     };
 
     // Run through queries
-    const byReverse = !savedQuery.reverseholo
-      ? collection
-      : collection.filter((card) => card.meta.rarity.reverseHolo);
-
-    const byVal = byReverse.filter((card) => {
-      if (savedQuery.compareValue === ">=")
-        return card.value.market >= Number(savedQuery.value);
-      else return card.value.market <= Number(savedQuery.value);
-    });
-
-    const byName = byVal.filter((card) => {
-      return card.pokemon.name
-        .toLowerCase()
-        .includes(savedQuery.name.toLowerCase());
-    });
-
-    const byRare = !savedQuery.rarities
-      ? byName
-      : byName.filter((card) => {
-          if (!Array.isArray(savedQuery.rarities))
-            savedQuery.rarities = [savedQuery.rarities];
-          return savedQuery.rarities.includes(card.meta.rarity.type);
-        });
-
-    const bySupertypes = !savedQuery.supertypes
-      ? byRare
-      : byRare.filter((card) => {
-          if (!Array.isArray(savedQuery.supertypes))
-            savedQuery.supertypes = [savedQuery.supertypes];
-          return savedQuery.supertypes.includes(card.meta.supertype);
-        });
-
-    const bySubtypes = !savedQuery.subtypes
-      ? bySupertypes
-      : bySupertypes.filter((card) => {
-          let check = 0;
-          if (!Array.isArray(savedQuery.subtypes))
-            savedQuery.subtypes = [savedQuery.subtypes];
-
-          card.meta.subtypes.forEach((subtype) => {
-            if (savedQuery.subtypes.includes(subtype)) check++;
-          });
-          return check > 0;
-        });
-
-    const bySets = !savedQuery.sets
-      ? bySubtypes
-      : bySubtypes.filter((card) => {
-          if (!Array.isArray(savedQuery.sets))
-            savedQuery.sets = [savedQuery.sets];
-          return savedQuery.sets.includes(card.meta.set.id);
-        });
+    const bySets = filterQueries(collection, savedQuery);
 
     const sortBy = savedQuery.sortby;
     const sortAsc = savedQuery.asc;
 
-    let cards;
+    sortCardQuery(bySets, sortBy, sortAsc);
 
-    if (sortBy === "value")
-      cards = !sortAsc
-        ? bySets.sort(sort.byValueDesc)
-        : (cards = bySets.sort(sort.byValueAsc));
-    else if (sortBy === "rarity")
-      cards = !sortAsc
-        ? bySets.sort(sort.byRarityDesc)
-        : (cards = bySets.sort(sort.byRarityAsc));
-    else if (sortBy === "name")
-      cards = !sortAsc
-        ? bySets.sort(sort.byNameDesc)
-        : bySets.sort(sort.byNameAsc);
-    else if (sortBy === "set")
-      cards = !sortAsc
-        ? bySets.sort(sort.bySetDesc)
-        : (cards = bySets.sort(sort.bySetAsc));
-    else if (sortBy === "supertype")
-      cards = !sortAsc
-        ? bySets.sort(sort.bySupertypeDesc)
-        : (cards = bySets.sort(sort.bySupertypeAsc));
-    results = cards;
+    results = bySets;
   }
 
   const csv = makeCSV(results);
@@ -291,4 +144,62 @@ exports.display_filter_page_get = async (req, res, next) => {
   };
 
   return res.render("filter-collection", page_data);
+};
+
+// Handle display cards by set on GET
+exports.display_filter_by_set_get = async (req, res, next) => {
+  const userId = req.user._id;
+  const curr = req.user.curr;
+
+  const [errCards, cards] = await handle(Card.find({ userId: userId }));
+  if (errCards) return next(errCards);
+
+  // Find which sets exist in collection
+  const setOrder = {};
+  cards.forEach((card) => {
+    const setId = card.meta.set.id;
+    if (!(setId in setOrder))
+      setOrder[setId] = [card.meta.set.name, card.meta.set.releaseDate];
+  });
+
+  // Sort sets by date
+  const setArr = [];
+  for (const set in setOrder) setArr.push([set, setOrder[set]]);
+
+  setArr.sort(sort.byDateDesc);
+  for (let i = 0; i < setArr.length; i++) setOrder[setArr[i][0]] = i;
+
+  // Create array with unique empty arrays
+  const orderedSets = Array.from(Array(setArr.length), () => []);
+
+  // Add cards to sets in array
+  cards.forEach((card) => {
+    const idx = setArr.findIndex((s) => s[0] === card.meta.set.id);
+    orderedSets[idx].push(card);
+  });
+
+  // Object holding both sets and CSV data
+  const list_sets = [];
+
+  // Sort cards within sets
+  for (const s of orderedSets) {
+    s.sort(sort.byCardNumber);
+    const csv = makeCSV(s);
+    const set = {
+      csv: csv,
+      cards: s
+    };
+
+    list_sets.push(set);
+  }
+
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
+
+  return res.render("sets-collection", {
+    title: "Set Collection",
+    list_sets,
+    curr_convert: currConvert,
+    curr
+  });
 };

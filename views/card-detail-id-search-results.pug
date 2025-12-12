@@ -20,14 +20,9 @@ block content
             div.result-info-container 
               p.result-title= card.name 
               p.result-set= card.set.name 
-              if card.set.totalPrint
-                p.result-number= card.set.number + card.set.totalPrint
-              else 
-                p.result-number= card.set.number
+              p.result-number= card.set.number
               p $#{!card.value.market ? " not available" : card.value.market.toFixed(2)}
               if !user_cards.has(card.id)
-                form.add-card-form(method="POST" action="/collection/cards/update-card-id") 
+                form.add-card-form(method="POST" action=`/collection/cards/${card._id}/update-card-id`) 
                   input#cardId(type="hidden" name="cardId" required="true" value=card.id)
-                  input#reverseHoloCheck(type="hidden" name="reverseHoloCheck", value="false")
-                  input#firstEdCheck(type="hidden" name="firstEdCheck", value="false")
-                  button.btn.btn-secondary(type="submit") Add Card
+                  button.btn.btn-secondary(type="submit") Update Card ID
