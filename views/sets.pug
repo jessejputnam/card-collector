@@ -1,16 +1,13 @@
 extends layout 
 
 block styles 
-  link(rel="stylesheet", href="/stylesheets/home.css")
+  link(rel="stylesheet", href="/stylesheets/card-set.css")
 
 block scripts 
   script(src="/javascripts/csv.js" defer)
 
 block content 
-  div.page-wrapper
-    header.home-header 
-      div.title-container 
-        h1= title + " " 
+    h1= title + " " 
 
 
     div.collection-container 
@@ -18,9 +15,11 @@ block content
         p No sets found
 
       else 
-        each set in setList
-          div.collection-item 
-            div.collection-item-details
-                div
-                  p.collection-card-name= set.name      
+        div.results-wrapper 
+            each set in setList
+                div.result-container
+                    div.result-info-container 
+                        a(href=`/sets/${set.id}`)= set.name
+                    div
+                        img(src=`${set.symbolUrl || "/images/pokeball.png"}` alt=set.name style="height:30px")
 

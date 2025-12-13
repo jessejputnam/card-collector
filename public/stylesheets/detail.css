@@ -37,7 +37,7 @@
   gap: 20px;
 }
 
-.title > a {
+.title>a {
   margin-bottom: 13px;
   cursor: default;
 }
@@ -57,7 +57,7 @@
   justify-content: center;
 }
 
-.detail-img-container > img {
+.detail-img-container>img {
   height: 600px;
   max-height: 600px;
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.672);
@@ -65,8 +65,16 @@
   width: 430.08px;
 }
 
+.set-detail-img-container>img {
+  height: 380px;
+  max-height: 380px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.672);
+  border-radius: 25px;
+  width: 430.08px;
+}
+
 @media only screen and (max-width: 485px) {
-  .detail-img-container > img {
+  .detail-img-container>img {
     height: auto;
     width: 90%;
     min-width: 255px;
@@ -79,16 +87,16 @@
   row-gap: 15px;
   width: clamp(250px, 90%, 400px);
 }
-  
-.detail-info-container > div {
+
+.detail-info-container>div {
   background-color: rgba(255, 255, 255, 0.782);
   backdrop-filter: blur(4px);
   padding: 10px;
   border-radius: 10px;
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.546);
 }
-  
-.info-set-container > div {
+
+.info-set-container>div {
   display: flex;
   column-gap: 15px;
   align-items: flex-end;
@@ -96,7 +104,7 @@
   margin-bottom: 10px;
 }
 
-.info-set-container > div > div {
+.info-set-container>div>div {
   display: flex;
   flex-direction: column;
   row-gap: 2px;
@@ -114,7 +122,7 @@
   margin-bottom: 5px;
 }
 
-.current-price-container > h2 {
+.current-price-container>h2 {
   font-family: "Rajdhani", Georgia, "Times New Roman", Times, serif;
 }
 
@@ -164,7 +172,7 @@
   background: white;
 }
 
-.price-history-container > ul > li {
+.price-history-container>ul>li {
   letter-spacing: 0.1ch;
 }
 
@@ -177,8 +185,8 @@
   align-items: center;
 }
 
-.card-edits-container > div,
-.card-edits-container > form {
+.card-edits-container>div,
+.card-edits-container>form {
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.709);
   padding: 10px;
   border-radius: 10px;
@@ -199,8 +207,8 @@
   row-gap: 10px;
 }
 
-.card-edit-form > input {
-  text-align:center;
+.card-edit-form>input {
+  text-align: center;
   padding: 5px 10px;
   width: 50%;
 }
@@ -210,7 +218,7 @@
   column-gap: 10px;
 }
 
-.reverse-holo-container > select {
+.reverse-holo-container>select {
   padding: 1px;
 }
 
@@ -228,14 +236,14 @@
   margin: 0 auto;
 }
 
-.card-edit-rarity-form > input {
+.card-edit-rarity-form>input {
   text-align: center;
   padding: 5px 10px;
   width: 50%;
 }
 
-.card-edit-rarity-form > input::-webkit-inner-spin-button,
-.card-edit-rarity-form > input::-webkit-outer-spin-button {
+.card-edit-rarity-form>input::-webkit-inner-spin-button,
+.card-edit-rarity-form>input::-webkit-outer-spin-button {
   opacity: 1;
 }
 
@@ -263,7 +271,7 @@ select#binder {
 
   transition: background-color 0.5s, color 0.5s;
 }
-  
+
 @media (hover: hover) {
   .delete-card:hover {
     background-color: rgba(220, 0, 0, 0.677);
@@ -274,7 +282,7 @@ select#binder {
     color: white;
   }
 }
-  
+
 @media only screen and (max-width: 1150px) {
   .card-detail-container {
     flex-direction: column;
@@ -287,8 +295,9 @@ select#binder {
     width: 80%;
     margin: 0 auto;
   }
-  .card-edits-container > div,
-  .card-edits-container > form {
+
+  .card-edits-container>div,
+  .card-edits-container>form {
     width: 100%;
     max-width: none;
   }
@@ -310,7 +319,7 @@ select#binder {
   z-index: 1000;
 }
 
-.auto-update-container > .close-btn {
+.auto-update-container>.close-btn {
   position: absolute;
   width: 50px;
   top: 15px;
@@ -319,13 +328,13 @@ select#binder {
   text-align: center;
 }
 
-.auto-update-container > .close-btn > p {
+.auto-update-container>.close-btn>p {
   color: transparent;
   transition: color .5s;
 }
 
 @media(hover:hover) {
-  .auto-update-container > .close-btn:hover > p {
+  .auto-update-container>.close-btn:hover>p {
     color: rgb(96, 96, 96);
   }
 }

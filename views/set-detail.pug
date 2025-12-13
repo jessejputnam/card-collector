@@ -1,0 +1,37 @@
+extends layout 
+
+block styles  
+  link(rel="stylesheet" href="/stylesheets/detail.css")
+
+block content 
+  if msg
+    div#msg.msg-container
+      p= msg
+
+  div.page-wrapper
+    a(href=`/sets`) Back to sets
+    div.title 
+      h1= title
+
+    div.card-detail-container 
+      div.set-detail-img-container 
+        img(src=`${set.imageUrl || "/images/missingno.png"}` alt=set.name onerror="this.onerror=null;this.src='/images/pokeball.png';")
+      div.detail-info-container
+        div.info-card-container
+          h2 #{set.name}
+          em= set.series
+        div.info-set-container 
+          div 
+            img#symbolImg(src=`${set.symbolUrl || "/images/pokeball.png"}`, alt=set.name height="40px")
+            div
+              p Released: #{set.releaseDate.toLocaleDateString()} 
+              p.small-text= `${set.cardCount} cards`
+              if set.priceGuideUrl
+                p 
+                  a(href=set.priceGuideUrl target="_blank") Price Guide
+        if isAdmin && !set.symbolUrl
+            div
+                form.form-wrapper(action=`/sets/${set.id}` method="POST")
+                  label(for="symbolUrl") Set Symbol Url:
+                  input#symbolUrl(type="text" name="symbolUrl" required style="height:30px; padding:5px" )
+                  button.btn(type="submit") Update
