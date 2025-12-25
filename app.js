@@ -16,7 +16,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 // const favicon = require("serve-favicon");
 
-const authCheckFalse = require("./helpers/authCheckFalse");
+const { authCheckFalse } = require("./helpers/authCheck");
 
 // Database Connection
 const mongoDB = process.env.MONGODB_URI;

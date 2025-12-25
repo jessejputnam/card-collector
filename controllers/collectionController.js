@@ -6,7 +6,7 @@ const handle = require("../helpers/errorHandler");
 const sort = require("../helpers/sort");
 const makeCSV = require("../helpers/makeCSV");
 const getConversionRate = require("../helpers/getConversionRate");
-const filterQueries = require("../helpers/filterQueries");
+const filterQueries = require("../helpers/filtration/filterQueries");
 const { sortCardQuery } = require("../helpers/sort");
 
 exports.change_curr_post = async (req, res, next) => {

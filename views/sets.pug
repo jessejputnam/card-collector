@@ -16,10 +16,12 @@ block content
 
       else 
         div.results-wrapper 
-            each set in setList
-                div.result-container
-                    div.result-info-container 
-                        a(href=`/sets/${set.id}`)= set.name
-                    div
-                        img(src=`${set.symbolUrl || "/images/pokeball.png"}` alt=set.name style="height:30px")
+          each set in setList
+            a.not-a(href=`/sets/${set.id}`)
+              div.result-container
+                  p= set.name
+                  div.result-info-container
+                      p= set.releaseDate.toLocaleDateString()
+                      img(src=`${set.symbolUrl || "/images/pokeball.png"}` alt=set.name style="height:30px")
+                  //- div
 
