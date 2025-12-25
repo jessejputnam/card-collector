@@ -4,13 +4,13 @@ const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 
 const Card = require("../models/card");
-const handle = require("../helpers/errorHandler");
-const errs = require("../helpers/errs");
-const updateMsgs = require("../helpers/updateMsgs");
-const buildCard = require("../helpers/buildCard");
-const getPriceType = require("../helpers/getPriceType");
-const getRarityRating = require("../helpers/getRarityRating");
-const getConversionRate = require("../helpers/getConversionRate");
+const handle = require("../utils/errorHandler");
+const errs = require("../utils/errs");
+const updateMsgs = require("../utils/updateMsgs");
+const buildCard = require("../utils/buildCard");
+const getPriceType = require("../utils/getPriceType");
+const getRarityRating = require("../utils/getRarityRating");
+const getConversionRate = require("../utils/getConversionRate");
 
 // Handle display card detail on GET
 exports.display_card_get = async (req, res, next) => {

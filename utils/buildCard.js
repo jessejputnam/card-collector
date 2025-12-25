@@ -1,5 +1,5 @@
 const Card = require("../models/card");
-const getRarityRating = require("../helpers/getRarityRating");
+const getRarityRating = require("../utils/getRarityRating");
 
 /**
  * Build TCG card from search

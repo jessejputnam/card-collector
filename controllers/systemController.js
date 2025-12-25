@@ -1,7 +1,7 @@
 const Card = require("../models/card");
 const User = require("../models/user");
 const Set = require("../models/set");
-const handle = require("../helpers/errorHandler");
+const handle = require("../utils/errorHandler");
 const apiCall = require("../api/pokePriceApi");
 const { stack } = require("../routes/cards");
 

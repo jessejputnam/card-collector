@@ -1,5 +1,5 @@
 const CardSet = require("../models/set");
-const handle = require("../helpers/errorHandler");
+const handle = require("../utils/errorHandler");
 
 // Handle display cards by set on GET
 exports.display_sets_get = async (req, res, next) => {

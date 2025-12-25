@@ -86,10 +86,16 @@ block content
             input(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
             button.btn.secondary-btn(type="submit") Update Price
         else 
+          if !card.oldId
           form.card-edit-form(method="POST" action=`/collection/cards/${card._id}/update-value`)
             input(type="hidden" name="cardId" required="true" value=card.id)
             input(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
-            button.btn.secondary-btn(type="submit") Update Price
+            if !card.oldId
+              button.btn.secondary-btn(type="submit") Price API Update
+            else
+              button.btn.secondary-btn(type="submit") Update Price
+          p(style="font-size:.7rem;font-style:italic") Update needed for Price API
+            
 
       form.card-edit-form(method="POST" action=`/collection/cards/${card._id}/select-binder`) 
         input(type="hidden" name="objId" required='true' value=card._id)

@@ -2,9 +2,9 @@
 
 const Card = require("../models/card");
 const User = require("../models/user");
-const handle = require("../helpers/errorHandler");
-const sort = require("../helpers/sort");
-const getConversionRate = require("../helpers/getConversionRate");
+const handle = require("../utils/errorHandler");
+const sort = require("../utils/sort");
+const getConversionRate = require("../utils/getConversionRate");
 
 // Handle display binders on GET
 exports.display_binders_get = async (req, res, next) => {

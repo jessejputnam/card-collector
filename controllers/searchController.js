@@ -1,6 +1,6 @@
 "use strict";
 
-const handle = require("../helpers/errorHandler.js");
+const handle = require("../utils/errorHandler.js");
 
 const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
@@ -10,8 +10,8 @@ const apiCall = require("../api/pokePriceApi.js");
 const CardSet = require("../models/set.js");
 const Card = require("../models/card.js");
 
-const getConversionRate = require("../helpers/getConversionRate.js");
-const { convertApiSearch } = require("../helpers/buildCard.js");
+const getConversionRate = require("../utils/getConversionRate.js");
+const { convertApiSearch } = require("../utils/buildCard.js");
 
 // Display search form on GET
 exports.search_get = async (req, res, next) => {

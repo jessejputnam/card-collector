@@ -5,7 +5,7 @@ const { body, validationResult } = require("express-validator");
 
 const User = require("../models/user");
 
-const indexImages = require("../helpers/indexImages");
+const indexImages = require("../utils/indexImages");
 
 // ########################################################
 // ########################################################

@@ -5,7 +5,7 @@ const router = express.Router();
 
 const auth_controller = require("../controllers/authController");
 
-const { authCheckTrue } = require("../helpers/authCheck");
+const { authCheckTrue } = require("../utils/authCheck");
 
 router.get("/", authCheckTrue, auth_controller.index_get);
 

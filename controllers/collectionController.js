@@ -2,12 +2,12 @@
 
 const Card = require("../models/card");
 const User = require("../models/user");
-const handle = require("../helpers/errorHandler");
-const sort = require("../helpers/sort");
-const makeCSV = require("../helpers/makeCSV");
-const getConversionRate = require("../helpers/getConversionRate");
-const filterQueries = require("../helpers/filtration/filterQueries");
-const { sortCardQuery } = require("../helpers/sort");
+const handle = require("../utils/errorHandler");
+const sort = require("../utils/sort");
+const makeCSV = require("../utils/makeCSV");
+const getConversionRate = require("../utils/getConversionRate");
+const filterQueries = require("../utils/filtration/filterQueries");
+const { sortCardQuery } = require("../utils/sort");
 
 exports.change_curr_post = async (req, res, next) => {
   const userId = req.user._id;
