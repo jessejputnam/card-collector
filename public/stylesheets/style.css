@@ -47,7 +47,12 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: "Bad Script", Georgia, "Times New Roman", Times, serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  margin-bottom: 5px;
+}
+
+h1 {
+  margin-bottom: 15px;
 }
 
 @media only screen and (max-width: 485px) {
@@ -152,7 +157,7 @@ hr {
   row-gap: 7px;
 }
 
-.form-control > input,
+.form-control>input,
 .form-control select,
 .form-control textarea {
   padding: 7px 10px;
@@ -206,7 +211,7 @@ hr {
   margin-bottom: 30px;
 }
 
-.nav-bar > ul {
+.nav-bar>ul {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
@@ -223,7 +228,7 @@ hr {
   }
 }
 
-.nav-bar > ul > li > ul {
+.nav-bar>ul>li>ul {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
@@ -240,6 +245,7 @@ hr {
 }
 
 @media (hover: hover) {
+
   .topbar p:hover,
   .topbar a:hover {
     text-decoration-color: rgba(228, 228, 228, 0.742);
@@ -249,7 +255,7 @@ hr {
 }
 
 @media only screen and (max-width: 800px) {
-  .topbar > .nav-img {
+  .topbar>.nav-img {
     margin: 0;
   }
 
@@ -265,7 +271,7 @@ hr {
     padding: 10px 10px 10px 0;
   }
 
-  .topbar > nav {
+  .topbar>nav {
     display: flex;
     column-gap: 15px;
     align-items: center;
@@ -289,7 +295,7 @@ hr {
     border-bottom-left-radius: 10px;
   }
 
-  .collection-menu > ul {
+  .collection-menu>ul {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -298,7 +304,7 @@ hr {
     gap: 10px;
   }
 
-  .collection-menu > ul > li > a {
+  .collection-menu>ul>li>a {
     color: rgba(255, 255, 255, 0.597);
     font-size: 1.2rem;
     letter-spacing: .3ch;
