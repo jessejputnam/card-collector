@@ -57,9 +57,9 @@ router.get("/:id/update-card-id", card_controller.update_card_id_get);
 // router.post("/:id/update-card-id", card_controller.update_card_id_post);
 
 // GET request for update card set
-router.get("/:id/update-card-set", card_controller.update_card_set_get);
+// router.get("/:id/update-card-set", card_controller.update_card_set_get);
 
 // POST request for update card set
-// router.post("/:id/update-card-set", card_controller.update_card_set_post);
+router.post("/:id/update-card-set", card_controller.update_card_set_post);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 "use strict";
 
-const Card = require("../models/card");
+// const Card = require("../models/card");
+const CardRepo = require("../repositories/cardRepo");
 const User = require("../models/user");
 const handle = require("../utils/errorHandler");
 const sort = require("../utils/sort");
@@ -42,9 +43,8 @@ exports.delete_binder_post = async (req, res, next) => {
   );
   if (errUser) return next(errUser);
 
-  const [errCards, cards] = await handle(
-    Card.updateMany({ userId, binder }, { binder: null })
-  );
+  // handle(Card.updateMany({ userId, binder }, { binder: null }))
+  const [errCards, cards] = await CardRepo.removeDeletedBinder(userId, binder);
   if (errCards) return next(errCards);
 
   return res.redirect("/collection/binders");
@@ -56,9 +56,10 @@ exports.display_binder_get = async (req, res, next) => {
   const binder = req.params.id;
   const curr = req.user.curr;
 
-  const [errCards, cards] = await handle(
-    Card.find({ userId: userId, binder: binder }).exec()
-  );
+  const [errCards, cards] = await CardRepo.getBinderCards(userId, binder);
+  // const [errCards, cards] = await handle(
+  //   Card.find({ userId: userId, binder: binder }).exec()
+  // );
   if (errCards) return next(errCards);
 
   const [errConvert, currConvert] = await getConversionRate(curr);

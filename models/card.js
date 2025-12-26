@@ -18,6 +18,8 @@ const CardSchema = new Schema(
       type: String
     },
 
+    setId: { type: String },
+
     meta: {
       images: {
         small: { type: String, required: true },
@@ -29,19 +31,19 @@ const CardSchema = new Schema(
         grade: { type: Number, required: true }
       },
       supertype: { type: String, required: true },
+      stage: { type: String },
       subtypes: [{ type: String }],
-      setId: { type: String }, // set id from external API,
       setNumber: { type: String },
+      // DEPRECATED FIELDS
       set: {
-        // DEPRECATED FIELDS
         symbol: String,
         logo: String,
-        name: { type: String, required: true },
+        name: { type: String },
         id: { type: String, default: null },
         series: { type: String },
-        number: { type: String, required: true },
-        totalPrint: { type: Number, required: true },
-        releaseDate: { type: String, required: true }
+        number: { type: String },
+        totalPrint: { type: Number },
+        releaseDate: { type: String }
       }
     },
 

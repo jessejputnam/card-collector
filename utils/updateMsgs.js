@@ -7,7 +7,8 @@ const updateMsgs = {
   elite: "Card has been added to elite binder",
   none: "Card has been removed from binder",
   rarity: "Card rarity has been updated",
-  count: "Card count has been updated"
-}
+  count: "Card count has been updated",
+  set: "Card set has been updated"
+};
 
 module.exports = updateMsgs;

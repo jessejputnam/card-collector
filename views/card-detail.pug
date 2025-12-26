@@ -7,7 +7,9 @@ block scripts
   script(type="module" src="/javascripts/scriptDetail.js" defer)
 
 block content 
+  - const priceUpdateMsg = (card) => `This will change your price update to ${!card.value.maualUpdate ? "manual. While manual, you will need to input the price yourself to update" : "auto. While auto, price updates will fetch the latest US market price from TCG Player."}`
   if msg
+
     div#msg.msg-container
       p= msg
 
@@ -15,14 +17,14 @@ block content
     div#close-btn.close-btn ❌ 
       p close
     h3 Change Price Update Method
-    p= `This will change your price update to ${!card.value.maualUpdate ? "manual. While manual, you will need to input the price yourself to update" : "auto. While auto, price updates will fetch the latest US market price from TCG Player."}`
+    p= priceUpdateMsg(card)
     form.auto-update-form-form(method="POST" action=`/collection/cards/${card._id}/change-update-value`)
       input(type="hidden" name="cardId" required="true" value=card._id)
       input(type="hidden" name="isManual" required="true" value=`${!card.value.manualUpdate}` )
       button.btn.btn-primary(type="submit")= `Change to ${card.value.manualUpdate ? "auto" : "manual"}`
 
   div.page-wrapper
-    a(href=`/collection/sets#${card.meta.set.id}`) Back to sets
+    a(href=`/collection/sets#${card.set.id}`) Back to sets
     div.title 
       h1= title
       if (card.custom)
@@ -35,23 +37,32 @@ block content
 
     div.card-detail-container 
       div.detail-img-container 
-        img#cardImg(src=card.meta.images.large alt=card.pokemon.name onerror="/images/missingno.png")
+        img#cardImg(src=card.meta.images.large alt=card.name onerror="/images/missingno.png")
       div.detail-info-container
         div.info-card-container
-          h2 #{card.pokemon.name}
+          h2 #{card.name}
             if card.meta.rarity.reverseHolo 
               em(style="font-size:.7rem;color:silver")  Reverse Holo
             if card.value.priceType[0] === "1"
               em(style="font-size:.7rem;color:silver")  1st Edition
           em= card.meta.rarity.type
         div.info-set-container 
+          if !card.set.id
+            p= `Old Data: ${card.oldSetData}`
+            form.card-edit-form(method="POST" action=`/collection/cards/${card._id}/update-card-set`) 
+              input(type="hidden" name="objId" required='true' value=card._id)
+              select.select#newSetId(type='select' name="newSetId" required="true") 
+                option(value="none" selected=true)
+                each set in sets 
+                  option(value=set.id)= `${set.name} [${set.series}]`
+              button.btn.btn-secondary(type="submit") Select Set
           div 
-            img#symbolImg(src=card.meta.set.symbol, alt=card.meta.set.name height="40px")
+            img#symbolImg(src=card.set.symbolUrl, alt=card.set.name height="40px")
             div
-              p #{card.meta.set.name} 
-              p.small-text= card.meta.set.series
-                span(style="font-size:.6rem; color:gray")  (#{card.meta.set.releaseDate.slice(0, 4)})
-              p.small-text= `${card.meta.set.number}/${card.meta.set.totalPrint}`
+              p #{card.set.name} 
+              p.small-text= card.set.series
+                span(style="font-size:.6rem; color:gray")  (#{card.set.releaseDate && card.set.releaseDate.toLocaleDateString()})
+              p.small-text= `${card.setNumber}/${card.set.cardCount}`
         div.info-market-container
           div.current-price-container
             p Current Market Value: 
@@ -103,8 +114,6 @@ block content
           option(value="none" selected=(!card.binder))
           each binder in binders 
             option(value=binder selected=(card.binder === binder))= binder
-          //- option(value="prize" selected=(card.binder === "prize")) Prize Binder
-          //- option(value="elite" selected=(card.binder === "elite")) Elite Binder
         button.btn.btn-secondary(type="submit") Select Binder
 
     div.delete-card-container

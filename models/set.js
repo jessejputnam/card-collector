@@ -7,7 +7,7 @@ const SetSchema = new Schema(
   {
     id: { type: String, required: true },
     tcgPlayerId: { type: String, required: true },
-    pokemonSetId: { type: String },
+    pokemonSetId: { type: String }, // from old API
     name: { type: String, required: true },
     series: { type: String, required: true },
     releaseDate: { type: Date, required: true },
