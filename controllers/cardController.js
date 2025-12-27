@@ -2,10 +2,13 @@
 
 const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
+const apiCall = require("../api/pokePriceApi.js");
+
+const { convertApiSearch } = require("../utils/buildCard.js");
 
 // const Card = require("../models/card");
 const CardRepo = require("../repositories/cardRepo");
-const Set = require("../models/set");
+const CardSet = require("../models/set");
 const handle = require("../utils/errorHandler");
 const errs = require("../utils/errs");
 const updateMsgs = require("../utils/updateMsgs");
@@ -31,7 +34,7 @@ exports.display_card_get = async (req, res, next) => {
 
   let sets = null;
   if (!card.set.id) {
-    const [errSets, getSets] = await handle(Set.find().exec());
+    const [errSets, getSets] = await handle(CardSet.find().exec());
     if (errSets) return next(errSets);
     sets = getSets;
   }
@@ -208,21 +211,62 @@ exports.edit_card_count = async (req, res, next) => {
 //   });
 // };
 
-// Handle update card ID on GET
-// TODO update to card repo
-exports.update_card_id_get = async (req, res, next) => {
+// Handle sync price api on GET
+exports.sync_price_api_get = async (req, res, next) => {
+  const curr = req.user.curr; // currency
+  const pokeName = req.query.pokeName.trim().toLowerCase();
+  const pokeSet = req.query.pokeSet.trim().toLowerCase() || null;
   const cardId = req.params.id;
-  const curr = req.user.curr;
 
-  const [errCard, card] = await handle(Card.findById(cardId).exec());
-  if (errCard) return next(errCard);
-  if (!card) return next(errs.cardNotFound());
+  // API prices search
+  const [searchErr, results] = await handle(
+    apiCall.getCardsBySearch(pokeName, pokeSet)
+  );
+  if (searchErr) return next(searchErr);
 
-  return res.render("update-card-id", {
-    title: `Update Card ID for ${card.pokemon.name}`,
-    card,
+  const data = results.data || [];
+
+  // Get card sets from DB
+  const [setsErr, sets] = await handle(
+    CardSet.find({}, "name id releaseDate").exec()
+  );
+  if (setsErr) return next(setsErr);
+
+  // Map set release dates for sorting
+  const setReleases = {};
+  sets.forEach((set) => (setReleases[set.id] = set.releaseDate));
+
+  const formattedResults = data.map((tcgCard) =>
+    convertApiSearch(tcgCard, setReleases)
+  );
+
+  formattedResults.sort((a, b) => {
+    const dateA = new Date(setReleases[a.set.id]);
+    const dateB = new Date(setReleases[b.set.id]);
+    return dateB - dateA;
+  });
+
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
+
+  return res.render("card-detail-id-search-results", {
+    title: "Select the card to sync with Price API",
+    card_list: formattedResults ?? [],
+    cardId: cardId,
+    curr_convert: currConvert,
     curr
   });
+};
+
+// Handle sync price api on POST
+exports.sync_price_api_post = async (req, res, next) => {
+  const cardId = req.params.id;
+  const newId = req.body.newId;
+
+  const [errCard, card] = await CardRepo.updateCardId(cardId, newId);
+  if (errCard) return next(errCard);
+
+  return res.redirect(`/collection/cards/${cardId}?update=id`);
 };
 
 // Handle update card set on POST

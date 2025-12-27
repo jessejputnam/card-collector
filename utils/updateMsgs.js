@@ -8,7 +8,8 @@ const updateMsgs = {
   none: "Card has been removed from binder",
   rarity: "Card rarity has been updated",
   count: "Card count has been updated",
-  set: "Card set has been updated"
+  set: "Card set has been updated",
+  id: "Card has been updated with new Price API id"
 };
 
 module.exports = updateMsgs;

@@ -169,7 +169,7 @@ prices.variants["Reverse Holofoil"]
 
 exports.convertApiSearch = (card, setReleases) => {
   const newCard = {
-    apiId: card.id,
+    id: card.id,
     tcgPlayerId: card.tcgPlayerId,
 
     meta: {

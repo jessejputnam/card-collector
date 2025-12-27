@@ -98,14 +98,17 @@ block content
             button.btn.secondary-btn(type="submit") Update Price
         else 
           if !card.oldId
-          form.card-edit-form(method="POST" action=`/collection/cards/${card._id}/update-value`)
-            input(type="hidden" name="cardId" required="true" value=card.id)
-            input(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
-            if !card.oldId
-              button.btn.secondary-btn(type="submit") Price API Update
+            if !card.set.id
+                p Update card set above first
             else
+              a(href=`/collection/cards/${card._id}/sync-price-api?pokeName=${card.name}&pokeSet=${card.set.id}`) 
+                button.btn.secondary-btn(type="button") Price API Sync
+            p(style="font-size:.7rem;font-style:italic") Update needed for Price API
+          else
+            form.card-edit-form(method="POST" action=`/collection/cards/${card._id}/update-value`)
+              input(type="hidden" name="cardId" required="true" value=card.id)
+              input(type="hidden" name="cardValueType" required="true" value=card.value.priceType)
               button.btn.secondary-btn(type="submit") Update Price
-          p(style="font-size:.7rem;font-style:italic") Update needed for Price API
             
 
       form.card-edit-form(method="POST" action=`/collection/cards/${card._id}/select-binder`) 

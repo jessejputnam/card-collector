@@ -20,6 +20,7 @@ function buildCardDetail(card, set) {
       images: card.meta.images
     },
     set: {
+      _id: set?._id,
       id: set?.id,
       name: set?.name,
       series: set?.series,
@@ -33,18 +34,17 @@ function buildCardDetail(card, set) {
   };
 }
 
-// #######
+// ######################################################
+// ######################################################
+
 exports.getCardDetail = async (cardId) => {
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return [errCard, null];
   if (!card) return next(errs.cardNotFound());
-  // console.log(card);
 
   const [errSet, set] = await handle(Set.findOne({ id: card.setId }).exec());
   if (errSet) return [errSet, null];
 
-  console.log(card);
-  console.log(set);
   return [null, buildCardDetail(card, set)];
 };
 
@@ -69,7 +69,21 @@ exports.updateCardField = async (cardId, field, newValue) => {
   return [null, card];
 };
 
-// ####### Binder Card Calls
+exports.updateCardId = async (cardId, newId) => {
+  const [errOldCard, oldCard] = await handle(Card.findById(cardId).exec());
+  if (errOldCard) return [errOldCard, null];
+  if (!oldCard) return next(errs.cardNotFound());
+
+  const update = { oldId: oldCard.id, id: newId };
+
+  return await handle(Card.findByIdAndUpdate(cardId, update).exec());
+};
+
+exports.getAllUserCards = async (userId) => {
+  return await handle(Card.find({ userId }).exec());
+};
+
+// ####### Binder Card Calls ##########
 
 exports.removeDeletedBinder = async (userId, binder) => {
   return handle(Card.updateMany({ userId, binder }, { binder: null }));
