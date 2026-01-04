@@ -9,7 +9,8 @@ const updateMsgs = {
   rarity: "Card rarity has been updated",
   count: "Card count has been updated",
   set: "Card set has been updated",
-  id: "Card has been updated with new Price API id"
+  id: "Card has been updated with new Price API id",
+  test: "This is a test"
 };
 
 module.exports = updateMsgs;

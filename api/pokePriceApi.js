@@ -6,7 +6,13 @@ exports.getCard = async (cardId) => {
     method: "GET",
     headers: { Authorization: `Bearer ${TOKEN}` }
   };
-  // const res = await fetch(`${BASE_URL}/cards/${cardId}`, options);
+
+  const res = await fetch(`${BASE_URL}/cards/?tcgPlayerId=${cardId}`, options);
+  if (!res.ok)
+    throw new Error(
+      `Failed to fetch card: [STATUS ${res.status}] ${res.statusText}`
+    );
+  return res.json();
 };
 
 exports.getCardsBySearch = async (query, setId = null) => {

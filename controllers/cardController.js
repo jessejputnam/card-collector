@@ -4,7 +4,7 @@ const pokemon = require("pokemontcgsdk");
 pokemon.configure({ apikey: process.env.POKE_API_KEY });
 const apiCall = require("../api/pokePriceApi.js");
 
-const { convertApiSearch } = require("../utils/buildCard.js");
+const { convertApiSearch, convertPricetype } = require("../utils/buildCard.js");
 
 // const Card = require("../models/card");
 const CardRepo = require("../repositories/cardRepo");
@@ -24,9 +24,7 @@ exports.display_card_get = async (req, res, next) => {
   const curr = req.user.curr;
 
   const [errCard, card] = await CardRepo.getCardDetail(cardId);
-  // const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return next(errCard);
-  // if (!card) return next(errs.cardNotFound());
 
   const [errConvert, currConvert] = await getConversionRate(curr);
   if (errConvert) return next(errConvert);
@@ -58,7 +56,6 @@ exports.change_update_type = async (req, res, next) => {
   const cardId = req.params.id;
   const isManual = req.body.isManual === "true";
   const [errCard, card] = await CardRepo.getCard(cardId);
-  // const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return next(errCard);
 
   card.value.manualUpdate = isManual;
@@ -66,7 +63,7 @@ exports.change_update_type = async (req, res, next) => {
   if (err) return next(err);
 
   return res.redirect(
-    `/collection/${card._id}?update=${isManual ? "man" : "auto"}`
+    `/collection/cards/${card._id}?update=${isManual ? "man" : "auto"}`
   );
 };
 
@@ -77,37 +74,42 @@ exports.update_price_history_post = async (req, res, next) => {
   const pokemonId = req.body.cardId;
   const newDate = new Date().toLocaleDateString("en-US");
 
-  const [errCard, card] = await handle(Card.findById(cardId).exec());
+  // Get db card
+  const [errCard, card] = await CardRepo.getCard(cardId);
   if (errCard) return next(errCard);
-  if (!card) return next(errs.cardNotFound());
-
-  let marketVal;
-
-  if (card.value.manualUpdate) {
-    marketVal = +req.body.cardValue;
-  } else {
-    const [errTcgCard, tcgCard] = await handle(pokemon.card.find(pokemonId));
-    if (errTcgCard) return next(errTcgCard);
-    if (!tcgCard) return next(errs.cardNotFound());
-
-    marketVal = tcgCard.tcgplayer.prices[card.value.priceType].market;
-    if (!marketVal) return next(errs.priceNotFound);
-  }
-
-  card.value.market = marketVal;
 
   const mostRecentDate = card.value.priceHistory[0][0];
 
-  let msg = "pricex";
+  // Already updated today, redirect -- one update per day
+  if (mostRecentDate === newDate)
+    return res.redirect(`/collection/cards/${cardId}?update=pricex`);
 
-  if (mostRecentDate !== newDate) {
-    msg = "price";
-    card.value.priceHistory.unshift([newDate, marketVal]);
+  // Prepare update fields
+  const priceHistory = card.value.priceHistory;
+  let marketVal;
+
+  // Get market valute -- manual or auto
+  if (card.value.manualUpdate) {
+    // Manual Update
+    marketVal = +req.body.cardValue;
+  } else {
+    // API update
+    const [errApi, apiCard] = await handle(apiCall.getCard(pokemonId));
+    if (errApi) return next(errApi);
+
+    const priceType = convertPricetype(card.value.priceType);
+    marketVal = apiCard.data.prices.variants[priceType]["Near Mint"].price;
   }
-  const [errCardSave, _] = await handle(card.save());
-  if (errCardSave) return next(errCardSave);
 
-  return res.redirect(`/collection/${card._id}?update=${msg}`);
+  priceHistory.unshift([newDate, marketVal]);
+  const update = {
+    "value.market": marketVal,
+    "value.priceHistory": priceHistory
+  };
+
+  const [errUpdated, updated] = await CardRepo.updateCardFields(cardId, update);
+  if (errUpdated) return next(errUpdated);
+  return res.redirect(`/collection/cards/${cardId}?update=price`);
 };
 
 // Handle delete card on GET

@@ -1,6 +1,47 @@
 const Card = require("../models/card");
 const getRarityRating = require("../utils/getRarityRating");
 
+/*
+
+prices.market
+prices.variants["Holofoil"]
+prices.variants["Normal"]
+prices.variants["Unlimited Holofoil"]
+prices.variants["Unlimited"]
+prices.variants["1st Edition"]
+prices.variants["1st Edition Holofoil"]
+prices.variants["Reverse Holofoil"]
+
+
+
+- holofoil
+- normal
+- unlimitedHolofoil
+- unlimited
+- 1stEdition
+- 1stEditionHolofoil
+- reverseHolofoil
+
+ */
+
+exports.convertPricetype = (priceType) => {
+  if (priceType == "holofoil") return "Holofoil";
+  if (priceType == "Holofoil") return "holofoil";
+  if (priceType == "normal") return "Normal";
+  if (priceType == "Normal") return "normal";
+  if (priceType == "unlimitedHolofoil") return "Unlimited Holofoil";
+  if (priceType == "Unlimited Holofoil") return "unlimitedHolofoil";
+  if (priceType == "unlimited") return "Unlimited";
+  if (priceType == "Unlimited") return "unlimited";
+  if (priceType == "1stEdition") return "1st Edition";
+  if (priceType == "1st Edition") return "1stEdition";
+  if (priceType == "1stEditionHolofoil") return "1st Edition Holofoil";
+  if (priceType == "1st Edition Holofoil") return "1stEditionHolofoil";
+  if (priceType == "reverseHolofoil") return "Reverse Holofoil";
+  if (priceType == "Reverse Holofoil") return "reverseHolofoil";
+  return "n/a";
+};
+
 /**
  * Build TCG card from search
  * @param {object} tcgCard

@@ -69,6 +69,15 @@ exports.updateCardField = async (cardId, field, newValue) => {
   return [null, card];
 };
 
+exports.updateCardFields = async (cardId, update) => {
+  const [errCard, card] = await handle(
+    Card.findByIdAndUpdate(cardId, update).exec()
+  );
+  if (errCard) return [errCard, null];
+  if (!card) return next(errs.cardNotFound());
+  return [null, card];
+};
+
 exports.updateCardId = async (cardId, newId) => {
   const [errOldCard, oldCard] = await handle(Card.findById(cardId).exec());
   if (errOldCard) return [errOldCard, null];
