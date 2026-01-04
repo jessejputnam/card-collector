@@ -24,7 +24,7 @@ exports.search_get = async (req, res, next) => {
   );
   if (err) return next(err);
 
-  return res.render("search-form", {
+  return res.render("search/search-form", {
     title: "Search for a Card",
     sets: reversedSets,
     curr
@@ -89,7 +89,7 @@ exports.search_results_get = async (req, res, next) => {
   if (errConvert) return next(errConvert);
 
   console.log(JSON.stringify(formattedResults, null, 2));
-  return res.render("search-results", {
+  return res.render("search/search-results", {
     title: "Results",
     card_list: formattedResults ?? [],
     user_cards: cardSet,

@@ -39,7 +39,7 @@ exports.display_card_get = async (req, res, next) => {
     sets = getSets;
   }
 
-  return res.render("card-detail", {
+  return res.render("card_detail/card-detail", {
     title: `${card.name}`,
     card,
     curr_convert: currConvert,
@@ -120,7 +120,7 @@ exports.delete_card_get = async (req, res, next) => {
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  return res.render("card-delete", {
+  return res.render("card_detail/card-delete", {
     title: `Delete ${card.pokemon.name}`,
     cardId: card._id,
     curr,
@@ -249,7 +249,7 @@ exports.sync_price_api_get = async (req, res, next) => {
   const [errConvert, currConvert] = await getConversionRate(curr);
   if (errConvert) return next(errConvert);
 
-  return res.render("card-detail-id-search-results", {
+  return res.render("card_detail/card-detail-id-search-results", {
     title: "Select the card to sync with Price API",
     card_list: formattedResults ?? [],
     cardId: cardId,
@@ -321,7 +321,7 @@ exports.add_custom_card_get = (req, res, next) => {
   const rarities = Object.keys(getRarityRating);
   const curr = req.user.curr;
 
-  return res.render("add-custom-card", {
+  return res.render("card_detail/add-custom-card", {
     title: "Add New Card",
     rarities,
     curr
@@ -353,7 +353,7 @@ exports.edit_custom_card_get = async (req, res, next) => {
 
   if (!card.custom) return next(new Error("Cannot edit non-custom cards"));
 
-  return res.render("edit-custom-card", {
+  return res.render("card_detail/edit-custom-card", {
     title: `Edit ${card.pokemon.name}`,
     card,
     rarities,

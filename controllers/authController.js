@@ -14,7 +14,7 @@ const indexImages = require("../utils/indexImages");
 exports.index_get = (req, res, next) => {
   const images = indexImages;
 
-  return res.render("index", {
+  return res.render("static/index", {
     title: "Card Collector",
     images: images
   });
@@ -22,7 +22,7 @@ exports.index_get = (req, res, next) => {
 
 // Display sign up on GET
 exports.signup_get = (req, res, next) => {
-  return res.render("form-sign-up", { title: "Register" });
+  return res.render("static/form-sign-up", { title: "Register" });
 };
 
 // Handle sign up on POST
@@ -46,7 +46,7 @@ exports.sign_up_post = [
 
     if (!errors.isEmpty()) {
       // There are errors, rerender
-      return res.render("form-sign-up", {
+      return res.render("static/form-sign-up", {
         title: "Register",
         errors: errors.array()
       });
@@ -56,7 +56,7 @@ exports.sign_up_post = [
       // Check if user exists
       const found_user = await User.find({ username: req.body.username });
       if (found_user.length > 0) {
-        return res.render("form-sign-up", {
+        return res.render("static/form-sign-up", {
           title: "Register",
           error: "Email is already in use"
         });
@@ -85,7 +85,7 @@ exports.sign_up_post = [
 
 // Handle login on GET
 exports.login_get = (req, res, next) => {
-  res.render("form-log-in", {
+  res.render("static/form-log-in", {
     title: "Log In",
     errors: req.flash("error")
   });

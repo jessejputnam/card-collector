@@ -16,7 +16,7 @@ exports.display_sets_get = async (req, res, next) => {
   );
   if (setsErr) return next(setsErr);
 
-  return res.render("sets", {
+  return res.render("card_sets/sets", {
     title: "Card Sets",
     setList: sets,
     isAdmin,
@@ -46,7 +46,7 @@ exports.display_set_detail_get = async (req, res, next) => {
     return next(err);
   }
 
-  return res.render("set-detail", {
+  return res.render("card_sets/set-detail", {
     title: `Set Detail`,
     set,
     isAdmin,

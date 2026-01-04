@@ -51,7 +51,7 @@ exports.display_collection_get = async (req, res, next) => {
 
   const csv = makeCSV(cards);
 
-  return res.render("home", {
+  return res.render("collection/home", {
     title: "My Collection",
     card_list: cards,
     csv,
@@ -143,7 +143,7 @@ exports.display_filter_page_get = async (req, res, next) => {
     csv
   };
 
-  return res.render("filter-collection", page_data);
+  return res.render("collection/filter-collection", page_data);
 };
 
 // Handle display cards by set on GET
@@ -196,7 +196,7 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   const [errConvert, currConvert] = await getConversionRate(curr);
   if (errConvert) return next(errConvert);
 
-  return res.render("sets-collection", {
+  return res.render("collection/sets-collection", {
     title: "Set Collection",
     list_sets,
     curr_convert: currConvert,

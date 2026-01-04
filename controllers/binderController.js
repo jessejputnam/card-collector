@@ -12,7 +12,7 @@ exports.display_binders_get = async (req, res, next) => {
   const binders = req.user.binders;
   const curr = req.user.curr;
 
-  return res.render("binders", {
+  return res.render("binders/binders", {
     title: "Binders",
     binders,
     curr
@@ -73,7 +73,7 @@ exports.display_binder_get = async (req, res, next) => {
 
   const cardsSorted = cards.sort(sort.byValueDesc);
 
-  return res.render("binder", {
+  return res.render("binders/binder", {
     title: binder,
     binder,
     curr_convert: currConvert,
