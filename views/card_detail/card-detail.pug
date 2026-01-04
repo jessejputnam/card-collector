@@ -56,13 +56,15 @@ block content
                 each set in sets 
                   option(value=set.id)= `${set.name} [${set.series}]`
               button.btn.btn-secondary(type="submit") Select Set
-          div 
-            img#symbolImg(src=card.set.symbolUrl, alt=card.set.name height="40px")
-            div
-              p #{card.set.name} 
-              p.small-text= card.set.series
-                span(style="font-size:.6rem; color:gray")  (#{card.set.releaseDate && card.set.releaseDate.toLocaleDateString()})
-              p.small-text= `${card.setNumber}/${card.set.cardCount}`
+          else 
+            div 
+              img#symbolImg(src=card.set.symbolUrl, alt=card.set.name height="40px")
+              div
+                p #{card.set.name} 
+                p.small-text= card.set.series
+                  span(style="font-size:.6rem; color:gray")  (#{card.set.releaseDate && card.set.releaseDate.toLocaleDateString()})
+                p.small-text= `${card.meta.setNumber}/${card.set.cardCount}`
+
         div.info-market-container
           div.current-price-container
             p Current Market Value: 

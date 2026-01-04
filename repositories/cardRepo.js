@@ -16,7 +16,7 @@ function buildCardDetail(card, set) {
       rarity: card.meta.rarity,
       supertype: card.meta.supertype,
       stage: card.meta.stage,
-      setNumber: card.meta.setNumber,
+      setNumber: card.meta.set.number,
       images: card.meta.images
     },
     set: {

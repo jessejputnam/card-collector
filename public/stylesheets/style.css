@@ -395,3 +395,7 @@ select,
   background-image: url("../images/pattern-background.jpg");
   background-size: cover;
 }
+
+.small-txt {
+  font-size: .8rem;
+}
