@@ -12,30 +12,30 @@ function sortCardQuery(cards, sortType, isAsc) {
     !isAsc ? cards.sort(bySupertypeDesc) : cards.sort(bySupertypeAsc);
 }
 
-const b = () => {
-  let card_list;
+// const b = () => {
+//   let card_list;
 
-  if (sortBy === "value")
-    card_list = !sortAsc
-      ? bySets.sort(sort.byValueDesc)
-      : (card_list = bySets.sort(sort.byValueAsc));
-  else if (sortBy === "rarity")
-    card_list = !sortAsc
-      ? bySets.sort(sort.byRarityDesc)
-      : (card_list = bySets.sort(sort.byRarityAsc));
-  else if (sortBy === "name")
-    card_list = !sortAsc
-      ? bySets.sort(sort.byNameDesc)
-      : bySets.sort(sort.byNameAsc);
-  else if (sortBy === "set")
-    card_list = !sortAsc
-      ? bySets.sort(sort.bySetDesc)
-      : (card_list = bySets.sort(sort.bySetAsc));
-  else if (sortBy === "supertype")
-    card_list = !sortAsc
-      ? bySets.sort(sort.bySupertypeDesc)
-      : (card_list = bySets.sort(sort.bySupertypeAsc));
-};
+//   if (sortBy === "value")
+//     card_list = !sortAsc
+//       ? bySets.sort(sort.byValueDesc)
+//       : (card_list = bySets.sort(sort.byValueAsc));
+//   else if (sortBy === "rarity")
+//     card_list = !sortAsc
+//       ? bySets.sort(sort.byRarityDesc)
+//       : (card_list = bySets.sort(sort.byRarityAsc));
+//   else if (sortBy === "name")
+//     card_list = !sortAsc
+//       ? bySets.sort(sort.byNameDesc)
+//       : bySets.sort(sort.byNameAsc);
+//   else if (sortBy === "set")
+//     card_list = !sortAsc
+//       ? bySets.sort(sort.bySetDesc)
+//       : (card_list = bySets.sort(sort.bySetAsc));
+//   else if (sortBy === "supertype")
+//     card_list = !sortAsc
+//       ? bySets.sort(sort.bySupertypeDesc)
+//       : (card_list = bySets.sort(sort.bySupertypeAsc));
+// };
 
 function byValueDesc(a, b) {
   const valA = a.value.market;

@@ -1,6 +1,6 @@
 // import Card from "../models/card";
 const Card = require("../models/card");
-const Set = require("../models/set");
+const CardSet = require("../models/set");
 const handle = require("../utils/errorHandler");
 const errs = require("../utils/errs");
 
@@ -34,6 +34,31 @@ function buildCardDetail(card, set) {
   };
 }
 
+function buildDashCard(card, sets) {
+  const set = sets[card.setId];
+
+  return {
+    _id: card._id,
+    name: card.pokemon.name,
+    id: card.id,
+    oldId: card.oldId,
+    custom: card.custom,
+    rarity: card.meta.rarity,
+    setNumber: card.meta.set.number,
+    image: card.meta.images.small,
+    set: {
+      id: set?.id,
+      name: set?.name,
+      series: set?.series,
+      releaseDate: set?.releaseDate,
+      cardCount: set?.cardCount,
+      symbolUrl: set?.symbolUrl
+    },
+    value: card.value,
+    binder: card.binder?.type
+  };
+}
+
 // ######################################################
 // ######################################################
 
@@ -42,7 +67,9 @@ exports.getCardDetail = async (cardId) => {
   if (errCard) return [errCard, null];
   if (!card) return next(errs.cardNotFound());
 
-  const [errSet, set] = await handle(Set.findOne({ id: card.setId }).exec());
+  const [errSet, set] = await handle(
+    CardSet.findOne({ id: card.setId }).exec()
+  );
   if (errSet) return [errSet, null];
 
   return [null, buildCardDetail(card, set)];
@@ -90,6 +117,22 @@ exports.updateCardId = async (cardId, newId) => {
 
 exports.getAllUserCards = async (userId) => {
   return await handle(Card.find({ userId }).exec());
+};
+
+exports.getDashboardCards = async (userId) => {
+  const [err, cards] = await handle(Card.find({ userId }).exec());
+  if (err) return [err, null];
+
+  const [errSet, sets] = await handle(CardSet.find().exec());
+  if (errSet) return [errSet, null];
+
+  const setsObj = {};
+  for (let set of sets) {
+    setsObj[set.id] = set;
+  }
+
+  const dashCards = cards.map((x) => buildDashCard(x, setsObj));
+  return dashCards;
 };
 
 // ####### Binder Card Calls ##########

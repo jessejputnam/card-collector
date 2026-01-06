@@ -36,6 +36,7 @@ exports.display_card_get = async (req, res, next) => {
     if (errSets) return next(errSets);
     sets = getSets;
   }
+  console.log(card.value.priceHistory[0]);
 
   return res.render("card_detail/card-detail", {
     title: `${card.name}`,

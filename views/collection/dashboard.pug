@@ -1,0 +1,56 @@
+//- title: "Dashboard",
+//- totalValue,
+//- totalCards,
+//- totalUniqueCards,
+//- totalDuplicates,
+//- mostValuableCards,
+//- notUpdated,
+//- curr_convert: currConvert,
+//- curr
+extends ../layout 
+
+
+block styles 
+  link(rel="stylesheet", href="/stylesheets/home.css")
+
+block scripts 
+  script(src="/javascripts/csv.js" defer)
+
+block content 
+  div.page-wrapper
+    header.header 
+      div.title-container 
+        h1= title + " " 
+        //- div.title-info-container
+        //-   div
+        //-     p(style="margin-top:5px;font-size:.8rem;color:gray")= `${curr === "eur" ? "€" : "$"}${totalValue.toFixed(2)}`
+        //-     p(style="font-size:.8rem;color:gray")= totalCards + " cards"
+
+    if need_update
+      p(style="color:red") Looks like there is an update. Please click the button to update cards to new version.
+      form(method="POST" action="/collection/update-version") 
+        button(type="submit") Update to New Version
+
+
+    div.collection-container 
+      if totalCards < 1
+        p No cards in collection yet
+
+      else 
+        div.top-band
+          p=`Total Value: ${totalValue}`
+          p=`Total Cards: ${totalCards}`
+          p=`Total Unique Cards: ${totalUniqueCards}`
+          p=`Total Duplicate Cards: ${totalDuplicates}`
+        div.mid-band
+          div
+            p Most Valuable Cards 
+            each card in mostValuableCards
+              p=`${card.name} $${card.value.market}`
+          div 
+            p=`Not Upated Yet: ${notUpdated.count}`
+            div 
+              each card in notUpdated.firstFive 
+                p= card.name
+
+        div.low-band

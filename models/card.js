@@ -18,7 +18,7 @@ const CardSchema = new Schema(
       type: String
     },
 
-    setId: { type: String },
+    setId: { type: String }, // Set.id NOT Set._id
 
     meta: {
       images: {

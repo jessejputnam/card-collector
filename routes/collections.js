@@ -13,8 +13,8 @@ router.post("/change_curr", collection_controller.change_curr_post);
 router.get("/home", collection_controller.display_collection_get);
 // router.get("/update-sets", system_controller.update_sets); // For updating sets
 
-// GET request for home sorted
-// router.get("/home/sort", collection_controller.display_collection_sorted_get);
+// GET request for dash
+router.get("/dashboard", collection_controller.display_dashboard_get);
 
 // ################# FILTER VIEW ####################
 

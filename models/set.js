@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const SetSchema = new Schema(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true }, // Used for FK in Cards
     tcgPlayerId: { type: String, required: true },
     pokemonSetId: { type: String }, // from old API
     name: { type: String, required: true },

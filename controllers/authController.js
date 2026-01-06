@@ -94,7 +94,7 @@ exports.login_get = (req, res, next) => {
 
 // Handle login on POST
 exports.login_post = passport.authenticate("local", {
-  successRedirect: "/collection/home",
+  successRedirect: "/collection/dashboard",
   failureRedirect: "/login",
   failureFlash: true
 });

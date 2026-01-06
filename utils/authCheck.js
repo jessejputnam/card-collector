@@ -10,7 +10,7 @@ export const authCheckFalse = (req, res, next) => {
 
 export const authCheckTrue = (req, res, next) => {
   if (req.user) {
-    res.redirect("/collection/home");
+    res.redirect("/collection/dashboard");
   } else {
     next();
   }
