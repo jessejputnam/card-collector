@@ -102,6 +102,11 @@ a {
   overflow: hidden;
 }
 
+.btn:disabled {
+  color: gray;
+  background-color: rgb(99, 99, 99);
+}
+
 .btn::before {
   content: "";
   position: absolute;
@@ -122,8 +127,18 @@ a {
     color: #e8e8e8;
   }
 
+  .btn:disabled:hover {
+    color: gray;
+    background-color: rgb(99, 99, 99);
+  }
+
+
   .btn:hover::before {
     width: 100%;
+  }
+
+  .btn:disabled::before {
+    width: 0;
   }
 }
 

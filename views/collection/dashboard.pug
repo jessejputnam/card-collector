@@ -11,7 +11,7 @@ extends ../layout
 
 
 block styles 
-  link(rel="stylesheet", href="/stylesheets/home.css")
+  link(rel="stylesheet", href="/stylesheets/dashboard.css")
 
 block scripts 
   script(src="/javascripts/csv.js" defer)
@@ -21,10 +21,6 @@ block content
     header.header 
       div.title-container 
         h1= title + " " 
-        //- div.title-info-container
-        //-   div
-        //-     p(style="margin-top:5px;font-size:.8rem;color:gray")= `${curr === "eur" ? "€" : "$"}${totalValue.toFixed(2)}`
-        //-     p(style="font-size:.8rem;color:gray")= totalCards + " cards"
 
     if need_update
       p(style="color:red") Looks like there is an update. Please click the button to update cards to new version.
@@ -32,25 +28,89 @@ block content
         button(type="submit") Update to New Version
 
 
-    div.collection-container 
-      if totalCards < 1
-        p No cards in collection yet
+    if totalCards < 1
+      p No cards in collection yet
+    else
+      div.body
+        div.horizontal
+          div.card
+            p.small-txt=`Total Value:` 
+            p.bold=formatMoney(totalValue)
+          div.card
+            p.small-txt=`Total Cards:` 
+            p.bold=formatNum(totalCards)
+          div.card
+            p.small-txt=`Unique Cards:` 
+            p.bold=formatNum(totalUniqueCards)
+          div.card
+            p.small-txt=`Duplicates:`
+            p.bold=formatNum(totalDuplicates)
 
-      else 
-        div.top-band
-          p=`Total Value: ${totalValue}`
-          p=`Total Cards: ${totalCards}`
-          p=`Total Unique Cards: ${totalUniqueCards}`
-          p=`Total Duplicate Cards: ${totalDuplicates}`
-        div.mid-band
-          div
-            p Most Valuable Cards 
+        div.vertical
+          h3 Most Valuable Cards 
+          div.horizontal
             each card in mostValuableCards
-              p=`${card.name} $${card.value.market}`
-          div 
-            p=`Not Upated Yet: ${notUpdated.count}`
-            div 
-              each card in notUpdated.firstFive 
-                p= card.name
+              div.tcg-card-container  
+                a.not-a(href=`/collection/cards/${card._id}`) 
+                  div.tcg-card
+                    img(src=card.image, alt=card.name)
+                p=formatMoney(card.value.market)
 
-        div.low-band
+        div.vertical
+          h3=`Not Upated Yet` 
+          div.horizontal
+            p=`Current count: ${formatNum(notUpdated.count)}`
+          div.horizontal
+            each card in notUpdated.firstFive 
+              div.tcg-card-container  
+                a.not-a(href=`/collection/cards/${card._id}`) 
+                  div.tcg-card
+                    img(src=card.image, alt=card.name)
+
+        div.vertical
+          h3=`Manual Update Cards` 
+          div.horizontal
+            p=`Current count: ${formatNum(manualUpdateCards.length)}`
+          div.horizontal
+            each card in manualUpdateCards.slice(0, 5)
+              div.tcg-card-container  
+                a.not-a(href=`/collection/cards/${card._id}`) 
+                  div.tcg-card
+                    img(src=card.image, alt=card.name)
+
+        div.vertical 
+          h3="Set Completion"
+          div.horizontal 
+            each set in cardSets.slice(0, 5)
+              div.set-container
+                - const sn = set.name.split(":") 
+                p.small-txt=sn.length === 1 ? sn[0] : sn[1]
+                div.set-logo
+                  img(src=set.symbolUrl, alt="")
+                div.progress-bar 
+                  div.progress(style=`width:${((set.ownedCards / set.setTotal) * 100).toFixed(2)}%`)
+                p=set.ownedCards
+        
+        div.vertical
+          h3=`Most Recently Updated` 
+          div.horizontal
+            each card in recentUpdates
+              div.tcg-card-container  
+                a.not-a(href=`/collection/cards/${card._id}`) 
+                  div.tcg-card
+                    img(src=card.image, alt=card.name)
+                p=card.value.priceHistory[0][0]        
+        
+        div.vertical
+          h3=`Least Recently Updated` 
+          div.horizontal
+            each card in staleUpdates
+              div.tcg-card-container  
+                a.not-a(href=`/collection/cards/${card._id}`) 
+                  div.tcg-card
+                    img(src=card.image, alt=card.name)
+                p=card.value.priceHistory[0][0]
+                
+        
+
+

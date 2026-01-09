@@ -124,14 +124,18 @@
 
 .current-price-container>h2 {
   font-family: "Rajdhani", Georgia, "Times New Roman", Times, serif;
+  margin-bottom: 0;
+  font-size: 18px;
 }
 
 .auto-update {
-  padding: 5px 10px;
+  padding: 2px 5px;
   border-radius: 5px;
   border: 2px #BA0021 solid;
   color: #BA0021;
   cursor: pointer;
+  height: 25px;
+  font-size: 16;
 
   transition: border-color .2s, color .2s, background-color .2s;
 }
@@ -162,15 +166,41 @@
   margin: 0 auto;
 }
 
+.info-market-container {
+  position: relative;
+}
+
+.info-market-container>.blinder-hi {
+  position: absolute;
+  background-color: white;
+  width: 90%;
+  height: 15px;
+  top: 66.5px;
+  border-radius: 2px;
+  left: 12px;
+  box-shadow: 0 2px 1px -1px rgba(255, 255, 255, 0.8);
+}
+
+.info-market-container>.blinder-low {
+  position: absolute;
+  background-color: white;
+  width: 90%;
+  height: 15px;
+  top: 232px;
+  border-radius: 2px;
+  left: 12px;
+  box-shadow: 0 -2px 1px -1px rgba(255, 255, 255, 0.8);
+}
+
 .price-history-container {
-  height: 300px;
+  height: 180px;
   box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.527);
-  border-bottom-left-radius: 10px;
-  border-top-left-radius: 10px;
-  padding: 15px;
+  border-radius: 2px;
+  padding: 15px 0px 30px 15px;
   overflow-y: scroll;
   background: white;
 }
+
 
 .price-history-container>ul>li {
   letter-spacing: 0.1ch;
@@ -187,7 +217,7 @@
 
 .card-edits-container>div,
 .card-edits-container>form {
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.709);
+  box-shadow: 0 0 2px 0 rgba(142, 84, 84, 0.709);
   padding: 10px;
   border-radius: 10px;
   height: 90px;
@@ -349,4 +379,14 @@ select#binder {
 .visible {
   display: flex;
   align-items: center;
+}
+
+#newSetId {
+  background-color: rgba(138, 138, 138, 0.119);
+}
+
+#setSearch {
+  width: 100%;
+  text-align: left;
+  color: rgba(0, 0, 0, 0.654);
 }

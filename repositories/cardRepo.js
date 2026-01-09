@@ -105,12 +105,20 @@ exports.updateCardFields = async (cardId, update) => {
   return [null, card];
 };
 
-exports.updateCardId = async (cardId, newId) => {
+exports.updateCardPriceApi = async (cardId, newId, currentPrice) => {
   const [errOldCard, oldCard] = await handle(Card.findById(cardId).exec());
   if (errOldCard) return [errOldCard, null];
   if (!oldCard) return next(errs.cardNotFound());
 
-  const update = { oldId: oldCard.id, id: newId };
+  const newDate = new Date().toLocaleDateString("en-US");
+  const priceHistory = oldCard.value.priceHistory;
+  priceHistory.unshift([newDate, currentPrice]);
+
+  const update = {
+    oldId: oldCard.id,
+    id: newId,
+    "value.priceHistory": priceHistory
+  };
 
   return await handle(Card.findByIdAndUpdate(cardId, update).exec());
 };

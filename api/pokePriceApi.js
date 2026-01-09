@@ -8,10 +8,13 @@ exports.getCard = async (cardId) => {
   };
 
   const res = await fetch(`${BASE_URL}/cards/?tcgPlayerId=${cardId}`, options);
-  if (!res.ok)
-    throw new Error(
-      `Failed to fetch card: [STATUS ${res.status}] ${res.statusText}`
-    );
+  if (!res.ok) {
+    const msg =
+      res.status == 429
+        ? "Price API limit reached. Please try again tomorrow."
+        : `[STATUS ${res.status}] ${res.statusText}`;
+    throw new Error(`Failed to fetch card: ${msg}`);
+  }
   return res.json();
 };
 
@@ -25,11 +28,14 @@ exports.getCardsBySearch = async (query, setId = null) => {
     ? `search=${query}&setId=${setId}`
     : `search=${query}`;
 
-  const res = await fetch(`${BASE_URL}/cards?${queryParams}&limit=3`, options);
-  if (!res.ok)
-    throw new Error(
-      `Failed to fetch cards: [STATUS ${res.status}] ${res.statusText}`
-    );
+  const res = await fetch(`${BASE_URL}/cards?${queryParams}&limit=5`, options);
+  if (!res.ok) {
+    const msg =
+      res.status == 429
+        ? "Price API limit reached. Please try again tomorrow."
+        : `[STATUS ${res.status}] ${res.statusText}`;
+    throw new Error(`Failed to fetch cards: ${msg}`);
+  }
   return res.json();
 };
 

@@ -27,4 +27,5 @@ block content
 
               form.add-card-form(method="POST" action=`/collection/cards/${cardId}/sync-price-api`) 
                 input#newId(type="hidden" name="newId" required="true" value=card.tcgPlayerId)
+                input#currentPrice(type="hidden" name="currentPrice" required="true" value=card.value.market)
                 button.btn.btn-secondary(type="submit") Select Card

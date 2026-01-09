@@ -1,5 +1,3 @@
-"use strict";
-
 const Card = require("../models/card");
 const CardRepo = require("../repositories/cardRepo");
 const User = require("../models/user");
@@ -9,6 +7,10 @@ const makeCSV = require("../utils/makeCSV");
 const getConversionRate = require("../utils/getConversionRate");
 const filterQueries = require("../utils/filtration/filterQueries");
 const { sortCardQuery } = require("../utils/sort");
+const {
+  updateRecentUpdates,
+  updateStaleUpdates
+} = require("../utils/collectionControllerlib");
 
 exports.change_curr_post = async (req, res, next) => {
   const userId = req.user._id;
@@ -208,6 +210,16 @@ exports.display_filter_by_set_get = async (req, res, next) => {
 // ############ Dashboard ###########
 // Handle display dashboard on GET
 exports.display_dashboard_get = async (req, res, next) => {
+  const formatMoney = (n) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD"
+    }).format(n);
+  };
+  const formatNum = (n) => {
+    return new Intl.NumberFormat("en-US").format(n);
+  };
+
   const userId = req.user._id;
   const curr = req.user.curr;
 
@@ -246,44 +258,63 @@ exports.display_dashboard_get = async (req, res, next) => {
     firstFive: []
   };
 
+  const manualUpdateCards = [];
+
+  const cardsBySet = {};
+  const cardSets = [];
+  let recentUpdates = [];
+  let staleUpdates = [];
+
   for (let card of cards) {
-    if (!card.set.id) {
-      notUpdated.count++;
-      if (notUpdated.firstFive.length < 5) notUpdated.firstFive.push(card);
+    // Updated Dates
+    recentUpdates = updateRecentUpdates(recentUpdates, card);
+    staleUpdates = updateStaleUpdates(staleUpdates, card);
+
+    // Sets
+    if (card.set.id) {
+      if (!(card.set.name in cardsBySet)) {
+        cardsBySet[card.set.name] = {
+          setTotal: card.set.cardCount,
+          symbolUrl: card.set.symbolUrl,
+          ownedCards: 0,
+          ownedValue: 0
+        };
+      }
+      cardsBySet[card.set.name].ownedCards++;
+      cardsBySet[card.set.name].ownedValue += card.value.market;
+    }
+
+    // Manual value updates
+    if (card.value.manualUpdate) {
+      manualUpdateCards.push(card);
+    } else {
+      // Not updated to new API yet
+      if (!card.oldId) {
+        notUpdated.count++;
+        if (notUpdated.firstFive.length < 5) notUpdated.firstFive.push(card);
+      }
     }
   }
 
-  // BOTTOM BAND
+  // Helper function fr set ordering
+  const addSet = (arr, cur) => {
+    for (let i = 0; i < arr.length; i++) {
+      if (cur.ownedCards > arr[i].ownedCards) {
+        arr.splice(i, 0, cur);
+        return;
+      }
+    }
+    arr.push(cur);
+  };
 
+  // Set ordering
+  const keys = Object.keys(cardsBySet);
+  for (let i = 0; i < keys.length; i++) {
+    cardsBySet[keys[i]].name = keys[i];
+    if (i == 0) cardSets.push(cardsBySet[keys[0]]);
+    else addSet(cardSets, cardsBySet[keys[i]]);
+  }
   /*
-
-  ##############
-  
-  Top band:
-  Total value · Total cards · Unique cards · Duplicates
-
-  Middle band (visual):
-  Most valuable cards · Cards not updated
-
-  Bottom band (context):
-  Value by set (and top cards) · Binder breakdown · Recent activity 
-
-  #############
-
-  Total collection value (USD, converted client-side)
-  Sum of value.market * value.count. This is the emotional hook. Pokémon collectors care about this number more than they admit.
-
-  Bonus: show a tiny delta next to it
-  “+ $42.13 since last update” or “−2.1% last 7 days” based on priceHistory deltas.
-
-  Total cards owned
-  Sum of value.count, not document count. This is “physical reality,” which collectors track instinctively.
-
-  Unique cards
-  Document count. This gives a clean “completion vs duplication” contrast.
-
-  Duplicate count
-  sum(value.count) − documentCount. This becomes surprisingly sticky UX-wise; people like knowing how much redundancy they’re sitting on.
 
   ##############
 
@@ -300,17 +331,6 @@ exports.display_dashboard_get = async (req, res, next) => {
   You don’t need stats jargon. Something like:
   “7 cards changed by more than ±5% in the last update.”
 
-  ################
-
-  Value by set (top 3)
-  Aggregate sum per set.name.
-  Collectors think in sets. This feels “right” cognitively.
-
-  Completion hint per set (soft, not authoritative)
-  If you know set.cardCount:
-    •	ownedUnique / set.cardCount
-  Even if it’s imperfect (variants, promos, etc.), users love progress bars. Just label it clearly: “Base set coverage”.
-
   ##################
 
   Cards in binders vs unassigned
@@ -324,33 +344,26 @@ exports.display_dashboard_get = async (req, res, next) => {
   Aggregate value.market * count grouped by binder name.
   People name binders emotionally (“Favorites”, “Trade Bait”). This reinforces that.
 
-  ################
-
-  Last price update
-  A simple timestamp:
-  “Last price refresh: Aug 15, 2025”
-
-  This contextualizes every other number on the page.
-
-  Recently added cards
-  Last 3–5 cards added. Not for metrics—this is memory reinforcement.
-
-  Top 3 Stalest price / Top 3 newest update
-
-
   */
 
   // sortCardQuery(cards, sortType, isAsc);
-
-  return res.render("collection/dashboard", {
-    title: "Dashboard",
+  const payload = {
+    title: "Collection Overview",
     totalValue,
     totalCards,
     totalUniqueCards,
     totalDuplicates,
     mostValuableCards,
+    manualUpdateCards,
+    cardSets,
     notUpdated,
+    recentUpdates,
+    staleUpdates,
     curr_convert: currConvert,
-    curr
-  });
+    curr,
+    formatMoney,
+    formatNum
+  };
+
+  return res.render("collection/dashboard", payload);
 };

@@ -69,7 +69,6 @@ exports.change_update_type = async (req, res, next) => {
 };
 
 // Handle update price history
-// TODO update to card repo
 exports.update_price_history_post = async (req, res, next) => {
   const cardId = req.params.id;
   const pokemonId = req.body.cardId;
@@ -220,6 +219,9 @@ exports.sync_price_api_get = async (req, res, next) => {
   const pokeName = req.query.pokeName.trim().toLowerCase();
   const pokeSet = req.query.pokeSet.trim().toLowerCase() || null;
   const cardId = req.params.id;
+  const priceType = req.query.priceType;
+
+  console.log(pokeName, pokeSet, cardId, priceType);
 
   // API prices search
   const [searchErr, results] = await handle(
@@ -227,6 +229,7 @@ exports.sync_price_api_get = async (req, res, next) => {
   );
   if (searchErr) return next(searchErr);
 
+  console.log(results);
   const data = results.data || [];
 
   // Get card sets from DB
@@ -256,6 +259,7 @@ exports.sync_price_api_get = async (req, res, next) => {
     title: "Select the card to sync with Price API",
     card_list: formattedResults ?? [],
     cardId: cardId,
+    priceType,
     curr_convert: currConvert,
     curr
   });
@@ -265,8 +269,13 @@ exports.sync_price_api_get = async (req, res, next) => {
 exports.sync_price_api_post = async (req, res, next) => {
   const cardId = req.params.id;
   const newId = req.body.newId;
+  const price = req.body.currentPrice;
 
-  const [errCard, card] = await CardRepo.updateCardId(cardId, newId);
+  const [errCard, card] = await CardRepo.updateCardPriceApi(
+    cardId,
+    newId,
+    price
+  );
   if (errCard) return next(errCard);
 
   return res.redirect(`/collection/cards/${cardId}?update=id`);
