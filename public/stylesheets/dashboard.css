@@ -43,7 +43,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 25px;
+    gap: 5px;
 }
 
 .horizontal {
@@ -51,22 +51,30 @@
     max-width: 600px;
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 5px;
     justify-content: space-between;
     flex-wrap: wrap;
 }
 
+.horizontal>p {
+    margin-bottom: 5px;
+}
+
 .vertical {
     width: 100%;
-    max-width: 600px;
+    max-width: 700px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+}
+
+.vertical>.horizontal {
+    max-width: 700px;
 }
 
 .vertical>h3 {
     width: 100%;
+    margin-bottom: 0;
 }
 
 .card {
@@ -98,6 +106,10 @@
 
 .bold {
     font-weight: bold;
+}
+
+.not-a {
+    transition: transform .5s;
 }
 
 .not-a:hover {
@@ -134,6 +146,11 @@
 
 .small-txt {
     font-size: .6rem;
+}
+
+.card>.bold {
+    font-size: 1.15rem;
+    color: rgb(32, 32, 32);
 }
 
 /* @media only screen and (max-width: 800px) {

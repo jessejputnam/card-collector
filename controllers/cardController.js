@@ -5,6 +5,7 @@ pokemon.configure({ apikey: process.env.POKE_API_KEY });
 const apiCall = require("../api/pokePriceApi.js");
 
 const { convertApiSearch, convertPricetype } = require("../utils/buildCard.js");
+const { formatMoney, formatNum } = require("../utils/format");
 
 // const Card = require("../models/card");
 const CardRepo = require("../repositories/cardRepo");
@@ -45,7 +46,8 @@ exports.display_card_get = async (req, res, next) => {
     curr,
     binders: req.user.binders,
     msg,
-    sets: card.set.id ? null : sets
+    sets: card.set.id ? null : sets,
+    formatMoney
   });
 };
 

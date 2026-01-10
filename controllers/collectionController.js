@@ -11,6 +11,7 @@ const {
   updateRecentUpdates,
   updateStaleUpdates
 } = require("../utils/collectionControllerlib");
+const { formatMoney, formatNum } = require("../utils/format");
 
 exports.change_curr_post = async (req, res, next) => {
   const userId = req.user._id;
@@ -210,16 +211,6 @@ exports.display_filter_by_set_get = async (req, res, next) => {
 // ############ Dashboard ###########
 // Handle display dashboard on GET
 exports.display_dashboard_get = async (req, res, next) => {
-  const formatMoney = (n) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD"
-    }).format(n);
-  };
-  const formatNum = (n) => {
-    return new Intl.NumberFormat("en-US").format(n);
-  };
-
   const userId = req.user._id;
   const curr = req.user.curr;
 
@@ -248,14 +239,17 @@ exports.display_dashboard_get = async (req, res, next) => {
     0
   );
 
+  // Sets number of cards to display on dashboard rows
+  const sampleSize = 6;
+
   // MIDDLE BAND
 
   sortCardQuery(cards, "value", false);
-  const mostValuableCards = cards.slice(0, 5);
+  const mostValuableCards = cards.slice(0, sampleSize);
 
   const notUpdated = {
     count: 0,
-    firstFive: []
+    sample: []
   };
 
   const manualUpdateCards = [];
@@ -267,8 +261,8 @@ exports.display_dashboard_get = async (req, res, next) => {
 
   for (let card of cards) {
     // Updated Dates
-    recentUpdates = updateRecentUpdates(recentUpdates, card);
-    staleUpdates = updateStaleUpdates(staleUpdates, card);
+    recentUpdates = updateRecentUpdates(recentUpdates, card, sampleSize);
+    staleUpdates = updateStaleUpdates(staleUpdates, card, sampleSize);
 
     // Sets
     if (card.set.id) {
@@ -291,7 +285,7 @@ exports.display_dashboard_get = async (req, res, next) => {
       // Not updated to new API yet
       if (!card.oldId) {
         notUpdated.count++;
-        if (notUpdated.firstFive.length < 5) notUpdated.firstFive.push(card);
+        if (notUpdated.sample.length < sampleSize) notUpdated.sample.push(card);
       }
     }
   }
@@ -362,7 +356,8 @@ exports.display_dashboard_get = async (req, res, next) => {
     curr_convert: currConvert,
     curr,
     formatMoney,
-    formatNum
+    formatNum,
+    sampleSize
   };
 
   return res.render("collection/dashboard", payload);

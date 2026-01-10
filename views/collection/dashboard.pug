@@ -1,12 +1,3 @@
-//- title: "Dashboard",
-//- totalValue,
-//- totalCards,
-//- totalUniqueCards,
-//- totalDuplicates,
-//- mostValuableCards,
-//- notUpdated,
-//- curr_convert: currConvert,
-//- curr
 extends ../layout 
 
 
@@ -44,13 +35,16 @@ block content
             p.bold=formatNum(totalUniqueCards)
           div.card
             p.small-txt=`Updated API:`
-            p.bold=formatNum(totalDuplicates)
+            p.bold=formatNum(totalUniqueCards - notUpdated.count)
           div.card
             p.small-txt=`Duplicates:`
             p.bold=formatNum(totalDuplicates)
 
         div.vertical
           h3 Most Valuable Cards 
+          div.horizontal
+            - const c_val = mostValuableCards.reduce((acc, next) => acc + next.value.market, 0)
+            p=`${formatNum((c_val / totalValue) * 100)}% of Total Value`
           div.horizontal
             each card in mostValuableCards
               div.tcg-card-container  
@@ -64,7 +58,7 @@ block content
           div.horizontal
             p=`Current count: ${formatNum(notUpdated.count)}`
           div.horizontal
-            each card in notUpdated.firstFive 
+            each card in notUpdated.sample
               div.tcg-card-container  
                 a.not-a(href=`/collection/cards/${card._id}`) 
                   div.tcg-card
@@ -75,16 +69,16 @@ block content
           div.horizontal
             p=`Current count: ${formatNum(manualUpdateCards.length)}`
           div.horizontal
-            each card in manualUpdateCards.slice(0, 5)
+            each card in manualUpdateCards.slice(0, sampleSize)
               div.tcg-card-container  
                 a.not-a(href=`/collection/cards/${card._id}`) 
                   div.tcg-card
                     img(src=card.image, alt=card.name)
 
         div.vertical 
-          h3="Set Completion"
+          h3="Top Set Completion"
           div.horizontal 
-            each set in cardSets.slice(0, 5)
+            each set in cardSets.slice(0, 10)
               div.set-container
                 - const sn = set.name.split(":") 
                 p.small-txt=sn.length === 1 ? sn[0] : sn[1]

@@ -25,14 +25,14 @@
 }
 
 .page-wrapper {
-  padding: 25px;
+  padding: 15px 25px;
   display: flex;
   flex-direction: column;
   row-gap: 10px;
   background-color: rgba(255, 255, 255, 0.631);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border-radius: 10px;
+  border-radius: 5px;
   max-width: 1200px;
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.568);
 }
