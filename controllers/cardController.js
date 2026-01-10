@@ -221,7 +221,7 @@ exports.sync_price_api_get = async (req, res, next) => {
   const cardId = req.params.id;
   const priceType = req.query.priceType;
 
-  console.log(pokeName, pokeSet, cardId, priceType);
+  // console.log(pokeName, pokeSet, cardId, priceType);
 
   // API prices search
   const [searchErr, results] = await handle(
@@ -229,7 +229,7 @@ exports.sync_price_api_get = async (req, res, next) => {
   );
   if (searchErr) return next(searchErr);
 
-  console.log(results);
+  // console.log(results);
   const data = results.data || [];
 
   // Get card sets from DB
@@ -260,6 +260,7 @@ exports.sync_price_api_get = async (req, res, next) => {
     card_list: formattedResults ?? [],
     cardId: cardId,
     priceType,
+    convertPricetype,
     curr_convert: currConvert,
     curr
   });

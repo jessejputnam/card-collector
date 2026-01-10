@@ -12,8 +12,6 @@ block content
     else
       div.results-wrapper
         each card in card_list 
-          - const prices = card.tcgplayer ? card.tcgplayer.prices : null
-          
           div.result-container
             div(class=`result-img-container`) 
               img(src=card.meta.images.small, alt=card.name)
@@ -23,9 +21,11 @@ block content
               p.result-number= card.set.number
               p $#{!card.value.market ? " not available" : card.value.market.toFixed(2)}
               each prices, variant in card.priceVariants
+                - console.log(prices["Near Mint"])
                 p.small-txt #{variant}: #{prices["Near Mint"].priceString}
 
               form.add-card-form(method="POST" action=`/collection/cards/${cardId}/sync-price-api`) 
                 input#newId(type="hidden" name="newId" required="true" value=card.tcgPlayerId)
-                input#currentPrice(type="hidden" name="currentPrice" required="true" value=card.value.market)
+                - console.log(card)
+                input#currentPrice(type="hidden" name="currentPrice" required="true" value=(card.priceVariants[convertPricetype(priceType)]["Near Mint"].price || card.value.market))
                 button.btn.btn-secondary(type="submit") Select Card

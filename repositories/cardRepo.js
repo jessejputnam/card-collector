@@ -117,6 +117,7 @@ exports.updateCardPriceApi = async (cardId, newId, currentPrice) => {
   const update = {
     oldId: oldCard.id,
     id: newId,
+    "value.market": currentPrice,
     "value.priceHistory": priceHistory
   };
 
