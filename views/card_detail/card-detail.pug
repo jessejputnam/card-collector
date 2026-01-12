@@ -46,7 +46,7 @@ block content
 
       div.detail-info-container
         div.info-card-container
-          h2 #{card.name}
+          h2(style="font-size:1.2rem") #{card.name}
             if card.meta.rarity.reverseHolo 
               em(style="font-size:.7rem;color:silver")  Reverse Holo
             if card.value.priceType[0] === "1"
@@ -74,8 +74,8 @@ block content
                   span(style="font-size:.6rem; color:gray")  (#{card.set.releaseDate && card.set.releaseDate.toLocaleDateString()})
                 p.small-text= `${card.meta.setNumber}/${card.set.cardCount}`
 
-        - const sinceAdded = card.value.market - card.value.priceHistory.at(-1)[1]
-        - const sinceLastUpdate = card.value.market - card.value.priceHistory.at(1)[1]
+        - const sinceAdded = card.value.priceHistory.length > 1 ? card.value.market - card.value.priceHistory.at(-1)[1] : null
+        - const sinceLastUpdate = card.value.priceHistory.length > 1 ? card.value.market - card.value.priceHistory.at(1)[1] : null
         - const sinceAddedClass = sinceAdded > 0 ? "positive" : "negative"
         - const sinceLastUpdateClass = sinceLastUpdate > 0 ? "positive" : "negative"
         div.info-market-container
@@ -87,9 +87,9 @@ block content
                 p.delta Since Added
                 p.delta Since Last Update
               div.delta-values
-                p(class=sinceAddedClass)=`${sinceAdded > 0 ? `⬆︎` : `⬇︎`}${formatMoney(Math.abs(sinceAdded))}`
-                p(class=sinceLastUpdateClass)=`${sinceLastUpdate > 0 ? `⬆︎` : `⬇︎`}${formatMoney(Math.abs(sinceLastUpdate))}`
-          h3 Price over time 
+                p(class=sinceAddedClass)=`${sinceAdded > 0 ? `⬆︎` : sinceAdded == null ? "" : `⬇︎`}${sinceAdded == null ? "--" : formatMoney(Math.abs(sinceAdded))}`
+                p(class=sinceLastUpdateClass)=`${sinceLastUpdate > 0 ? `⬆︎` : sinceLastUpdate == null ? "" : `⬇︎`}${sinceLastUpdate == null ? "--" : formatMoney(Math.abs(sinceLastUpdate))}`
+          h3(style="font-size:1rem") Price over time 
           div.blinder-hi
           div.blinder-low
           div.price-history-container

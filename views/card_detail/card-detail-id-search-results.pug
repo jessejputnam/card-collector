@@ -21,11 +21,9 @@ block content
               p.result-number= card.set.number
               p $#{!card.value.market ? " not available" : card.value.market.toFixed(2)}
               each prices, variant in card.priceVariants
-                - console.log(prices["Near Mint"])
                 p.small-txt #{variant}: #{prices["Near Mint"].priceString}
 
               form.add-card-form(method="POST" action=`/collection/cards/${cardId}/sync-price-api`) 
                 input#newId(type="hidden" name="newId" required="true" value=card.tcgPlayerId)
-                - console.log(card)
                 input#currentPrice(type="hidden" name="currentPrice" required="true" value=(card.priceVariants[convertPricetype(priceType)]["Near Mint"].price || card.value.market))
                 button.btn.btn-secondary(type="submit") Select Card

@@ -1,13 +1,10 @@
 "use strict";
 
-const pokemon = require("pokemontcgsdk");
-pokemon.configure({ apikey: process.env.POKE_API_KEY });
 const apiCall = require("../api/pokePriceApi.js");
 
 const { convertApiSearch, convertPricetype } = require("../utils/buildCard.js");
 const { formatMoney, formatNum } = require("../utils/format");
 
-// const Card = require("../models/card");
 const CardRepo = require("../repositories/cardRepo");
 const CardSet = require("../models/set");
 const handle = require("../utils/errorHandler");
@@ -37,7 +34,6 @@ exports.display_card_get = async (req, res, next) => {
     if (errSets) return next(errSets);
     sets = getSets;
   }
-  console.log(card.value.priceHistory[0]);
 
   return res.render("card_detail/card-detail", {
     title: `${card.name}`,
@@ -54,7 +50,6 @@ exports.display_card_get = async (req, res, next) => {
 // ################# Update/Delete Cards ##################
 
 // Handle change price update type
-// TODO update to card repo for save
 exports.change_update_type = async (req, res, next) => {
   const cardId = req.params.id;
   const isManual = req.body.isManual === "true";
@@ -115,12 +110,11 @@ exports.update_price_history_post = async (req, res, next) => {
 };
 
 // Handle delete card on GET
-// TODO update to card repo
 exports.delete_card_get = async (req, res, next) => {
   const cardId = req.params.id;
   const curr = req.user.curr;
 
-  const [errCard, card] = await handle(Card.findById(cardId).exec());
+  const [errCard, card] = await CardRepo.getCard(cardId);
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
@@ -133,87 +127,60 @@ exports.delete_card_get = async (req, res, next) => {
 };
 
 // Handle delete card on POST
-// TODO update to card repo
 exports.delete_card_post = async (req, res, next) => {
   const cardId = req.body.cardId;
-  const [errDelCard, delCard] = await handle(
-    Card.findByIdAndRemove(cardId).exec()
-  );
+  const [errDelCard, delCard] = await CardRepo.deleteCard(cardId);
   if (errDelCard) return next(errDelCard);
 
   return res.redirect("/collection/home");
 };
 
 // Handle select binder on POST
-// TODO update to card repo
 exports.select_binder_post = async (req, res, next) => {
   const newBinder = req.body.binder;
   const cardId = req.body.objId;
 
   const [errCard, card] = await handle(
-    Card.findByIdAndUpdate(cardId, {
-      binder: newBinder == "none" ? null : newBinder
-    }).exec()
+    CardRepo.updateCardBinder(cardId, newBinder)
   );
   if (errCard) return next(errCard);
 
-  return res.redirect(`/collection/${cardId}?update=${newBinder}`);
+  return res.redirect(`/collection/cards/${cardId}?update=${newBinder}`);
 };
 
 // Handle edit rarity on POST
-// TODO update to card repo
 exports.edit_card_rarity = async (req, res, next) => {
   const cardId = req.body.objId;
   const newRarityRating = req.body.rarity;
 
-  const [errCard, card] = await handle(
-    Card.findByIdAndUpdate(cardId, {
-      "meta.rarity.grade": newRarityRating
-    }).exec()
+  const [errCard, card] = await CardRepo.updateCardField(
+    cardId,
+    "meta.rarity.grade",
+    newRarityRating
   );
 
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  return res.redirect(`/collection/${cardId}?update=rarity`);
+  return res.redirect(`/collection/cards/${cardId}?update=rarity`);
 };
 
 // Handle edit count on POST
-// TODO update to card repo
 exports.edit_card_count = async (req, res, next) => {
   const cardId = req.body.cardId;
   const newCount = req.body.count;
 
-  const [errCard, card] = await handle(
-    Card.findByIdAndUpdate(cardId, { "value.count": +newCount }).exec()
+  const [errCard, card] = await CardRepo.updateCardField(
+    cardId,
+    "value.count",
+    +newCount
   );
 
   if (errCard) return next(errCard);
   if (!card) return next(errs.cardNotFound());
 
-  return res.redirect(`/collection/${cardId}?update=count`);
+  return res.redirect(`/collection/cards/${cardId}?update=count`);
 };
-
-// // Handle update card set on GET
-// exports.update_card_set_get = async (req, res, next) => {
-//   const cardId = req.params.id;
-//   const curr = req.user.curr;
-
-//   const [setsErr, sets] = await handle(
-//     CardSet.find({}, "name id releaseDate").sort({ releaseDate: -1 }).exec()
-//   );
-//   if (setsErr) return next(setsErr);
-
-//   const [errCard, card] = await handle(Card.findById(cardId).exec());
-//   if (errCard) return next(errCard);
-//   if (!card) return next(errs.cardNotFound());
-
-//   return res.render("update-card-set", {
-//     title: `Update Card Set for ${card.pokemon.name}`,
-//     card,
-//     curr
-//   });
-// };
 
 // Handle sync price api on GET
 exports.sync_price_api_get = async (req, res, next) => {
@@ -223,15 +190,12 @@ exports.sync_price_api_get = async (req, res, next) => {
   const cardId = req.params.id;
   const priceType = req.query.priceType;
 
-  // console.log(pokeName, pokeSet, cardId, priceType);
-
   // API prices search
   const [searchErr, results] = await handle(
     apiCall.getCardsBySearch(pokeName, pokeSet)
   );
   if (searchErr) return next(searchErr);
 
-  // console.log(results);
   const data = results.data || [];
 
   // Get card sets from DB
@@ -244,9 +208,9 @@ exports.sync_price_api_get = async (req, res, next) => {
   const setReleases = {};
   sets.forEach((set) => (setReleases[set.id] = set.releaseDate));
 
-  const formattedResults = data.map((tcgCard) =>
-    convertApiSearch(tcgCard, setReleases)
-  );
+  const formattedResults = data
+    .map((tcgCard) => convertApiSearch(tcgCard, setReleases))
+    .filter((card) => convertPricetype(priceType) in card.priceVariants);
 
   formattedResults.sort((a, b) => {
     const dateA = new Date(setReleases[a.set.id]);
@@ -331,7 +295,6 @@ exports.add_card_post = async (req, res, next) => {
 };
 
 // Handle display add custom card form on GET
-// TODO update to card repo
 exports.add_custom_card_get = (req, res, next) => {
   const rarities = Object.keys(getRarityRating);
   const curr = req.user.curr;
@@ -344,17 +307,14 @@ exports.add_custom_card_get = (req, res, next) => {
 };
 
 // Handle add custom card on POST
-// TODO update to card repo
 exports.add_custom_card_post = async (req, res, next) => {
   const userId = req.user._id;
 
   const info = buildCard.info(req);
-  const card = buildCard.custom(info, userId);
-
-  const [err, _] = await handle(card.save());
+  const [err, card] = await CardRepo.addCustomCard(info, userId);
   if (err) return next(err);
 
-  return res.redirect(`/collection/${card._id}`);
+  return res.redirect(`/collection/cards/${card._id}`);
 };
 
 // Handle display edit custom card form on GET
@@ -363,9 +323,8 @@ exports.edit_custom_card_get = async (req, res, next) => {
   const rarities = Object.keys(getRarityRating);
   const curr = req.user.curr;
 
-  const [err, card] = await handle(Card.findById(cardId).exec());
+  const [err, card] = await CardRepo.getCard(cardId);
   if (err) return next(err);
-
   if (!card.custom) return next(new Error("Cannot edit non-custom cards"));
 
   return res.render("card_detail/edit-custom-card", {
@@ -381,13 +340,12 @@ exports.edit_custom_card_get = async (req, res, next) => {
 exports.edit_custom_card_post = async (req, res, next) => {
   const cardId = req.params.id;
 
-  const [errCard, card] = await handle(Card.findById(cardId).exec());
+  const [errCard, card] = await CardRepo.getCard(cardId);
   if (errCard) return next(errCard);
-
   buildCard.edit(card, req);
 
   const [err, _] = await handle(card.save());
   if (err) return next(err);
 
-  return res.redirect(`/collection/${card._id}`);
+  return res.redirect(`/collection/cards/${card._id}`);
 };

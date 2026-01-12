@@ -3,64 +3,9 @@ const Card = require("../models/card");
 const CardSet = require("../models/set");
 const handle = require("../utils/errorHandler");
 const errs = require("../utils/errs");
+const { buildCardDetail, buildDashCard } = require("../utils/repoHelpers");
 
-function buildCardDetail(card, set) {
-  return {
-    _id: card._id,
-    name: card.pokemon.name,
-    id: card.id,
-    oldId: card.oldId,
-    userId: card.userId,
-    custom: card.custom,
-    meta: {
-      rarity: card.meta.rarity,
-      supertype: card.meta.supertype,
-      stage: card.meta.stage,
-      setNumber: card.meta.set.number,
-      images: card.meta.images
-    },
-    set: {
-      _id: set?._id,
-      id: set?.id,
-      name: set?.name,
-      series: set?.series,
-      releaseDate: set?.releaseDate,
-      cardCount: set?.cardCount,
-      symbolUrl: set?.symbolUrl
-    },
-    oldSetData: `${card.meta.set.name} [${card.meta.set.series}] - ${card.meta.set.releaseDate}`,
-    value: card.value,
-    binder: card.binder?.type
-  };
-}
-
-function buildDashCard(card, sets) {
-  const set = sets[card.setId];
-
-  return {
-    _id: card._id,
-    name: card.pokemon.name,
-    id: card.id,
-    oldId: card.oldId,
-    custom: card.custom,
-    rarity: card.meta.rarity,
-    setNumber: card.meta.set.number,
-    image: card.meta.images.small,
-    set: {
-      id: set?.id,
-      name: set?.name,
-      series: set?.series,
-      releaseDate: set?.releaseDate,
-      cardCount: set?.cardCount,
-      symbolUrl: set?.symbolUrl
-    },
-    value: card.value,
-    binder: card.binder?.type
-  };
-}
-
-// ######################################################
-// ######################################################
+// #################### Get Cards ############################
 
 exports.getCardDetail = async (cardId) => {
   const [errCard, card] = await handle(Card.findById(cardId).exec());
@@ -81,6 +26,28 @@ exports.getCard = async (cardId) => {
   if (!card) return next(errs.cardNotFound());
   return [null, card];
 };
+
+exports.getAllUserCards = async (userId) => {
+  return await handle(Card.find({ userId }).exec());
+};
+
+exports.getDashboardCards = async (userId) => {
+  const [err, cards] = await handle(Card.find({ userId }).exec());
+  if (err) return [err, null];
+
+  const [errSet, sets] = await handle(CardSet.find().exec());
+  if (errSet) return [errSet, null];
+
+  const setsObj = {};
+  for (let set of sets) {
+    setsObj[set.id] = set;
+  }
+
+  const dashCards = cards.map((x) => buildDashCard(x, setsObj));
+  return dashCards;
+};
+
+// #################### Update Cards ############################
 
 exports.updateCardField = async (cardId, field, newValue) => {
   const update = {};
@@ -124,27 +91,16 @@ exports.updateCardPriceApi = async (cardId, newId, currentPrice) => {
   return await handle(Card.findByIdAndUpdate(cardId, update).exec());
 };
 
-exports.getAllUserCards = async (userId) => {
-  return await handle(Card.find({ userId }).exec());
+exports.deleteCard = async (cardId) => {
+  return handle(Card.findByIdAndRemove(cardId).exec());
 };
 
-exports.getDashboardCards = async (userId) => {
-  const [err, cards] = await handle(Card.find({ userId }).exec());
-  if (err) return [err, null];
+// #################### Update Binder Cards ############################
 
-  const [errSet, sets] = await handle(CardSet.find().exec());
-  if (errSet) return [errSet, null];
-
-  const setsObj = {};
-  for (let set of sets) {
-    setsObj[set.id] = set;
-  }
-
-  const dashCards = cards.map((x) => buildDashCard(x, setsObj));
-  return dashCards;
+exports.updateCardBinder = async (cardId, newBinder) => {
+  const binder = newBinder == "none" ? null : newBinder;
+  return handle(Card.findByIdAndUpdate(cardId, { binder }).exec());
 };
-
-// ####### Binder Card Calls ##########
 
 exports.removeDeletedBinder = async (userId, binder) => {
   return handle(Card.updateMany({ userId, binder }, { binder: null }));
@@ -152,4 +108,53 @@ exports.removeDeletedBinder = async (userId, binder) => {
 
 exports.getBinderCards = async (userId, binder) => {
   return handle(Card.find({ userId: userId, binder: binder }).exec());
+};
+
+// #################### Add Cards ############################
+
+/**
+ * Build a card from custom info
+ * @param {*} card
+ * @returns Card
+ */
+exports.addCustomCard = async (cardData, userId) => {
+  const card = new Card({
+    id: cardData.id,
+    userId,
+    binder: null,
+    custom: true,
+    meta: {
+      images: {
+        small: cardData.img || "/images/missingno.png",
+        large: cardData.img || "/images/missingno.png"
+      },
+      rarity: {
+        type: cardData.rarity,
+        grade: getRarityRating[cardData.rarity],
+        reverseHolo: cardData.revHolo
+      },
+      supertype: cardData.supertype,
+      subtypes: [],
+      set: {
+        symbol: cardData.set_symbol,
+        name: cardData.set_name,
+        id: cardData.set_id,
+        series: cardData.set_series,
+        number: cardData.set_number,
+        totalPrint: cardData.set_printedTotal,
+        releaseDate: cardData.set_releaseDate
+      }
+    },
+    pokemon: { name: cardData.name },
+    value: {
+      manualUpdate: true,
+      market: cardData.market,
+      priceHistory: [
+        [new Date().toLocaleDateString("en-US"), cardData.market.toFixed(2)]
+      ],
+      priceType: cardData.priceType
+    }
+  });
+
+  return handle(card.save());
 };

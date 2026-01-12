@@ -3,6 +3,10 @@ h2 {
   margin-bottom: 0;
 }
 
+.btn {
+  font-size: .9rem;
+}
+
 .msg-container {
   position: absolute;
   top: 0;
@@ -193,13 +197,6 @@ h2 {
   font-size: 20px;
 }
 
-/* 
-.delta-container {
-  display: flex;
-  justify-content: space-between;
-} */
-
-
 .auto-update {
   padding: 2px 5px;
   border-radius: 5px;
@@ -242,26 +239,20 @@ h2 {
   position: relative;
 }
 
-.info-market-container>.blinder-hi {
+.info-market-container>.blinder-hi,
+.info-market-container>.blinder-low {
   position: absolute;
   background-color: white;
   width: 80%;
   height: 15px;
-  top: 62px;
+  top: 59px;
   border-radius: 2px;
   left: 12px;
   box-shadow: 0 2px 1px -1px rgba(255, 255, 255, 0.8);
 }
 
 .info-market-container>.blinder-low {
-  position: absolute;
-  background-color: white;
-  width: 80%;
-  height: 15px;
-  top: 197px;
-  border-radius: 2px;
-  left: 12px;
-  box-shadow: 0 -2px 1px -1px rgba(255, 255, 255, 0.8);
+  top: 194px;
 }
 
 .price-history-container {

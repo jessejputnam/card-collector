@@ -119,51 +119,6 @@ exports.info = (req) => {
   };
 };
 
-/**
- * Build a card from custom info
- * @param {*} card
- * @returns Card
- */
-exports.custom = (card, userId) => {
-  return new Card({
-    id: card.id,
-    userId,
-    binder: null,
-    custom: true,
-    meta: {
-      images: {
-        small: card.img || "/images/missingno.png",
-        large: card.img || "/images/missingno.png"
-      },
-      rarity: {
-        type: card.rarity,
-        grade: getRarityRating[card.rarity],
-        reverseHolo: card.revHolo
-      },
-      supertype: card.supertype,
-      subtypes: [],
-      set: {
-        symbol: card.set_symbol,
-        name: card.set_name,
-        id: card.set_id,
-        series: card.set_series,
-        number: card.set_number,
-        totalPrint: card.set_printedTotal,
-        releaseDate: card.set_releaseDate
-      }
-    },
-    pokemon: { name: card.name },
-    value: {
-      manualUpdate: true,
-      market: card.market,
-      priceHistory: [
-        [new Date().toLocaleDateString("en-US"), card.market.toFixed(2)]
-      ],
-      priceType: card.priceType
-    }
-  });
-};
-
 exports.edit = (card, req) => {
   const q = req.body;
 
