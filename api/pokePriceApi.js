@@ -1,5 +1,6 @@
 const BASE_URL = "https://www.pokemonpricetracker.com/api/v2";
 const TOKEN = process.env.POKE_PRICE_API_KEY;
+const apiLimit = 15;
 
 exports.getCard = async (cardId) => {
   const options = {
@@ -28,7 +29,10 @@ exports.getCardsBySearch = async (query, setId = null) => {
     ? `search=${query}&setId=${setId}`
     : `search=${query}`;
 
-  const res = await fetch(`${BASE_URL}/cards?${queryParams}&limit=5`, options);
+  const res = await fetch(
+    `${BASE_URL}/cards?${queryParams}&limit=${apiLimit}`,
+    options
+  );
   if (!res.ok) {
     const msg =
       res.status == 429
