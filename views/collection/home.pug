@@ -53,6 +53,8 @@ block content
                   p.collection-card-name= card.pokemon.name 
                     if card.meta.rarity.reverseHolo 
                       span(style="font-size:.7rem;color:gray")  Reverse Holo
+                    if !card.oldId
+                      span(style="font-size:.5rem")=" ✧ "
                   p.collection-card-rarity= card.meta.rarity.type
               div.collection-card-set
                 p= card.meta.set.name

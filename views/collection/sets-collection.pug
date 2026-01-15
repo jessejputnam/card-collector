@@ -41,4 +41,6 @@ block content
 
               li(style=`list-style: none`)  
                 a.set-link(href=`/collection/cards/${card._id}` style=`color:${link_color}`)= card.pokemon.name + " "
+                  if !card.oldId
+                    span(style="font-size:.5rem")=" ✧ "
                   span.set-number(style=`color:${set_number_color}`)=  card.meta.set.number + "/" + card.meta.set.totalPrint
