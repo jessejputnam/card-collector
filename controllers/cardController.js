@@ -30,7 +30,9 @@ exports.display_card_get = async (req, res, next) => {
 
   let sets = null;
   if (!card.set.id) {
-    const [errSets, getSets] = await handle(CardSet.find().exec());
+    const [errSets, getSets] = await handle(
+      CardSet.find().sort({ releaseDate: -1 }).exec()
+    );
     if (errSets) return next(errSets);
     sets = getSets;
   }
@@ -242,6 +244,20 @@ exports.sync_price_api_post = async (req, res, next) => {
     cardId,
     newId,
     price
+  );
+  if (errCard) return next(errCard);
+
+  return res.redirect(`/collection/cards/${cardId}?update=id`);
+};
+
+// Handle manual sync price api on POST
+exports.manual_sync_price_api_post = async (req, res, next) => {
+  const cardId = req.params.id;
+  const newId = req.body.newId;
+
+  const [errCard, card] = await CardRepo.updateCardPriceApiIdOnly(
+    cardId,
+    newId
   );
   if (errCard) return next(errCard);
 

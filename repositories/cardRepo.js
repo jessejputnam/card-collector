@@ -91,6 +91,16 @@ exports.updateCardPriceApi = async (cardId, newId, currentPrice) => {
   return await handle(Card.findByIdAndUpdate(cardId, update).exec());
 };
 
+exports.updateCardPriceApiIdOnly = async (cardId, newId) => {
+  const [errOldCard, oldCard] = await handle(Card.findById(cardId).exec());
+  if (errOldCard) return [errOldCard, null];
+  if (!oldCard) return next(errs.cardNotFound());
+
+  const update = { oldId: oldCard.id, id: newId };
+
+  return await handle(Card.findByIdAndUpdate(cardId, update).exec());
+};
+
 exports.deleteCard = async (cardId) => {
   return handle(Card.findByIdAndRemove(cardId).exec());
 };

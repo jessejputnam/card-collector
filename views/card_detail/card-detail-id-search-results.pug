@@ -27,3 +27,7 @@ block content
                 input#newId(type="hidden" name="newId" required="true" value=card.tcgPlayerId)
                 input#currentPrice(type="hidden" name="currentPrice" required="true" value=(card.priceVariants[convertPricetype(priceType)]["Near Mint"].price || card.value.market))
                 button.btn.btn-secondary(type="submit") Select Card
+
+      //- form.add-card-form(method="POST" action=`/collection/cards/${cardId}/manual-sync-price-api`) 
+      //-   input#newId(type="text" name="newId" required="true" style="margin-right:15px")
+      //-   button.btn.btn-secondary(type="submit") Manual ID Update

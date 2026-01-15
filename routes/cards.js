@@ -56,7 +56,10 @@ router.get("/:id/sync-price-api", card_controller.sync_price_api_get);
 // POST request for update card ID
 router.post("/:id/sync-price-api", card_controller.sync_price_api_post);
 
-// POST request for update card set
-router.post("/:id/update-card-set", card_controller.update_card_set_post);
+// POST request for manual update card ID
+router.post(
+  "/:id/manual-sync-price-api",
+  card_controller.manual_sync_price_api_post
+);
 
 module.exports = router;
