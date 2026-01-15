@@ -1,31 +1,31 @@
 /* ########### ## SETS VIEW ############ */
 
-.page-wrapper > .page-nav {
-    max-height: 325px;
-    padding: 15px;
-    margin-left: 20px;
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 5px 5px;
-    flex-wrap: wrap;
-    font-size: 0.8rem;
-    list-style-type: "〄";
-    background-color: rgb(250, 245, 245);
-    border-radius: 10px;
-    border: inset 3px rgb(250, 245, 245);
+.page-wrapper>.page-nav {
+  max-height: 325px;
+  padding: 15px;
+  margin-left: 20px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 5px 5px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  list-style-type: "〄";
+  background-color: rgb(250, 245, 245);
+  border-radius: 10px;
+  border: inset 3px rgb(250, 245, 245);
 }
 
-.page-wrapper > .page-nav > li {
+.page-wrapper>.page-nav>li {
   padding-left: 5px;
   margin-left: 12px;
   width: 120px;
 }
 
 .to-top {
-  display:inline-block;
-  font-size:.7rem;
-  margin-bottom:10px
+  display: inline-block;
+  font-size: .7rem;
+  margin-bottom: 10px
 }
 
 .btn-csv {
@@ -36,26 +36,26 @@
 
 .set-collected {
   margin-left: 5px;
-  font-size:.8rem;
-  color:gray;
-  font-weight:normal
+  font-size: .8rem;
+  color: gray;
+  font-weight: normal
 }
 
 .set-date {
-  font-size:.5rem;
-  color:gray;
-  margin-left:15px;
+  font-size: .5rem;
+  color: gray;
+  margin-left: 15px;
 }
 
 .set-link {
-  font-size:.9rem;
-  font-weight:normal;
+  font-size: .9rem;
+  font-weight: normal;
   color: black;
 }
 
 .set-number {
-  font-size:.7rem;
-  color:gray;
+  font-size: .7rem;
+  color: gray;
 }
 
 .set-total {
@@ -86,7 +86,7 @@
   max-height: 900px;
 }
 
-.set-card-list > li {
+.set-card-list>li {
   max-width: 150px;
 }
 
@@ -94,23 +94,24 @@
   color: rgb(59, 59, 59);
   text-decoration: none;
   text-wrap: wrap;
+  font-size: .8rem;
 }
 
 @media only screen and (max-width: 1300px) {
-  .page-wrapper > .page-nav {
+  .page-wrapper>.page-nav {
     overflow-x: auto;
     border-radius: 10px;
     border: 3px solid #faf5f5;
     margin-left: 0;
   }
 
-  .page-wrapper > .page-nav > li {
+  .page-wrapper>.page-nav>li {
     width: 200px;
     max-width: none;
   }
 
-  .page-wrapper > .page-nav > li > a {
-    font-size: 0.9rem;
+  .page-wrapper>.page-nav>li>a {
+    font-size: 0.8rem;
   }
 
   .set-results-container {
@@ -126,7 +127,7 @@
     overflow-x: auto;
   }
 
-  .set-card-list > li {
+  .set-card-list>li {
     width: 250px;
   }
 }
