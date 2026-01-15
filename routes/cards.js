@@ -62,4 +62,7 @@ router.post(
   card_controller.manual_sync_price_api_post
 );
 
+// POST request for update card set
+router.post("/:id/update-card-set", card_controller.update_card_set_post);
+
 module.exports = router;
