@@ -45,7 +45,7 @@ block content
         img#cardImg(src=card.meta.images.large alt=card.name onerror="/images/missingno.png")
 
       div.detail-info-container
-        div.info-card-container
+        div.info-container.info-card-container
           h2(style="font-size:1.2rem") #{card.name}
             if card.meta.rarity.reverseHolo 
               em(style="font-size:.7rem;color:silver")  Reverse Holo
@@ -53,7 +53,7 @@ block content
               em(style="font-size:.7rem;color:silver")  1st Edition
           em= card.meta.rarity.type
 
-        div.info-set-container 
+        div.info-container.info-set-container 
           if !card.set.id
             p(style="font-size:.8rem")= `Old Data: ${card.oldSetData}`
             form.select-set-form(method="POST" action=`/collection/cards/${card._id}/update-card-set`) 
@@ -78,7 +78,7 @@ block content
         - const sinceLastUpdate = card.value.priceHistory.length > 1 ? card.value.market - card.value.priceHistory.at(1)[1] : null
         - const sinceAddedClass = sinceAdded > 0 ? "positive" : "negative"
         - const sinceLastUpdateClass = sinceLastUpdate > 0 ? "positive" : "negative"
-        div.info-market-container
+        div.info-container.info-market-container
           div.current-price-container
             p Current Market Value: 
             h2= `${curr === "eur" ? "€" : "$"}${(card.value.market * curr_convert).toFixed(2)}`

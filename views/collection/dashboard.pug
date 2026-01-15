@@ -24,21 +24,21 @@ block content
     else
       div.body
         div.horizontal
-          div.card
-            p.small-txt=`Total Value:` 
-            p.bold=formatMoney(totalValue)
-          div.card
-            p.small-txt=`Total Cards:` 
-            p.bold=formatNum(totalCards)
-          div.card
-            p.small-txt=`Unique Cards:` 
-            p.bold=formatNum(totalUniqueCards)
-          div.card
-            p.small-txt=`Updated API:`
-            p.bold=formatNum(totalUniqueCards - notUpdated.count)
-          div.card
-            p.small-txt=`Duplicates:`
-            p.bold=formatNum(totalDuplicates)
+          div.kpi
+            p.kpi-value=formatMoney(totalValue)
+            p.kpi-label=`Total Value` 
+          div.kpi
+            p.kpi-value=formatNum(totalCards)
+            p.kpi-label=`Total Cards` 
+          div.kpi
+            p.kpi-value=formatNum(totalUniqueCards)
+            p.kpi-label=`Unique Cards` 
+          div.kpi
+            p.kpi-value=formatNum(totalUniqueCards - notUpdated.count)
+            p.kpi-label=`Updated API`
+          div.kpi
+            p.kpi-value=formatNum(totalDuplicates)
+            p.kpi-label=`Duplicates`
 
         div.vertical
           h3 Most Valuable Cards 
