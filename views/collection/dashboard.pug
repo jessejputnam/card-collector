@@ -23,7 +23,7 @@ block content
       p No cards in collection yet
     else
       div.body
-        div.horizontal
+        div.horizontal.kpi-container
           div.kpi
             p.kpi-value=formatMoney(totalValue)
             p.kpi-label=`Total Value` 
@@ -51,7 +51,7 @@ block content
                 a.not-a(href=`/collection/cards/${card._id}`) 
                   div.tcg-card
                     img(src=card.image, alt=card.name)
-                p=formatMoney(card.value.market)
+                p.card-subtext=formatMoney(card.value.market)
 
         div.vertical
           h3=`Not Upated Yet` 
@@ -63,30 +63,39 @@ block content
                 a.not-a(href=`/collection/cards/${card._id}`) 
                   div.tcg-card
                     img(src=card.image, alt=card.name)
+        if manualUpdateCards.length > 1
+          div.vertical
+            h3=`Manual Update Cards` 
+            div.horizontal
+              p=`Current count: ${formatNum(manualUpdateCards.length)}`
+            div.horizontal
+              each card in manualUpdateCards.slice(0, sampleSize)
+                div.tcg-card-container  
+                  a.not-a(href=`/collection/cards/${card._id}`) 
+                    div.tcg-card
+                      img(src=card.image, alt=card.name)
 
-        div.vertical
-          h3=`Manual Update Cards` 
-          div.horizontal
-            p=`Current count: ${formatNum(manualUpdateCards.length)}`
-          div.horizontal
-            each card in manualUpdateCards.slice(0, sampleSize)
-              div.tcg-card-container  
-                a.not-a(href=`/collection/cards/${card._id}`) 
-                  div.tcg-card
-                    img(src=card.image, alt=card.name)
-
-        div.vertical 
-          h3="Top Set Completion"
+        div(style="padding-bottom:10px;").vertical
+          div.set-completion-header 
+            h3="Set Completion (Unique Cards Only)"
+            div(style="display:flex;gap:15px;")
+              p ▰ Completion
+              p ▧ Reverse holo variants
+          p(style="font-size:.8rem;color:gray; width:100%") Completion is based on unique card numbers. Reverse holos are tracked as variants.
           div.horizontal 
             each set in cardSets.slice(0, 10)
               div.set-container
-                - const sn = set.name.split(":") 
-                p.small-txt=sn.length === 1 ? sn[0] : sn[1]
-                div.set-logo
-                  img(src=set.symbolUrl, alt="")
+                div.set-name-container
+                  - const sn = set.name.split(":") 
+                  div.set-logo
+                    img(src=set.symbolUrl, alt={sn})
+                  p.small-txt=sn.length === 1 ? sn[0] : sn[1]
                 div.progress-bar 
-                  div.progress(style=`width:${((set.ownedCards / set.setTotal) * 100).toFixed(2)}%`)
-                p=set.ownedCards
+                  div.progress.progress-reverseHolo(style=`width:${((set.reverseHoloCards / set.setTotal) * 100).toFixed(2)}%`)
+                  div.progress(style=`width:${((set.uniqueCards / set.setTotal) * 100).toFixed(2)}%`)
+                p(style="font-size:.7rem")=`${set.uniqueCards} ${set.uniqueCards < 100 ? " " : ""}`
+                  if set.reverseHoloCards > 0
+                    span(style="font-size:.5rem;")=`· ${set.reverseHoloCards} reverse holo`
         
         div.vertical
           h3=`Most Recently Updated` 
@@ -96,7 +105,7 @@ block content
                 a.not-a(href=`/collection/cards/${card._id}`) 
                   div.tcg-card
                     img(src=card.image, alt=card.name)
-                p=card.value.priceHistory[0][0]        
+                p.card-subtext=card.value.priceHistory[0][0]        
         
         div.vertical
           h3=`Least Recently Updated` 
@@ -106,7 +115,7 @@ block content
                 a.not-a(href=`/collection/cards/${card._id}`) 
                   div.tcg-card
                     img(src=card.image, alt=card.name)
-                p=card.value.priceHistory[0][0]
+                p.card-subtext=card.value.priceHistory[0][0]
                 
         
 

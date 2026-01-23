@@ -121,6 +121,7 @@ exports.info = (req) => {
 
 exports.edit = (card, req) => {
   const q = req.body;
+  console.log(q);
 
   card.id = `${q.set_id}-${q.set_number}`;
   card.pokemon.name = q.name;
@@ -138,6 +139,7 @@ exports.edit = (card, req) => {
   card.meta.set.releaseDate = q.set_releaseDate;
   card.meta.set.number = q.set_number;
   card.meta.set.totalPrint = q.set_printedTotal;
+  card.isJapanese = q.isJapanese === "true";
 };
 
 /*

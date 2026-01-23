@@ -76,14 +76,6 @@ h2 {
   width: 430.08px;
 }
 
-.set-detail-img-container>img {
-  height: 380px;
-  max-height: 380px;
-  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.672);
-  border-radius: 25px;
-  width: 430.08px;
-}
-
 @media only screen and (max-width: 485px) {
   .detail-img-container>img {
     height: auto;

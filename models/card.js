@@ -13,6 +13,7 @@ const CardSchema = new Schema(
     userId: { type: Schema.Types.ObjectId, ref: "User" },
 
     custom: Boolean,
+    isJapanese: Boolean,
 
     binder: {
       type: String

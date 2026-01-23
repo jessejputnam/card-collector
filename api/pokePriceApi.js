@@ -2,13 +2,15 @@ const BASE_URL = "https://www.pokemonpricetracker.com/api/v2";
 const TOKEN = process.env.POKE_PRICE_API_KEY;
 const apiLimit = 15;
 
-exports.getCard = async (cardId) => {
+exports.getCard = async (cardId, lang = "english") => {
   const options = {
     method: "GET",
     headers: { Authorization: `Bearer ${TOKEN}` }
   };
 
-  const res = await fetch(`${BASE_URL}/cards/?tcgPlayerId=${cardId}`, options);
+  const path = `/cards/?language=${lang}&tcgPlayerId=${cardId}`;
+
+  const res = await fetch(`${BASE_URL}${path}`, options);
   if (!res.ok) {
     const msg =
       res.status == 429
@@ -19,7 +21,7 @@ exports.getCard = async (cardId) => {
   return res.json();
 };
 
-exports.getCardsBySearch = async (query, setId = null) => {
+exports.getCardsBySearch = async (query, setId = null, lang = "english") => {
   const options = {
     method: "GET",
     headers: { Authorization: `Bearer ${TOKEN}` }
@@ -30,7 +32,7 @@ exports.getCardsBySearch = async (query, setId = null) => {
     : `search=${query}`;
 
   const res = await fetch(
-    `${BASE_URL}/cards?${queryParams}&limit=${apiLimit}`,
+    `${BASE_URL}/cards?language=${lang}&${queryParams}&limit=${apiLimit}`,
     options
   );
   if (!res.ok) {
@@ -43,12 +45,15 @@ exports.getCardsBySearch = async (query, setId = null) => {
   return res.json();
 };
 
-exports.getSets = async () => {
+exports.getSets = async (lang = "english") => {
   const options = {
     method: "GET",
     headers: { Authorization: `Bearer ${TOKEN}` }
   };
-  const res = await fetch(`${BASE_URL}/sets?limit=500`, options);
+  const res = await fetch(
+    `${BASE_URL}/sets?language=${lang}&limit=500`,
+    options
+  );
   if (!res.ok) throw new Error("Failed to fetch sets");
   return res.json();
 };

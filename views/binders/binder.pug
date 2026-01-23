@@ -22,12 +22,12 @@ block content
     hr
     div.binder-container 
       each card in cards
-        a(href=`/collection/${card._id}`)
+        a(href=`/collection/cards/${card._id}`)
           div.prize-card-container
             div.prize-img-container(id=card._id)
               img(src=card.meta.images.large, alt=card.pokemon.name)
               div.prize-overlay 
             div.prize-info-container 
-              a(href=`/collection/${card._id}`)= card.pokemon.name 
+              a(href=`/collection/cards/${card._id}`)= card.pokemon.name 
               p= `${curr === "eur" ? "€" : "$"}` + (card.value.market * curr_convert).toFixed(2)
   

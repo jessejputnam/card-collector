@@ -46,6 +46,12 @@ block content
             select.select#rarity(name="rarity" required) 
               each item in rarities
                 option(value=item selected=(card.meta.rarity.type === item))= item
+
+          div.form-control 
+            label(for="isJapanese")
+            select.select#isJapanese(name="isJapanese")
+              option(value="false" selected=(!card.isJapanese)) English 
+              option(value="true" selected=(card.isJapanese)) Japanese 
         
         div.inner
           h2 Set

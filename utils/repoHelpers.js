@@ -24,7 +24,8 @@ exports.buildCardDetail = (card, set) => {
     },
     oldSetData: `${card.meta.set.name} [${card.meta.set.series}] - ${card.meta.set.releaseDate}`,
     value: card.value,
-    binder: card.binder?.type
+    binder: card.binder?.type,
+    lang: card.isJapanese ? "japanese" : "english"
   };
 };
 

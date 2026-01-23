@@ -1,25 +1,40 @@
 extends ../layout 
 
 block styles  
-  link(rel="stylesheet" href="/stylesheets/detail.css")
+  link(rel="stylesheet" href="/stylesheets/card-set-detail.css")
+
+block scripts 
+  script(type="module", src="/javascripts/scriptSetDetail.js" defer) 
 
 block content 
   if msg
     div#msg.msg-container
       p= msg
 
+  div.form-separator.series-update-container#series-update-container
+    div#close-btn.close-btn ❌ 
+      p close
+    h3 Update series
+    form.series-update-form(method="POST" action=`/sets/${set.id}/update-series`)
+      input(type="input" name="newSeries" required="true" placeholder=set.series)
+      button.btn.btn-primary(type="submit")= `Save`
+
   div.page-wrapper
     a(href=`/sets`) Back to sets
     div.title 
       h1= title
 
-    div.card-detail-container 
+    div.set-detail-container 
       div.set-detail-img-container 
         img(src=`${set.imageUrl || "/images/missingno.png"}` alt=set.name onerror="this.onerror=null;this.src='/images/pokeball.png';")
       div.detail-info-container
         div.info-card-container
           h2 #{set.name}
-          em= set.series
+          div.series-container
+            em= set.series
+            if isAdmin 
+              div.update-series-container 
+                button.btn.update-series-btn#update-series-btn Update Series
         div.info-set-container 
           div 
             img#symbolImg(src=`${set.symbolUrl || "/images/pokeball.png"}`, alt=set.name height="40px")
@@ -31,7 +46,7 @@ block content
                   a(href=set.priceGuideUrl target="_blank") Price Guide
         if isAdmin && !set.symbolUrl
             div
-                form.form-wrapper(action=`/sets/${set.id}` method="POST")
+                form.form-wrapper(action=`/sets/${set.id}/update-logo` method="POST")
                   label(for="symbolUrl") Set Symbol Url:
                   input#symbolUrl(type="text" name="symbolUrl" required style="height:30px; padding:5px" )
                   button.btn(type="submit") Update

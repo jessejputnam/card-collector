@@ -10,7 +10,7 @@ const { buildCardDetail, buildDashCard } = require("../utils/repoHelpers");
 exports.getCardDetail = async (cardId) => {
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return [errCard, null];
-  if (!card) return next(errs.cardNotFound());
+  if (!card) return [errs.cardNotFound(), null];
 
   const [errSet, set] = await handle(
     CardSet.findOne({ id: card.setId }).exec()
@@ -23,7 +23,7 @@ exports.getCardDetail = async (cardId) => {
 exports.getCard = async (cardId) => {
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return [errCard, null];
-  if (!card) return next(errs.cardNotFound());
+  if (!card) return [errs.cardNotFound(), null];
   return [null, card];
 };
 
@@ -44,7 +44,20 @@ exports.getDashboardCards = async (userId) => {
   }
 
   const dashCards = cards.map((x) => buildDashCard(x, setsObj));
-  return dashCards;
+  return [null, dashCards];
+};
+
+// exports.getAllCardsInSet = async (userId, setId) => {
+//   const [err, cards] = await handle(Card.find({ userId, setId }).exec());
+// };
+
+exports.getAllCardsInSetNotUpdatedApi = async (userId, setId) => {
+  const [err, cards] = await handle(
+    Card.find({ userId, setId, oldId: { $exists: false } }).exec()
+  );
+  if (err) return [err, null];
+
+  return [null, cards.map((card) => buildCardDetail(card))];
 };
 
 // #################### Update Cards ############################
@@ -59,7 +72,7 @@ exports.updateCardField = async (cardId, field, newValue) => {
     Card.findByIdAndUpdate(cardId, update).exec()
   );
   if (errCard) return [errCard, null];
-  if (!card) return next(errs.cardNotFound());
+  if (!card) return [errs.cardNotFound(), null];
   return [null, card];
 };
 
@@ -68,14 +81,14 @@ exports.updateCardFields = async (cardId, update) => {
     Card.findByIdAndUpdate(cardId, update).exec()
   );
   if (errCard) return [errCard, null];
-  if (!card) return next(errs.cardNotFound());
+  if (!card) return [errs.cardNotFound(), null];
   return [null, card];
 };
 
 exports.updateCardPriceApi = async (cardId, newId, currentPrice) => {
   const [errOldCard, oldCard] = await handle(Card.findById(cardId).exec());
   if (errOldCard) return [errOldCard, null];
-  if (!oldCard) return next(errs.cardNotFound());
+  if (!oldCard) return [errs.cardNotFound(), null];
 
   const newDate = new Date().toLocaleDateString("en-US");
   const priceHistory = oldCard.value.priceHistory;
@@ -94,7 +107,7 @@ exports.updateCardPriceApi = async (cardId, newId, currentPrice) => {
 exports.updateCardPriceApiIdOnly = async (cardId, newId) => {
   const [errOldCard, oldCard] = await handle(Card.findById(cardId).exec());
   if (errOldCard) return [errOldCard, null];
-  if (!oldCard) return next(errs.cardNotFound());
+  if (!oldCard) return [errs.cardNotFound(), null];
 
   const update = { oldId: oldCard.id, id: newId };
 

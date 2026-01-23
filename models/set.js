@@ -21,6 +21,7 @@ const SetSchema = new Schema(
     imageCdnUrl400: { type: String },
     imageCdnUrl800: { type: String },
     imageUrl: { type: String },
+    isJapanese: { type: Boolean },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true }
   },

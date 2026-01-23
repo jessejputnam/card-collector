@@ -14,7 +14,10 @@ router.get("/", set_controller.display_sets_get);
 router.get("/:setId", set_controller.display_set_detail_get);
 
 // POST request to update set (admin only)
-router.post("/:setId", set_controller.update_set_post);
+router.post("/:setId/update-logo", set_controller.update_set_logo_post);
+
+// POST to update set series admi only
+router.post("/:setId/update-series", set_controller.update_set_series_post);
 
 // ###########################################
 

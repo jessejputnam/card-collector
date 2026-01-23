@@ -29,17 +29,6 @@ block content
       button.btn.btn-primary(type="submit")= `Change to ${card.value.manualUpdate ? "auto" : "manual"}`
 
   div.page-wrapper
-    a(href=`/collection/sets#${card.set.id}`) Back to sets
-    div.title 
-      h1= title
-      if (card.custom)
-        a(href=`/collection/cards/${card._id}/edit`) edit
-
-    if (!card.binder)
-      em(style='margin-top:-10px;color:transparent') Collection Binder 
-    else 
-      em(style='margin-top:-10px')= `${card.binder} Binder` 
-
     div.card-detail-container 
       div.detail-img-container 
         img#cardImg(src=card.meta.images.large alt=card.name onerror="/images/missingno.png")
@@ -51,6 +40,8 @@ block content
               em(style="font-size:.7rem;color:silver")  Reverse Holo
             if card.value.priceType[0] === "1"
               em(style="font-size:.7rem;color:silver")  1st Edition
+            if (card.custom)
+              a(href=`/collection/cards/${card._id}/edit` style="margin-left:15px;") edit
           em= card.meta.rarity.type
 
         div.info-container.info-set-container 
@@ -135,7 +126,7 @@ block content
             if !card.set.id
                 p(style="font-size:.8rem") Update card set above first
             else
-              a(href=`/collection/cards/${card._id}/sync-price-api?pokeName=${card.name}&pokeSet=${card.set.id}&priceType=${card.value.priceType}`) 
+              a(href=`/collection/cards/${card._id}/sync-price-api?pokeName=${card.name}&pokeSet=${card.set.id}&priceType=${card.value.priceType}&lang=${card.lang}`) 
                 button.btn.secondary-btn(type="button") Price API Sync
             p(style="font-size:.7rem;font-style:italic") Update needed for Price API
           else

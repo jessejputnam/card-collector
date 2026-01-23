@@ -1,0 +1,40 @@
+extends ../layout 
+
+//- block scripts 
+//-   script(type="module" src="/javascripts/scriptIdSearchDetail.js" defer)
+
+block styles 
+  link(rel="stylesheet", href="/stylesheets/search.css")
+
+block content 
+  div.page-wrapper
+    h1= title 
+    //- if !card_list.length 
+    //-   p Sorry, no results found 
+
+    //- else
+    //-   div.results-wrapper
+    //-     each card in card_list 
+    //-       div.result-container
+    //-         div(class=`result-img-container`) 
+    //-           img(src=card.meta.images.small, alt=card.name)
+    //-         div.result-info-container 
+    //-           p.result-title= card.name 
+    //-           p.result-set= card.set.name 
+    //-           p.result-number= card.set.number
+    //-           p $#{!card.value.market ? " not available" : card.value.market.toFixed(2)}
+    //-           if card.priceVariants
+    //-             each prices, variant in card.priceVariants
+    //-               p.small-txt #{variant}: #{prices["Near Mint"].priceString}
+
+    //-           form.add-card-form(method="POST" action=`/collection/cards/${cardId}/sync-price-api`) 
+    //-             input#newId(type="hidden" name="newId" required="true" value=card.tcgPlayerId)
+    //-             - const curPrice = card.priceVariants ? card.priceVariants[convertPricetype(priceType)]["Near Mint"].price : card.value.market
+    //-             input#currentPrice(type="hidden" name="currentPrice" required="true" value=curPrice)
+    //-             button.btn.btn-secondary(type="submit") Select Card
+
+    //-   div.manual-update-container
+    //-     button.btn#toggleManualInput +
+    //-     form.add-card-form.hidden#manualInputForm(method="POST" action=`/collection/cards/${cardId}/manual-sync-price-api`) 
+    //-       input#newId(type="text" name="newId" required="true" style="margin-right:15px")
+    //-       button.btn.btn-secondary(type="submit") Manual ID Update

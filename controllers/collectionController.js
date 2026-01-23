@@ -9,9 +9,21 @@ const filterQueries = require("../utils/filtration/filterQueries");
 const { sortCardQuery } = require("../utils/sort");
 const {
   updateRecentUpdates,
-  updateStaleUpdates
+  updateStaleUpdates,
+  addSetOrdered,
+  initCardSet
 } = require("../utils/collectionControllerlib");
 const { formatMoney, formatNum } = require("../utils/format");
+
+/* 
+
+- System Update
+- Collection
+- Filter
+- By Set
+- Dashboard
+
+*/
 
 exports.change_curr_post = async (req, res, next) => {
   const userId = req.user._id;
@@ -27,7 +39,7 @@ exports.change_curr_post = async (req, res, next) => {
   return res.redirect(referrer);
 };
 
-// ################# View Cards ##################
+// ################# COLLECTION ##################
 
 // Handle display collection on GET
 exports.display_collection_get = async (req, res, next) => {
@@ -67,7 +79,7 @@ exports.display_collection_get = async (req, res, next) => {
   });
 };
 
-// ################ Filter Cards ##################
+// ################ FILTER ##################
 // Handle get filter page
 exports.display_filter_page_get = async (req, res, next) => {
   const userId = req.user._id;
@@ -150,6 +162,8 @@ exports.display_filter_page_get = async (req, res, next) => {
   return res.render("collection/filter-collection", page_data);
 };
 
+// ######################### By Set #########################
+
 // Handle display cards by set on GET
 exports.display_filter_by_set_get = async (req, res, next) => {
   const userId = req.user._id;
@@ -208,7 +222,23 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   });
 };
 
-// ############ Dashboard ###########
+exports.update_price_api_all_cards_in_set_get = async (req, res, next) => {
+  const userId = req.user._id;
+  const setId = req.params.id;
+
+  const [errCards, cards] = await CardRepo.getAllCardsInSetNotUpdatedApi(
+    userId,
+    setId
+  );
+  if (errCards) return next(errCards);
+
+  const updateCards = cards.filter((card) => !card.oldId);
+
+  return res.redirect("collection/sets");
+};
+
+// ####################### Dashboard ###########################
+
 // Handle display dashboard on GET
 exports.display_dashboard_get = async (req, res, next) => {
   const userId = req.user._id;
@@ -240,7 +270,7 @@ exports.display_dashboard_get = async (req, res, next) => {
   );
 
   // Sets number of cards to display on dashboard rows
-  const sampleSize = 6;
+  const sampleSize = 7;
 
   // MIDDLE BAND
 
@@ -266,16 +296,11 @@ exports.display_dashboard_get = async (req, res, next) => {
 
     // Sets
     if (card.set.id) {
-      if (!(card.set.name in cardsBySet)) {
-        cardsBySet[card.set.name] = {
-          setTotal: card.set.cardCount,
-          symbolUrl: card.set.symbolUrl,
-          ownedCards: 0,
-          ownedValue: 0
-        };
-      }
+      if (!(card.set.name in cardsBySet)) initCardSet(cardsBySet, card);
       cardsBySet[card.set.name].ownedCards++;
       cardsBySet[card.set.name].ownedValue += card.value.market;
+      cardsBySet[card.set.name].uniqueCards.add(card.setNumber);
+      if (card.rarity.reverseHolo) cardsBySet[card.set.name].reverseHoloCards++;
     }
 
     // Manual value updates
@@ -290,23 +315,13 @@ exports.display_dashboard_get = async (req, res, next) => {
     }
   }
 
-  // Helper function fr set ordering
-  const addSet = (arr, cur) => {
-    for (let i = 0; i < arr.length; i++) {
-      if (cur.ownedCards > arr[i].ownedCards) {
-        arr.splice(i, 0, cur);
-        return;
-      }
-    }
-    arr.push(cur);
-  };
-
   // Set ordering
   const keys = Object.keys(cardsBySet);
   for (let i = 0; i < keys.length; i++) {
     cardsBySet[keys[i]].name = keys[i];
+    cardsBySet[keys[i]].uniqueCards = cardsBySet[keys[i]].uniqueCards.size;
     if (i == 0) cardSets.push(cardsBySet[keys[0]]);
-    else addSet(cardSets, cardsBySet[keys[i]]);
+    else addSetOrdered(cardSets, cardsBySet[keys[i]]);
   }
   /*
 

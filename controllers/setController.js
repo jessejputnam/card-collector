@@ -1,4 +1,5 @@
 const CardSet = require("../models/set");
+const CardRepo = require("../repositories/cardRepo");
 const handle = require("../utils/errorHandler");
 
 // Handle display cards by set on GET
@@ -9,7 +10,7 @@ exports.display_sets_get = async (req, res, next) => {
   const isAdmin = userId == process.env.ADMIN_USER_ID;
 
   const fields =
-    "id name series tcgPlayerId releaseDate cardCount symbolUrl priceGuideUrl imageUrl";
+    "id name series tcgPlayerId releaseDate cardCount symbolUrl priceGuideUrl imageUrl isJapanese";
 
   const [setsErr, sets] = await handle(
     CardSet.find({}, fields).sort({ releaseDate: -1 }).exec()
@@ -54,9 +55,8 @@ exports.display_set_detail_get = async (req, res, next) => {
   });
 };
 
-// Handle update set on POST (admin only)
-exports.update_set_post = async (req, res, next) => {
-  const curr = req.user.curr;
+// Handle update set logo on POST (admin only)
+exports.update_set_logo_post = async (req, res, next) => {
   const isAdmin = req.user._id == process.env.ADMIN_USER_ID;
   if (!isAdmin) {
     const err = new Error("Unauthorized");
@@ -72,6 +72,34 @@ exports.update_set_post = async (req, res, next) => {
     CardSet.findOneAndUpdate(
       { id: setId },
       { $set: { symbolUrl: updateData.symbolUrl } }
+    ).exec()
+  );
+  if (updateErr) return next(updateErr);
+  if (!updatedSet) {
+    const err = new Error("Set not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  return res.redirect(`/sets/${setId}`);
+};
+
+// Handle update set series on POST (admin only)
+exports.update_set_series_post = async (req, res, next) => {
+  const isAdmin = req.user._id == process.env.ADMIN_USER_ID;
+  if (!isAdmin) {
+    const err = new Error("Unauthorized");
+    err.status = 401;
+    return next(err);
+  }
+
+  const setId = req.params.setId;
+  const updateData = req.body;
+
+  const [updateErr, updatedSet] = await handle(
+    CardSet.findOneAndUpdate(
+      { id: setId },
+      { $set: { series: updateData.newSeries } }
     ).exec()
   );
   if (updateErr) return next(updateErr);

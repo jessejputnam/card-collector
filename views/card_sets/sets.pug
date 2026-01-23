@@ -3,9 +3,6 @@ extends ../layout
 block styles 
   link(rel="stylesheet", href="/stylesheets/card-set.css")
 
-block scripts 
-  script(src="/javascripts/csv.js" defer)
-
 block content 
     h1= title + " " 
 
@@ -19,7 +16,8 @@ block content
           each set in setList
             a.not-a(href=`/sets/${set.id}`)
               div.result-container
-                  p= set.name
+                  p.set-name= `${set.name} ${set.isJapanese ? ' [jp]' : ''}`
+                  p.set-series= set.series
                   div.result-info-container
                       p= set.releaseDate.toLocaleDateString()
                       img(src=`${set.symbolUrl || "/images/pokeball.png"}` alt=set.name style="width:30px")
