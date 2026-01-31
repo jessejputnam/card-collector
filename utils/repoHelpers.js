@@ -14,8 +14,8 @@ exports.buildCardDetail = (card, set) => {
       images: card.meta.images
     },
     set: {
-      _id: set?._id,
-      id: set?.id,
+      _id: set?._id ?? card.setTcgPlayerNumericId, // if no set given, just the id
+      id: set?.tcgPlayerNumericId,
       name: set?.name,
       series: set?.series,
       releaseDate: set?.releaseDate,
@@ -24,13 +24,13 @@ exports.buildCardDetail = (card, set) => {
     },
     oldSetData: `${card.meta.set.name} [${card.meta.set.series}] - ${card.meta.set.releaseDate}`,
     value: card.value,
-    binder: card.binder?.type,
+    binder: card.binder,
     lang: card.isJapanese ? "japanese" : "english"
   };
 };
 
 exports.buildDashCard = (card, sets) => {
-  const set = sets[card.setId];
+  const set = sets[card.setTcgPlayerNumericId];
 
   return {
     _id: card._id,
@@ -42,7 +42,7 @@ exports.buildDashCard = (card, sets) => {
     setNumber: card.meta.set.number,
     image: card.meta.images.small,
     set: {
-      id: set?.id,
+      id: set?.tcgPlayerNumericId,
       name: set?.name,
       series: set?.series,
       releaseDate: set?.releaseDate,
@@ -50,6 +50,6 @@ exports.buildDashCard = (card, sets) => {
       symbolUrl: set?.symbolUrl
     },
     value: card.value,
-    binder: card.binder?.type
+    binder: card.binder
   };
 };

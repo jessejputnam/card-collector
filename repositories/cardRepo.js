@@ -7,10 +7,11 @@ const { buildCardDetail, buildDashCard } = require("../utils/repoHelpers");
 
 // #################### Get Cards ############################
 
-exports.getCardDetail = async (cardId) => {
+exports.getCardDetail = async (cardId, userId) => {
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return [errCard, null];
   if (!card) return [errs.cardNotFound(), null];
+  if (!card.userId.equals(userId)) return [errs.invalidUserId(), null];
 
   const [errSet, set] = await handle(
     CardSet.findOne({ id: card.setId }).exec()
@@ -20,10 +21,11 @@ exports.getCardDetail = async (cardId) => {
   return [null, buildCardDetail(card, set)];
 };
 
-exports.getCard = async (cardId) => {
+exports.getCard = async (cardId, userId) => {
   const [errCard, card] = await handle(Card.findById(cardId).exec());
   if (errCard) return [errCard, null];
   if (!card) return [errs.cardNotFound(), null];
+  if (!card.userId.equals(userId)) return [errs.invalidUserId(), null];
   return [null, card];
 };
 
@@ -40,9 +42,8 @@ exports.getDashboardCards = async (userId) => {
 
   const setsObj = {};
   for (let set of sets) {
-    setsObj[set.id] = set;
+    setsObj[set.tcgPlayerNumericId] = set;
   }
-
   const dashCards = cards.map((x) => buildDashCard(x, setsObj));
   return [null, dashCards];
 };
@@ -53,7 +54,12 @@ exports.getDashboardCards = async (userId) => {
 
 exports.getAllCardsInSetNotUpdatedApi = async (userId, setId) => {
   const [err, cards] = await handle(
-    Card.find({ userId, setId, oldId: { $exists: false } }).exec()
+    Card.find({
+      userId,
+      setId,
+      oldId: { $exists: false },
+      setId: { $exists: true }
+    }).exec()
   );
   if (err) return [err, null];
 
@@ -120,9 +126,27 @@ exports.deleteCard = async (cardId) => {
 
 // #################### Update Binder Cards ############################
 
-exports.updateCardBinder = async (cardId, newBinder) => {
+exports.updateCardBinder = async (cardId, newBinder, userId) => {
+  if (!userId) return [errs.invalidUserId(), null];
   const binder = newBinder == "none" ? null : newBinder;
-  return handle(Card.findByIdAndUpdate(cardId, { binder }).exec());
+  const updated = await Card.findOneAndUpdate(
+    {
+      _id: cardId,
+      userId: userId
+    },
+    {
+      $set: { binder: binder }
+    },
+    {
+      new: true
+    }
+  );
+
+  const err = updated ? null : errs.invalidUserId();
+  const result = updated;
+
+  return [err, result];
+  // return handle(Card.findByIdAndUpdate(cardId, { binder }).exec());
 };
 
 exports.removeDeletedBinder = async (userId, binder) => {

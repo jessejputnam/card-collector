@@ -20,6 +20,7 @@ const CardSchema = new Schema(
     },
 
     setId: { type: String }, // Set.id NOT Set._id
+    setTcgPlayerNumericId: { type: Number },
 
     meta: {
       images: {

@@ -34,9 +34,8 @@ exports.display_card_get = async (req, res, next) => {
   const curr = req.user.curr;
   const userId = req.user._id;
 
-  const [errCard, card] = await CardRepo.getCardDetail(cardId);
+  const [errCard, card] = await CardRepo.getCardDetail(cardId, userId);
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   const [errConvert, currConvert] = await getConversionRate(curr);
   if (errConvert) return next(errConvert);
@@ -71,9 +70,8 @@ exports.change_update_type = async (req, res, next) => {
   const userId = req.user._id;
   const isManual = req.body.isManual === "true";
 
-  const [errCard, card] = await CardRepo.getCard(cardId);
+  const [errCard, card] = await CardRepo.getCard(cardId, userId);
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   card.value.manualUpdate = isManual;
   const [err, _] = await handle(card.save());
@@ -92,9 +90,8 @@ exports.update_price_history_post = async (req, res, next) => {
   const newDate = new Date().toLocaleDateString("en-US");
 
   // Get db card
-  const [errCard, card] = await CardRepo.getCard(cardId);
+  const [errCard, card] = await CardRepo.getCard(cardId, userId);
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   const mostRecentDate = card.value.priceHistory[0][0];
 
@@ -115,9 +112,8 @@ exports.update_price_history_post = async (req, res, next) => {
     const lang = card.isJapanese ? "japanese" : "english";
     const [errApi, apiCard] = await handle(apiCall.getCard(pokemonId, lang));
     if (errApi) return next(errApi);
-
-    const priceType = convertPricetype(card.value.priceType);
-    marketVal = apiCard.data.prices.variants[priceType]["Near Mint"].price;
+    const variants = apiCard.data.prices.variants;
+    marketVal = buildCard.getApiCardPrice(card.value.priceType, variants);
   }
 
   priceHistory.unshift([newDate, marketVal]);
@@ -137,13 +133,14 @@ exports.select_binder_post = async (req, res, next) => {
   const cardId = req.body.objId;
   const userId = req.user._id;
 
-  const [errCard, card] = await handle(
-    CardRepo.updateCardBinder(cardId, newBinder)
+  const [errCard, card] = await CardRepo.updateCardBinder(
+    cardId,
+    newBinder,
+    userId
   );
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
-  return res.redirect(`/collection/cards/${cardId}?update=${newBinder}`);
+  return res.redirect(`/collection/cards/${cardId}?update=binder`);
 };
 
 // Handle edit rarity on POST
@@ -159,7 +156,6 @@ exports.edit_card_rarity = async (req, res, next) => {
   );
 
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   return res.redirect(`/collection/cards/${cardId}?update=rarity`);
 };
@@ -177,7 +173,6 @@ exports.edit_card_count = async (req, res, next) => {
   );
 
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   return res.redirect(`/collection/cards/${cardId}?update=count`);
 };
@@ -232,6 +227,7 @@ exports.sync_price_api_get = async (req, res, next) => {
     cardId: cardId,
     priceType,
     convertPricetype,
+    getApiCardPrice: buildCard.getApiCardPrice,
     curr_convert: currConvert,
     curr
   });
@@ -250,7 +246,6 @@ exports.sync_price_api_post = async (req, res, next) => {
     price
   );
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   return res.redirect(`/collection/cards/${cardId}?update=id`);
 };
@@ -266,7 +261,6 @@ exports.manual_sync_price_api_post = async (req, res, next) => {
     newId
   );
   if (errCard) return next(errCard);
-  if (card.userId !== userId) return next(errs.invalidUserId());
 
   return res.redirect(`/collection/cards/${cardId}?update=id`);
 };
@@ -283,7 +277,6 @@ exports.update_card_set_post = async (req, res, next) => {
     newSetId
   );
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   return res.redirect(`/collection/cards/${cardId}?update=set`);
 };
@@ -296,9 +289,8 @@ exports.delete_card_get = async (req, res, next) => {
   const userId = req.user._id;
   const curr = req.user.curr;
 
-  const [errCard, card] = await CardRepo.getCard(cardId);
+  const [errCard, card] = await CardRepo.getCard(cardId, userId);
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   return res.render("card_detail/card-delete", {
     title: `Delete ${card.pokemon.name}`,
@@ -315,7 +307,6 @@ exports.delete_card_post = async (req, res, next) => {
 
   const [errDelCard, delCard] = await CardRepo.deleteCard(cardId);
   if (errDelCard) return next(errDelCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   return res.redirect("/collection/home");
 };
@@ -384,10 +375,9 @@ exports.edit_custom_card_get = async (req, res, next) => {
   const curr = req.user.curr;
   const userId = req.user._id;
 
-  const [err, card] = await CardRepo.getCard(cardId);
+  const [err, card] = await CardRepo.getCard(cardId, userId);
   if (err) return next(err);
   if (!card.custom) return next(new Error("Cannot edit non-custom cards"));
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
 
   return res.render("card_detail/edit-custom-card", {
     title: `Edit ${card.pokemon.name}`,
@@ -402,9 +392,8 @@ exports.edit_custom_card_post = async (req, res, next) => {
   const cardId = req.params.id;
   const userId = req.user._id;
 
-  const [errCard, card] = await CardRepo.getCard(cardId);
+  const [errCard, card] = await CardRepo.getCard(cardId, userId);
   if (errCard) return next(errCard);
-  if (!card.userId.equals(userId)) return next(errs.invalidUserId());
   buildCard.edit(card, req);
 
   const [err, _] = await handle(card.save());

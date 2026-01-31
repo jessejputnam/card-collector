@@ -13,6 +13,8 @@ const {
   addSetOrdered,
   initCardSet
 } = require("../utils/collectionControllerlib");
+const { convertApiSearch, convertPricetype } = require("../utils/buildCard.js");
+const apiCall = require("../api/pokePriceApi");
 const { formatMoney, formatNum } = require("../utils/format");
 
 /* 
@@ -176,8 +178,11 @@ exports.display_filter_by_set_get = async (req, res, next) => {
   const setOrder = {};
   cards.forEach((card) => {
     const setId = card.meta.set.id;
-    if (!(setId in setOrder))
+    const newSetId = card.setId;
+    if (!(setId in setOrder)) {
       setOrder[setId] = [card.meta.set.name, card.meta.set.releaseDate];
+      setOrder[""];
+    }
   });
 
   // Sort sets by date
@@ -223,18 +228,64 @@ exports.display_filter_by_set_get = async (req, res, next) => {
 };
 
 exports.update_price_api_all_cards_in_set_get = async (req, res, next) => {
+  const curr = req.user.curr; // currency
   const userId = req.user._id;
-  const setId = req.params.id;
+  const setId = req.params.setId;
 
-  const [errCards, cards] = await CardRepo.getAllCardsInSetNotUpdatedApi(
+  if (!setId) return next(Error("Set ID is missing"));
+
+  const [errCards, myCards] = await CardRepo.getAllCardsInSetNotUpdatedApi(
     userId,
     setId
   );
   if (errCards) return next(errCards);
 
-  const updateCards = cards.filter((card) => !card.oldId);
+  const myCardsWithApiResults = [];
+  for (let myCard of myCards) {
+    const cardName = myCard.name.trim().toLowerCase();
+    const cardSetId = myCard.set.id;
+    const priceType = myCard.value.priceType;
+    const lang = myCard.lang;
 
-  return res.redirect("collection/sets");
+    if (!cardSetId) continue;
+
+    // API prices search
+    const [searchErr, results] = await handle(
+      apiCall.getCardsBySearch(cardName, cardSetId, lang)
+    );
+    if (searchErr) return next(searchErr);
+
+    const data = results.data || [];
+
+    const formattedResults = data
+      .map((tcgCard) => {
+        return {
+          id: tcgCard.id,
+          tcgPlayerId: tcgCard.tcgPlayerId,
+          name: tcgCard.name,
+          set: tcgCard.setName,
+          priceVariants: tcgCard.prices?.variants
+        };
+      })
+      .filter((card) =>
+        card.priceVariants
+          ? convertPricetype(priceType) in card.priceVariants
+          : true
+      );
+
+    if (formattedResults.length === 1) {
+      myCard.apiResult = formattedResults[0];
+      myCardsWithApiResults.push(myCard);
+    }
+  }
+
+  const [errConvert, currConvert] = await getConversionRate(curr);
+  if (errConvert) return next(errConvert);
+
+  return res.render("collection/update-set-price-api", {
+    title: "Select cards to update",
+    my_cards: myCardsWithApiResults
+  });
 };
 
 // ####################### Dashboard ###########################
@@ -244,7 +295,7 @@ exports.display_dashboard_get = async (req, res, next) => {
   const userId = req.user._id;
   const curr = req.user.curr;
 
-  const [errCards, cards] = await handle(CardRepo.getDashboardCards(userId));
+  const [errCards, cards] = await CardRepo.getDashboardCards(userId);
   if (errCards) return next(errCards);
 
   const [errConvert, currConvert] = await getConversionRate(curr);
@@ -323,37 +374,6 @@ exports.display_dashboard_get = async (req, res, next) => {
     if (i == 0) cardSets.push(cardsBySet[keys[0]]);
     else addSetOrdered(cardSets, cardsBySet[keys[i]]);
   }
-  /*
-
-  ##############
-
-  Biggest movers (24h / 7d)
-  Top 3 gainers and losers by percentage or absolute value:
-    •	(latest − previous) * count
-  This subtly nudges users to update prices more often without you nagging them.
-
-  Most valuable cards
-  Top 5 by value.market * value.count.
-  Always include images. Humans like shiny rectangles.
-
-  Collection volatility (simple version)
-  You don’t need stats jargon. Something like:
-  “7 cards changed by more than ±5% in the last update.”
-
-  ##################
-
-  Cards in binders vs unassigned
-  Document count split:
-    •	In a binder
-    •	Not in any binder
-
-  This mirrors the physical-world anxiety of “stuff not put away.”
-
-  Top binder by value
-  Aggregate value.market * count grouped by binder name.
-  People name binders emotionally (“Favorites”, “Trade Bait”). This reinforces that.
-
-  */
 
   // sortCardQuery(cards, sortType, isAsc);
   const payload = {

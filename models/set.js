@@ -7,7 +7,8 @@ const SetSchema = new Schema(
   {
     id: { type: String, required: true }, // Used for FK in Cards
     tcgPlayerId: { type: String, required: true },
-    pokemonSetId: { type: String }, // from old API
+    tcgPlayerNumericId: { type: Number },
+    pokemonSetId: { type: String },
     name: { type: String, required: true },
     series: { type: String, required: true },
     releaseDate: { type: Date, required: true },
@@ -27,5 +28,7 @@ const SetSchema = new Schema(
   },
   { timestamps: true }
 );
+
+SetSchema.index({ tcgPlayerId: 1 }, { unique: true });
 
 module.exports = mongoose.model("Set", SetSchema);

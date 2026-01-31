@@ -1,6 +1,8 @@
 const CardSet = require("../models/set");
 const CardRepo = require("../repositories/cardRepo");
+const { getSets } = require("../api/pokePriceApi");
 const handle = require("../utils/errorHandler");
+const Card = require("../models/card");
 
 // Handle display cards by set on GET
 exports.display_sets_get = async (req, res, next) => {
@@ -66,7 +68,6 @@ exports.update_set_logo_post = async (req, res, next) => {
 
   const setId = req.params.setId;
   const updateData = req.body;
-  console.log(updateData);
 
   const [updateErr, updatedSet] = await handle(
     CardSet.findOneAndUpdate(
@@ -111,3 +112,67 @@ exports.update_set_series_post = async (req, res, next) => {
 
   return res.redirect(`/sets/${setId}`);
 };
+
+// // New stupid integer id update for all sets
+// exports.update_all_new_stupid_id_change = async (req, res, next) => {
+//   // Admin gate
+//   const isAdmin = req.user._id == process.env.ADMIN_USER_ID;
+//   if (!isAdmin) {
+//     const err = new Error("Unauthorized");
+//     err.status = 401;
+//     return next(err);
+//   }
+
+//   // ### SETS UPDATE ###
+//   // // API sets retrieval
+//   // const [apiSetsEnErr, apiSetsEn] = await handle(getSets("english"));
+//   // if (apiSetsEnErr) return next(apiSetsEnErr);
+
+//   // const apiSets = apiSetsEn.data || [];
+
+//   // const ops = apiSets.map((s) => ({
+//   //   updateOne: {
+//   //     filter: { tcgPlayerId: String(s.tcgPlayerId) },
+//   //     update: { $set: { tcgPlayerNumericId: Number(s.tcgPlayerNumericId) } },
+//   //     upsert: false
+//   //   }
+//   // }));
+
+//   // const [resultErr, result] = await handle(
+//   //   CardSet.bulkWrite(ops, { ordered: false })
+//   // );
+//   // if (resultErr) return next(resultErr);
+//   // const matchedCount = result.matchedCount;
+//   // const modifiedCount = result.modifiedCount;
+
+//   // console.log(
+//   //   `##########\n\nMatched: ${matchedCount}\nModified: ${modifiedCount}\n\n############`
+//   // );
+//   // return res.redirect("/sets");
+
+//   // ### CARDS UPDATE ###
+//   const [mySetsErr, mySets] = await handle(
+//     CardSet.find({}, "id tcgPlayerNumericId").exec()
+//   );
+//   if (mySetsErr) return next(mySetsErr);
+
+//   const ops = mySets.map((s) => ({
+//     updateMany: {
+//       filter: { setId: s.id },
+//       update: { $set: { setTcgPlayerNumericId: s.tcgPlayerNumericId } },
+//       upsert: false
+//     }
+//   }));
+
+//   const [resultErr, result] = await handle(
+//     Card.bulkWrite(ops, { ordered: false })
+//   );
+//   if (resultErr) return next(resultErr);
+//   const matchedCount = result.matchedCount;
+//   const modifiedCount = result.modifiedCount;
+
+//   console.log(
+//     `##########\n\nMatched: ${matchedCount}\nModified: ${modifiedCount}\n\n############`
+//   );
+//   return res.redirect("/sets");
+// };

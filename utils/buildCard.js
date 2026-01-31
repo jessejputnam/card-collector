@@ -24,7 +24,31 @@ prices.variants["Reverse Holofoil"]
 
  */
 
-exports.convertPricetype = (priceType) => {
+function getApiCardPrice(priceType, variants) {
+  priceType = convertPricetype(priceType);
+  const condition = `Near Mint${priceType !== "Normal" ? " " + priceType : ""}`;
+  return (
+    variants?.[priceType][condition]?.price ??
+    variants?.[priceType]["Near Mint"].price
+  );
+}
+
+function setPriceVariant(type, priceVariants) {
+  if (type in priceVariants) {
+    priceVariants[type] = {
+      "Near Mint": priceVariants[type][`Near Mint ${type}`]
+    };
+  }
+}
+
+function convertPriceVariantsObject(card) {
+  let priceVariants = card.prices?.variants;
+  if (!priceVariants) return null;
+  setPriceVariant("Reverse Holofoil", priceVariants);
+  setPriceVariant("Holofoil", priceVariants);
+}
+
+function convertPricetype(priceType) {
   if (priceType == "holofoil") return "Holofoil";
   if (priceType == "Holofoil") return "holofoil";
   if (priceType == "normal") return "Normal";
@@ -40,7 +64,7 @@ exports.convertPricetype = (priceType) => {
   if (priceType == "reverseHolofoil") return "Reverse Holofoil";
   if (priceType == "Reverse Holofoil") return "reverseHolofoil";
   return "n/a";
-};
+}
 
 /**
  * Build TCG card from search
@@ -51,7 +75,7 @@ exports.convertPricetype = (priceType) => {
  * @param {string} priceType
  * @returns {Card}
  */
-exports.searched = (tcgCard, userId, revHolo, marketVal, priceType) => {
+function searched(tcgCard, userId, revHolo, marketVal, priceType) {
   return new Card({
     id: tcgCard.id,
     userId,
@@ -90,14 +114,14 @@ exports.searched = (tcgCard, userId, revHolo, marketVal, priceType) => {
       priceType: priceType
     }
   });
-};
+}
 
 /**
  * Return necessary info for custom card from req body
  * @param {*} body
  * @returns
  */
-exports.info = (req) => {
+function info(req) {
   const q = req.body;
 
   return {
@@ -117,9 +141,9 @@ exports.info = (req) => {
     set_number: q.set_number,
     set_printedTotal: q.set_printedTotal
   };
-};
+}
 
-exports.edit = (card, req) => {
+function edit(card, req) {
   const q = req.body;
   console.log(q);
 
@@ -140,7 +164,7 @@ exports.edit = (card, req) => {
   card.meta.set.number = q.set_number;
   card.meta.set.totalPrint = q.set_printedTotal;
   card.isJapanese = q.isJapanese === "true";
-};
+}
 
 /*
 
@@ -165,7 +189,9 @@ prices.variants["Reverse Holofoil"]
 
  */
 
-exports.convertApiSearch = (card, setReleases) => {
+function convertApiSearch(card, setReleases) {
+  const priceVariants = convertPriceVariantsObject(card);
+
   const newCard = {
     id: card.id,
     tcgPlayerId: card.tcgPlayerId,
@@ -205,8 +231,17 @@ exports.convertApiSearch = (card, setReleases) => {
         ? true
         : false,
 
-    priceVariants: card.prices?.variants
+    priceVariants: card.prices.variants
   };
 
   return newCard;
+}
+
+module.exports = {
+  convertApiSearch,
+  edit,
+  info,
+  searched,
+  convertPricetype,
+  getApiCardPrice
 };

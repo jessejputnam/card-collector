@@ -29,7 +29,7 @@ block content
 
               form.add-card-form(method="POST" action=`/collection/cards/${cardId}/sync-price-api`) 
                 input#newId(type="hidden" name="newId" required="true" value=card.tcgPlayerId)
-                - const curPrice = card.priceVariants ? card.priceVariants[convertPricetype(priceType)]["Near Mint"].price : card.value.market
+                - const curPrice = getApiCardPrice(priceType, card.priceVariants)
                 input#currentPrice(type="hidden" name="currentPrice" required="true" value=curPrice)
                 button.btn.btn-secondary(type="submit") Select Card
 

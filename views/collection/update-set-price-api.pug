@@ -9,19 +9,19 @@ block styles
 block content 
   div.page-wrapper
     h1= title 
-    //- if !card_list.length 
-    //-   p Sorry, no results found 
+    if !my_cards.length 
+      p Sorry, no results found 
 
-    //- else
-    //-   div.results-wrapper
-    //-     each card in card_list 
-    //-       div.result-container
-    //-         div(class=`result-img-container`) 
-    //-           img(src=card.meta.images.small, alt=card.name)
-    //-         div.result-info-container 
-    //-           p.result-title= card.name 
-    //-           p.result-set= card.set.name 
-    //-           p.result-number= card.set.number
+    else
+      div.results-wrapper
+        each card in my_cards 
+          div.result-container
+            div(class=`result-img-container`) 
+              img(src=card.meta.images.small, alt=card.name)
+            div.result-info-container 
+              p.result-title= card.name 
+              p.result-set= card.set.name 
+              p.result-number= card.set.number
     //-           p $#{!card.value.market ? " not available" : card.value.market.toFixed(2)}
     //-           if card.priceVariants
     //-             each prices, variant in card.priceVariants
