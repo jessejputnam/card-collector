@@ -53,12 +53,12 @@ exports.getDashboardCards = async (userId) => {
 // };
 
 exports.getAllCardsInSetNotUpdatedApi = async (userId, setId) => {
+  if (!setId || !userId) return [new Error("Missing required values"), null];
   const [err, cards] = await handle(
     Card.find({
       userId,
-      setId,
-      oldId: { $exists: false },
-      setId: { $exists: true }
+      setTcgPlayerNumericId: setId,
+      oldId: { $exists: false }
     }).exec()
   );
   if (err) return [err, null];

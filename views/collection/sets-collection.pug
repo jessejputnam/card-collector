@@ -28,8 +28,8 @@ block content
           div.set-links 
             a.to-top(href="#top") Back to Top 
             button.btn.btn-csv(type="button" data-csv=obj.csv) Download CSV
-            if notUpdatedCount > 0 && set[0].setId 
-              a.not-a(href=`/collection/sets/${set[0].setId}/update-many-to-new-api`) 
+            if notUpdatedCount > 0 && set[0].setTcgPlayerNumericId
+              a.not-a(href=`/collection/sets/${set[0].setTcgPlayerNumericId}/update-many-to-new-api`) 
                 button.btn(type="button" style="font-size:.8rem") Update Cards to New API
           h3= set[0].meta.set.name 
             span.set-collected= set_collected

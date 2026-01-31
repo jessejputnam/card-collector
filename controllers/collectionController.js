@@ -243,11 +243,12 @@ exports.update_price_api_all_cards_in_set_get = async (req, res, next) => {
   const myCardsWithApiResults = [];
   for (let myCard of myCards) {
     const cardName = myCard.name.trim().toLowerCase();
-    const cardSetId = myCard.set.id;
+    const cardSetId = myCard.set._id;
     const priceType = myCard.value.priceType;
     const lang = myCard.lang;
 
     if (!cardSetId) continue;
+    console.log(cardName);
 
     // API prices search
     const [searchErr, results] = await handle(
