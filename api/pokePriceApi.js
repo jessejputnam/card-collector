@@ -14,7 +14,8 @@ exports.getCard = async (cardId, lang = "english") => {
   if (!res.ok) {
     const msg =
       res.status == 429
-        ? "Price API limit reached. Please try again tomorrow."
+        ? (res.statusText ??
+          "Price API limit reached. Please try again tomorrow.")
         : `[STATUS ${res.status}] ${res.statusText}`;
     throw new Error(`Failed to fetch card: ${msg}`);
   }
@@ -36,9 +37,11 @@ exports.getCardsBySearch = async (query, setId = null, lang = "english") => {
     options
   );
   if (!res.ok) {
+    console.log(res);
     const msg =
       res.status == 429
-        ? "Price API limit reached. Please try again tomorrow."
+        ? (res.statusText ??
+          "Price API limit reached. Please try again tomorrow.")
         : `[STATUS ${res.status}] ${res.statusText}`;
     throw new Error(`Failed to fetch cards: ${msg}`);
   }
