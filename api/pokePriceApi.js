@@ -37,7 +37,6 @@ exports.getCardsBySearch = async (query, setId = null, lang = "english") => {
     options
   );
   if (!res.ok) {
-    console.log(res);
     const msg =
       res.status == 429
         ? (res.statusText ??
