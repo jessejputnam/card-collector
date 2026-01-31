@@ -1,29 +1,6 @@
 const Card = require("../models/card");
 const getRarityRating = require("../utils/getRarityRating");
 
-/*
-
-prices.market
-prices.variants["Holofoil"]
-prices.variants["Normal"]
-prices.variants["Unlimited Holofoil"]
-prices.variants["Unlimited"]
-prices.variants["1st Edition"]
-prices.variants["1st Edition Holofoil"]
-prices.variants["Reverse Holofoil"]
-
-
-
-- holofoil
-- normal
-- unlimitedHolofoil
-- unlimited
-- 1stEdition
-- 1stEditionHolofoil
-- reverseHolofoil
-
- */
-
 function getApiCardPrice(priceType, variants) {
   priceType = convertPricetype(priceType);
   const condition = `Near Mint${priceType !== "Normal" ? " " + priceType : ""}`;
@@ -145,7 +122,6 @@ function info(req) {
 
 function edit(card, req) {
   const q = req.body;
-  console.log(q);
 
   card.id = `${q.set_id}-${q.set_number}`;
   card.pokemon.name = q.name;
@@ -165,29 +141,6 @@ function edit(card, req) {
   card.meta.set.totalPrint = q.set_printedTotal;
   card.isJapanese = q.isJapanese === "true";
 }
-
-/*
-
-prices.market
-prices.variants["Holofoil"]
-prices.variants["Normal"]
-prices.variants["Unlimited Holofoil"]
-prices.variants["Unlimited"]
-prices.variants["1st Edition"]
-prices.variants["1st Edition Holofoil"]
-prices.variants["Reverse Holofoil"]
-
-
-
-- holofoil
-- normal
-- unlimitedHolofoil
-- unlimited
-- 1stEdition
-- 1stEditionHolofoil
-- reverseHolofoil
-
- */
 
 function convertApiSearch(card, setReleases) {
   const priceVariants = convertPriceVariantsObject(card);
